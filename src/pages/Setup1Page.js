@@ -10,9 +10,13 @@ class Setup1Page extends Component{
         return (
             <div className="Setup1Page">
                 <NavigationBar></NavigationBar>
-                <p>Setup1 Page</p>
+                <header className="header">
+                    <h1>Setup1 Page</h1>
+                </header>
+
+
                 <Calendar calendarType="US" defaultView="month"
-                            onClickDay={(value, event) => alert('New date is: ', value)}>
+                            onClickDay={(value) => console.log('New date is: ' + value)}>
                 </Calendar> //TODO: set to users local calendarType?
             </div>
         );

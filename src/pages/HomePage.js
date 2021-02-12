@@ -8,8 +8,9 @@ class HomePage extends Component{
     render() {
         return (
             <div className="HomePage">
-                <header className="App-header">
-                    <NavigationBar></NavigationBar>
+                <NavigationBar></NavigationBar>
+                <header className="header">
+                    <h1>Home Page</h1>
                     <img src={logo} className="App-logo" alt="logo"/>
                     <p>
                         Edit <code>src/App.js</code> and save to reload.
@@ -22,9 +23,6 @@ class HomePage extends Component{
                     >
                         Learn React
                     </a>
-                    <p>
-                        This is the Home Page
-                    </p>
                 </header>
             </div>
 

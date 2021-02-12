@@ -3,7 +3,7 @@ import {Nav, Navbar, NavDropdown, Form, FormControl, Button} from 'react-bootstr
 const NavigationBar = () => {
     return (
         <div className="NavigationBar">
-            <Navbar expand="sm" bg="light" variant="light">
+            <Navbar expand="sm" bg="dark" variant="dark">
                 <Navbar.Brand href="/">WhenIsBest</Navbar.Brand>
 
                 <Navbar.Collapse id="basic-navbar-nav">

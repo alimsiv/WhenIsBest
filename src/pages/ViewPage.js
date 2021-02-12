@@ -9,6 +9,9 @@ class ViewPage extends Component{
         return (
             <div className="ViewPage">
                 <NavigationBar></NavigationBar>
+                <header className="header">
+                    <h1>View Page</h1>
+                </header>
                 <p>View Page</p>
 
             </div>

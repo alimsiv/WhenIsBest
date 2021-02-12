@@ -1,4 +1,5 @@
 import { Component } from 'react'
+import {Table} from 'react-bootstrap'
 import NavigationBar from '../shared/NavigationBar'
 
 
@@ -8,7 +9,10 @@ class Setup2Page extends Component{
         return (
             <div className="Setup2Page">
                 <NavigationBar></NavigationBar>
-                <p>Setup2 Page</p>
+                <header className="header">
+                    <h1>Setup2 Page</h1>
+                </header>
+
                 <div className="time_table">
 
                 </div>
