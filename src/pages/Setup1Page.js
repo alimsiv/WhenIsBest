@@ -10,9 +10,7 @@ class Setup1Page extends Component{
         return (
             <div className="Setup1Page">
                 <NavigationBar></NavigationBar>
-                <header className="header">
-                    <h1>Setup1 Page</h1>
-                </header>
+                <h1>Setup1 Page</h1>
 
 
                 <Calendar calendarType="US" defaultView="month"

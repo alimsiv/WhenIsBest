@@ -3,12 +3,10 @@ import {Nav, Navbar, NavDropdown, Form, FormControl, Button} from 'react-bootstr
 const NavigationBar = () => {
     return (
         <div className="NavigationBar">
-            <head>
-                <link rel="stylesheet"
-                      href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-                      integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
-                      crossOrigin="anonymous"></link>
-            </head>
+            <link rel="stylesheet"
+                  href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+                  integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+                  crossOrigin="anonymous"></link>
             <Navbar expand="sm" bg="dark" variant="dark">
                 <Navbar.Brand href="/">WhenIsBest</Navbar.Brand>
 

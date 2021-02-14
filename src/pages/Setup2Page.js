@@ -9,9 +9,7 @@ class Setup2Page extends Component{
         return (
             <div className="Setup2Page">
                 <NavigationBar></NavigationBar>
-                <head className="header">
-                    <h1>Setup2 Page</h1>
-                </head>
+                <h1>Setup2 Page</h1>
 
                 <div className="time_table">
 
