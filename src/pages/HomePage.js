@@ -7,9 +7,9 @@ import logo from "../logo.svg";
 class HomePage extends Component{
     render() {
         return (
-            <div className="HomePage">
+            <div class="HomePage">
                 <NavigationBar></NavigationBar>
-                <header className="header">
+                <head className="header">
                     <h1>Home Page</h1>
                     <img src={logo} className="App-logo" alt="logo"/>
                     <p>
@@ -23,7 +23,12 @@ class HomePage extends Component{
                     >
                         Learn React
                     </a>
-                </header>
+                </head>
+
+                <br/>
+                <br/>
+
+
             </div>
 
         );
