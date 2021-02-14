@@ -1,0 +1,16 @@
+.half-grid {
+    align-content: center;
+    width: 50%;
+    min-width: 310px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    column-gap: 10px;
+}
+
+.dropdown {
+    color: #282c34;
+
+}
