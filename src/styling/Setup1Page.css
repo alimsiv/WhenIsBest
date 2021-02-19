@@ -1,16 +1,24 @@
-.half-grid {
-    align-content: center;
-    width: 50%;
-    min-width: 310px;
-}
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    column-gap: 10px;
+.flex {
+    display: flex;
+    grid-gap: 40px;
+    justify-content: center;
 }
 
 .dropdown {
     color: #282c34;
+}
 
+input[type="text"] {
+    width: 300px;
+    align-content: end;
+}
+
+input[type="time"] {
+    width: 90px;
+}
+
+#create-event-button {
+    border-radius: 5px;
+    width: 120px;
 }
