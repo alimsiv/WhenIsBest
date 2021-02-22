@@ -2,6 +2,7 @@ import { Component } from 'react'
 import {Dropdown, Nav, Navbar} from 'react-bootstrap'
 import NavigationBar from '../shared/NavigationBar'
 import TimezoneDropdown from "../shared/TimezoneDropdown";
+import TimeSlotTable from "../shared/TimeSlotTable";
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import '../styling/Setup1Page.css';
@@ -11,10 +12,13 @@ import '../styling/Setup1Page.css';
 class Setup1Page extends Component{
     dateTypes = ["Specific Dates", "Days of the Week"];
 
-    constructor() {
-        super();
+
+    constructor(props) {
+        super(props);
         //0 for Specific Dates, 1 for Days of the Week
-        this.dateType = 0;
+        this.state = {
+            dateType: 0
+        }
     }
 
     // Top portion: name input and create button
@@ -58,7 +62,7 @@ class Setup1Page extends Component{
 
     // Week or Month view
     DateView() {
-        if (this.dateType === 0){
+        if (this.state.dateType === 0){
             // Month View
             console.log('DateView: month view')
             return (
@@ -72,6 +76,9 @@ class Setup1Page extends Component{
         else {
             //Week View
             console.log('DateView: week view')
+            return(
+                <TimeSlotTable headerTitles={["Sun","Mon","Tues","Wed","Thurs","Fri","Sun"]} times={[""]}/>
+            );
 
 
         }
@@ -82,21 +89,20 @@ class Setup1Page extends Component{
         return (
             <div className="flex-child">
                 <Dropdown>
-                    <Dropdown.Toggle variant="success" class="dropdown">
-                        Dates types to show
+                    <Dropdown.Toggle variant="success" className="dropdown">
+                        {this.dateTypes[this.state.dateType]}
                     </Dropdown.Toggle>
 
-                    <Dropdown.Menu>
-                        <Dropdown.Item onClick={this.DateTypesChanged}>{this.dateTypes[0]}</Dropdown.Item>
-                        <Dropdown.Item onClick={this.DateTypesChanged}>{this.dateTypes[1]}</Dropdown.Item>
+                    <Dropdown.Menu >
+                        <Dropdown.Item onSelect={() => this.DateTypesChanged(0)}>{this.dateTypes[0]}</Dropdown.Item>
+                        <Dropdown.Item onSelect={() => this.DateTypesChanged(1)}>{this.dateTypes[1]}</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
-
+                {/*
                 <select id="DateTypes" name="DateTypes" onChange={this.DateTypesChanged}>
                     <option value="SpecificDates">{this.dateTypes[0]}</option>
                     <option value="DaysOfTheWeek">{this.dateTypes[1]}</option>
-                </select>
-
+                </select>*/}
                 <br/>
                 <br/>
 
@@ -139,8 +145,13 @@ class Setup1Page extends Component{
         );
     }
 
-    DateTypesChanged() {
+    DateTypesChanged(newType) {
         console.log('Date type changed')
+        console.log('current: ' + this.state.dateType)
+        console.log('new: ' + newType)
+        if (this.state.dateType !== newType){
+            this.setState({dateType:newType});
+        }
     }
 
     TimeRangeChanged() {
