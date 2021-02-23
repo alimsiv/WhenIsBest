@@ -19,8 +19,8 @@
     border-bottom: 1px solid #dddddd;
 }
 
-.styled-table tbody tr:nth-of-type(even) {
-    background-color: #f3f3f3;
+col:first-child {
+    background: #FF0
 }
 
 .styled-table tbody tr:last-of-type {
@@ -30,3 +30,9 @@
     font-weight: bold;
     color: #101043;
 }
+
+/*
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+ */

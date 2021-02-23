@@ -8,29 +8,25 @@ const AddHeaderTitle = ({title}) => {
     );
 }
 
-const AddTimeSlot = ({time, cols}) => {
-    return(
-        <tr>
-            <td>{time}</td>
-            {cols.map(() => <td/>)}
-        </tr>
-    );
-}
-
-
-const TimeSlotElement = ({headerTitles, times}) => {
-    console.log('Times: '+ times)
+const TimeSlotElement = ({time, cols}) => {
     return (
         <>
-            <thead>
-                <tr>
-                    <th/>
-                    {headerTitles.map(title => <AddHeaderTitle title={title}/>)}
-                </tr>
-            </thead>
-            <tbody>
-                {times && times.map(time => <AddTimeSlot time={time} cols={headerTitles}/>)}
-            </tbody>
+            <tr>
+                <td>{time}</td>
+                {cols.map(() => <td/>)}
+            </tr>
+            <tr>
+                <td/>
+                {cols.map(() => <td/>)}
+            </tr>
+            <tr>
+                <td/>
+                {cols.map(() => <td/>)}
+            </tr>
+            <tr>
+                <td/>
+                {cols.map(() => <td/>)}
+            </tr>
         </>
     );
 }
@@ -39,7 +35,15 @@ const TimeSlotTable = ({headerTitles, times}) => {
     return (
         <div className="TimeSlotTable">
             <table className="styled-table">
-                <TimeSlotElement headerTitles={headerTitles} times={times}/>
+                <thead>
+                    <tr>
+                        <th/>
+                        {headerTitles.map(title => <AddHeaderTitle title={title}/>)}
+                    </tr>
+                </thead>
+                <tbody>
+                    {times && times.map(time => <TimeSlotElement time={time} cols={headerTitles}/>)}
+                </tbody>
             </table>
         </div>
     );

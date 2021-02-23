@@ -6,6 +6,8 @@ import TimeSlotTable from "../shared/TimeSlotTable";
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import '../styling/Setup1Page.css';
+import DayPicker, { DateUtils } from 'react-day-picker';
+import 'react-day-picker/lib/style.css';
 
 
 
@@ -15,10 +17,49 @@ class Setup1Page extends Component{
 
     constructor(props) {
         super(props);
-        //0 for Specific Dates, 1 for Days of the Week
+
+        this.handleMonthViewDaySelected = this.handleMonthViewDaySelected.bind(this);
+        this.handleDateTypesChanged = this.handleDateTypesChanged.bind(this);
+        this.handleTimeRangeChanged = this.handleTimeRangeChanged.bind(this);
+        this.handleCreateEvent = this.handleCreateEvent.bind(this);
+
         this.state = {
-            dateType: 0
+            //0 for Specific Dates, 1 for Days of the Week
+            dateType: 0,
+            selectedDays: []
         }
+    }
+
+    handleMonthViewDaySelected(day, {selected}) {
+        const {selectedDays} = this.state;
+
+        if (selected) {
+            const selectedIndex = selectedDays.findIndex(selectedDay =>
+                DateUtils.isSameDay(selectedDay, day)
+            );
+            selectedDays.splice(selectedIndex, 1);
+        } else {
+            selectedDays.push(day);
+        }
+        this.setState({selectedDays});
+        console.log(this.state.selectedDays)
+    }
+
+    handleDateTypesChanged(newType) {
+        console.log('Date type changed')
+        console.log('current: ' + this.state.dateType)
+        console.log('new: ' + newType)
+        if (this.state.dateType !== newType){
+            this.setState({dateType:newType});
+        }
+    }
+
+    handleTimeRangeChanged() {
+        console.log('Time range changed')
+    }
+
+    handleCreateEvent() {
+        console.log('Event created')
     }
 
     // Top portion: name input and create button
@@ -29,11 +70,12 @@ class Setup1Page extends Component{
                     <input id="event-name-input" type="text" className="form-control" placeholder="Event Name"/>
                 </form>
 
-                <button id="create-event-button" onClick={this.CreateEvent}>Create Event</button>
+                <button id="create-event-button" onClick={this.handleCreateEvent}>Create Event</button>
             </div>
         );
     }
 
+    // Right side: Time input
     TimeRangeInput() {
         return (
             <>
@@ -60,16 +102,23 @@ class Setup1Page extends Component{
         );
     }
 
-    // Week or Month view
+    // Left side: Week or Month view
     DateView() {
         if (this.state.dateType === 0){
             // Month View
             console.log('DateView: month view')
             return (
                 //TODO: set to users local calendarType?
+                /*
                 <Calendar className="month-calendar" calendarType="US" defaultView="month"
-                          onClickDay={(value) => console.log('New date is: ' + value)}>
+                          onClickDay={(value) => this.handleMonthViewDaySelected(value)}>
                 </Calendar>
+
+                 */
+                <DayPicker
+                    selectedDays={this.state.selectedDays}
+                    onDayClick={this.handleMonthViewDaySelected}
+                />
 
             );
         }
@@ -94,8 +143,8 @@ class Setup1Page extends Component{
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu >
-                        <Dropdown.Item onSelect={() => this.DateTypesChanged(0)}>{this.dateTypes[0]}</Dropdown.Item>
-                        <Dropdown.Item onSelect={() => this.DateTypesChanged(1)}>{this.dateTypes[1]}</Dropdown.Item>
+                        <Dropdown.Item onSelect={() => this.handleDateTypesChanged(0)}>{this.dateTypes[0]}</Dropdown.Item>
+                        <Dropdown.Item onSelect={() => this.handleDateTypesChanged(1)}>{this.dateTypes[1]}</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
                 {/*
@@ -121,12 +170,12 @@ class Setup1Page extends Component{
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                        <Dropdown.Item onClick={this.TimeRangeChanged}>Work-day hours (8-5)</Dropdown.Item>
-                        <Dropdown.Item onClick={this.TimeRangeChanged}>All-day (7-11)</Dropdown.Item>
+                        <Dropdown.Item onClick={this.handleTimeRangeChanged}>Work-day hours (8-5)</Dropdown.Item>
+                        <Dropdown.Item onClick={this.handleTimeRangeChanged}>All-day (7-11)</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
 
-                <select id="TimeRange" name="TimeRange" onChange={this.TimeRangeChanged}>
+                <select id="TimeRange" name="TimeRange" onChange={this.handleTimeRangeChanged}>
                     <option value="WorkDay">Work-day hours (8-5)</option>
                     <option value="AllDay">All-day (7-11)</option>
                 </select>
@@ -145,22 +194,7 @@ class Setup1Page extends Component{
         );
     }
 
-    DateTypesChanged(newType) {
-        console.log('Date type changed')
-        console.log('current: ' + this.state.dateType)
-        console.log('new: ' + newType)
-        if (this.state.dateType !== newType){
-            this.setState({dateType:newType});
-        }
-    }
 
-    TimeRangeChanged() {
-        console.log('Time range changed')
-    }
-
-    CreateEvent() {
-        console.log('Event created')
-    }
 
     render() {
         return (
