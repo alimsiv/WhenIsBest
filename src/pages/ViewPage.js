@@ -11,13 +11,18 @@ class ViewPage extends Component{
         super(props);
         //0 for Specific Dates, 1 for Days of the Week
         this.state = {
+            dateTimes: [[new Date(2021, 1, 22), ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]],
+                        [new Date(2021, 1, 26), ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]],
+                        [new Date(2021, 1, 27), ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]]],
             dates: [new Date(2021, 1, 22),new Date(2021, 1, 25),new Date(2021, 1, 28)],
             /*times: [[new Date(2021, 1, 22, 8, 0), new Date(2021, 1, 22, 16, 0)],
                 [new Date(2021, 1, 26, 8, 0), new Date(2021, 1, 27, 16, 0)],
                 [new Date(2021, 1, 26, 8, 0), new Date(2021, 1, 27, 16, 0)]],*/
-            times: ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"],
+            times: [["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"], ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"], ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]],
             //times: [[new Date()], "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]
-            timezoneOffset: 0
+            timezoneOffset: 0,
+            minStartTime: 0, //The earliest time slot for the range of dates/days chosen
+            maxStopTime: 0, //The latest time slot for the range of dates/days chosen
         }
     }
 
@@ -31,13 +36,14 @@ class ViewPage extends Component{
 
 
     render() {
+
         return (
             <div className="ViewPage">
                 <NavigationBar/>
                 <h1>View Page</h1>
 
                 <div className="flex">
-                    <TimeSlotTable dates={this.state.dates} times={this.state.times}/>
+                    <TimeSlotTable dates={this.state.dates} times={this.state.times} minStartTime={this.state.minStartTime} maxEndTime={this.state.maxEndTime}/>
                 </div>
 
 

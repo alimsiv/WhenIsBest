@@ -44,6 +44,7 @@ class Setup1Page extends Component{
         }
         this.setState({selectedDays});
         console.log(this.state.selectedDays)
+        console.log(selectedDays.to)
     }
 
     handleDateTypesChanged(newType) {
@@ -71,7 +72,7 @@ class Setup1Page extends Component{
                     <input id="event-name-input" type="text" className="form-control" placeholder="Event Name"/>
                 </form>
 
-                <button id="create-event-button" onClick={this.handleCreateEvent}>Create Event</button>
+                <button id="create-event-button" onClick={this.handleCreateEvent}>Continue</button>
             </div>
         );
     }
