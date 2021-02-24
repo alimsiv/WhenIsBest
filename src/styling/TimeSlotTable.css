@@ -15,9 +15,15 @@
 .styled-table td {
     padding: 12px 15px;
 }
+
+.styled-table tbody td {
+    border-right: 1px solid #dddddd;
+}
+/*
 .styled-table tbody tr {
     border-bottom: 1px solid #dddddd;
 }
+ */
 
 col:first-child {
     background: #FF0
@@ -31,8 +37,19 @@ col:first-child {
     color: #101043;
 }
 
-/*
+th {
+    text-align: center;
+}
+
+.timeslotHour {
+    border-top: 1px solid #dddddd;
+}
+
+.timeslotClickable:hover {
+    background-color: #71c9e2;
+}
+
+
 .styled-table tbody tr:nth-of-type(even) {
     background-color: #f3f3f3;
 }
- */

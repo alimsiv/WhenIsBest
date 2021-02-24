@@ -26,7 +26,8 @@ class Setup1Page extends Component{
         this.state = {
             //0 for Specific Dates, 1 for Days of the Week
             dateType: 0,
-            selectedDays: []
+            selectedDays: [],
+            timezoneOffset: 0 //getTimeZoneOffset, opposite sign, time in minutes (NY=-540)
         }
     }
 

@@ -1,48 +1,61 @@
 import '../styling/TimeSlotTable.css';
 
-const AddHeaderTitle = ({title}) => {
+const AddHeaderDate = ({date}) => {
+    const options = { weekday: 'long', month: 'long', day: 'numeric' };
+    const dateString = date.toLocaleDateString(undefined, options).split(',')
     return(
-        <th key={title}>
-            {title}
+        //Key is Unix time (milliseconds)
+        //Title is day of the week, and then Month and Date
+        <th key={date.getTime()}>
+            {dateString[0]}
+            <br/>
+            {dateString[1]}
         </th>
     );
+}
+
+const handleTimeSlotClicked = (time) => {
+    console.log("Clicked: " + time.toString())
 }
 
 const TimeSlotElement = ({time, cols}) => {
     return (
         <>
-            <tr>
+            <tr className="timeslotHour">
                 <td>{time}</td>
-                {cols.map(() => <td/>)}
+                {cols.map((col) => <td key={col.getTime() + ":" + time}
+                                       className="timeslotClickable"
+                                       onClick={() => handleTimeSlotClicked(time)}/>)}
             </tr>
-            <tr>
+
+            {/*<tr className="timeslot">
                 <td/>
                 {cols.map(() => <td/>)}
             </tr>
-            <tr>
+            <tr className="timeslot">
                 <td/>
                 {cols.map(() => <td/>)}
             </tr>
-            <tr>
+            <tr className="timeslot">
                 <td/>
                 {cols.map(() => <td/>)}
-            </tr>
+            </tr>*/}
         </>
     );
 }
 
-const TimeSlotTable = ({headerTitles, times}) => {
+const TimeSlotTable = ({dates, times}) => {
     return (
         <div className="TimeSlotTable">
             <table className="styled-table">
                 <thead>
                     <tr>
                         <th/>
-                        {headerTitles.map(title => <AddHeaderTitle title={title}/>)}
+                        {dates.map(date => <AddHeaderDate date={date}/>)}
                     </tr>
                 </thead>
                 <tbody>
-                    {times && times.map(time => <TimeSlotElement time={time} cols={headerTitles}/>)}
+                    {times && times.map(time => <TimeSlotElement time={time} cols={dates}/>)}
                 </tbody>
             </table>
         </div>
@@ -52,20 +65,12 @@ const TimeSlotTable = ({headerTitles, times}) => {
 export default TimeSlotTable;
 
 /*
-<thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Points</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Dom</td>
-                    <td>6000</td>
-                </tr>
-                <tr className="active-row">
-                    <td>Melissa</td>
-                    <td>5150</td>
-                </tr>
-                </tbody>
+<div id="GroupTime1603281600" data-col="1" data-row="0" data-time="1603281600"
+        onmouseover="ShowSlot(1603281600);"
+        onmouseout="RestoreLeftSide(event);"
+        ontouchstart="ShowSlotByTouch(event);"
+        ontouchmove="ShowSlotByTouchMove(event);"
+        ontouchend="RestoreLeftSide(event);"
+        class="time-slot">
+      </div>
  */

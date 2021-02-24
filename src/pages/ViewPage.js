@@ -11,11 +11,22 @@ class ViewPage extends Component{
         super(props);
         //0 for Specific Dates, 1 for Days of the Week
         this.state = {
-            //headerTitles: ["Sun","Mon","Tues","Wed","Thurs","Fri","Sun"],
-            //headerTitles: [Wed Feb 10 2021 12:00:00 GMT-0500 (hora estándar oriental), Tue Feb 09 2021 12:00:00 GMT-0500 (hora estándar oriental), Tue Feb 16 2021 12:00:00 GMT-0500 (hora estándar oriental), Fri Feb 12 2021 12:00:00 GMT-0500 (hora estándar oriental), Fri Feb 19 2021 12:00:00 GMT-0500 (hora estándar oriental)],
-            headerTitles: [new Date(2021, 1, 22),new Date(2021, 1, 25),new Date(2021, 1, 28)],
-            times: ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]
+            dates: [new Date(2021, 1, 22),new Date(2021, 1, 25),new Date(2021, 1, 28)],
+            /*times: [[new Date(2021, 1, 22, 8, 0), new Date(2021, 1, 22, 16, 0)],
+                [new Date(2021, 1, 26, 8, 0), new Date(2021, 1, 27, 16, 0)],
+                [new Date(2021, 1, 26, 8, 0), new Date(2021, 1, 27, 16, 0)]],*/
+            times: ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"],
+            //times: [[new Date()], "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]
+            timezoneOffset: 0
         }
+    }
+
+    AdjustTimezone() {
+        const seoul = new Date(1489199400000);
+        const ny = new Date(1489199400000 - ((this.state.timezoneOffset-seoul.getTimezoneOffset()) * 60 * 1000));
+
+        console.log(Date.formatDate(seoul));  // 2017/3/11 11:30
+        console.log(Date.formatDate(ny));     // 2017/3/10 21:30
     }
 
 
@@ -25,7 +36,9 @@ class ViewPage extends Component{
                 <NavigationBar/>
                 <h1>View Page</h1>
 
-                <TimeSlotTable headerTitles={this.state.headerTitles} times={this.state.times}/>
+                <div className="flex">
+                    <TimeSlotTable dates={this.state.dates} times={this.state.times}/>
+                </div>
 
 
             </div>
