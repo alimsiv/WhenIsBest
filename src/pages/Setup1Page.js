@@ -73,7 +73,12 @@ class Setup1Page extends Component{
                     <input id="event-name-input" type="text" className="form-control" placeholder="Event Name"/>
                 </form>
 
-                <button id="create-event-button" onClick={() => history.push('/Setup2Page')}>Continue</button>
+                <button id="create-event-button" onClick={() => history.push({
+                                                            pathname: '/Setup2Page',
+                                                            //pass things through state
+                                                            state: {day: 12,
+                                                                    hour: 16}
+                                                            })}>Continue</button>
             </div>
         );
     }
