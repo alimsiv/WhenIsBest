@@ -1,4 +1,5 @@
-import { Component } from 'react'
+import { Component, Text, View } from 'react'
+import { Button } from '@material-ui/core';
 import {Dropdown, Nav, Navbar} from 'react-bootstrap'
 import NavigationBar from '../shared/NavigationBar'
 import TimezoneDropdown from "../shared/TimezoneDropdown";
@@ -9,12 +10,15 @@ import '../styling/Setup1Page.css';
 import history from './../history'
 import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
+import TableDragSelect from "react-table-drag-select";
+
 
 
 
 class Setup1Page extends Component{
     dateTypes = ["Specific Dates", "Days of the Week"];
-
+    state = {
+        mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false};
 
     constructor(props) {
         super(props);
@@ -110,6 +114,28 @@ class Setup1Page extends Component{
         );
     }
 
+
+    changeMon = () => {
+        this.setState({mon: (!this.state.mon)});
+    }
+    changeTue = () => {
+        this.setState({tue: (!this.state.tue)});
+    }
+    changeWed = () => {
+        this.setState({wed: (!this.state.wed)});
+    }
+    changeThu = () => {
+        this.setState({thu: (!this.state.thu)});
+    }
+    changeFri = () => {
+        this.setState({fri: (!this.state.fri)});
+    }
+    changeSat = () => {
+        this.setState({sat: (!this.state.sat)});
+    }
+    changeSun = () => {
+        this.setState({sun: (!this.state.sun)});
+    }
     // Left side: Week or Month view
     DateView() {
         if (this.state.dateType === 0){
@@ -134,9 +160,33 @@ class Setup1Page extends Component{
             //Week View
             console.log('DateView: week view')
             return(
-                <TimeSlotTable headerTitles={["Sun","Mon","Tues","Wed","Thurs","Fri","Sun"]} times={[""]}/>
-            );
-
+                <>
+                <Button variant="contained" color={this.state.mon
+                            ? "Primary"
+                            : "Secondary"} onClick={this.changeMon}>Mon </Button>
+                <Button variant="contained" color={this.state.tue
+                            ? "Primary"
+                            : "Secondary"} onClick={this.changeTue}>Tue </Button>
+                <Button variant="contained" color={this.state.wed
+                            ? "Primary"
+                            : "Secondary"} onClick={this.changeWed}>Wed </Button>
+                <Button variant="contained" color={this.state.thu
+                            ? "Primary"
+                            : "Secondary"} onClick={this.changeThu}>Thu </Button>
+                <Button variant="contained" color={this.state.fri
+                            ? "Primary"
+                            : "Secondary"} onClick={this.changeFri}>Fri </Button>
+                <Button variant="contained" color={this.state.sat
+                            ? "Primary"
+                            : "Secondary"} onClick={this.changeSat}>Sat </Button>
+                <Button variant="contained" color={this.state.sun
+                            ? "Primary"
+                            : "Secondary"} onClick={this.changeSun}>Sun </Button>
+                
+ 
+                </>
+                //<TimeSlotTable dates={["Sun","Mon","Tues","Wed","Thurs","Fri","Sun"]} times={[""]}/>
+                  );
 
         }
     }
