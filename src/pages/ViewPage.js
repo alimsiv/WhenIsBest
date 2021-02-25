@@ -39,7 +39,6 @@ class ViewPage extends Component{
 
         return (
             <div className="ViewPage">
-                <NavigationBar/>
                 <h1>View Page</h1>
 
                 <div className="flex">

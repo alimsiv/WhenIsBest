@@ -8,7 +8,6 @@ class HomePage extends Component{
     render() {
         return (
             <div className="HomePage">
-                <NavigationBar></NavigationBar>
 
                 <h1>Home Page</h1>
                 <img src={logo} className="App-logo" alt="logo"/>

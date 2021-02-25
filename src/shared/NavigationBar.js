@@ -1,4 +1,5 @@
 import {Nav, Navbar, NavDropdown, Form, FormControl, Button} from 'react-bootstrap'
+import { withRouter } from 'react-router-dom';
 
 const NavigationBar = () => {
     return (
@@ -26,4 +27,4 @@ const NavigationBar = () => {
     );
 }
 
-export default NavigationBar;
+export default withRouter(NavigationBar);

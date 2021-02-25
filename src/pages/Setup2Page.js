@@ -8,7 +8,6 @@ class Setup2Page extends Component{
     render() {
         return (
             <div className="Setup2Page">
-                <NavigationBar></NavigationBar>
                 <h1>Setup2 Page</h1>
 
                 <div className="time_table">

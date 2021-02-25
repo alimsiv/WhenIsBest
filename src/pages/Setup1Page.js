@@ -6,6 +6,7 @@ import TimeSlotTable from "../shared/TimeSlotTable";
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import '../styling/Setup1Page.css';
+import history from './../history'
 import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 
@@ -72,7 +73,7 @@ class Setup1Page extends Component{
                     <input id="event-name-input" type="text" className="form-control" placeholder="Event Name"/>
                 </form>
 
-                <button id="create-event-button" onClick={this.handleCreateEvent}>Continue</button>
+                <button id="create-event-button" onClick={() => history.push('/Setup2Page')}>Continue</button>
             </div>
         );
     }
@@ -201,7 +202,6 @@ class Setup1Page extends Component{
     render() {
         return (
             <div className="Setup1Page">
-                <NavigationBar/>
                 <h1>Setup1 Page</h1>
 
                 <br/>
