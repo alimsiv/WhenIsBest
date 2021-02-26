@@ -17,8 +17,6 @@ import TableDragSelect from "react-table-drag-select";
 
 class Setup1Page extends Component{
     dateTypes = ["Specific Dates", "Days of the Week"];
-    state = {
-        mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false};
 
     constructor(props) {
         super(props);
@@ -31,6 +29,8 @@ class Setup1Page extends Component{
         this.state = {
             //0 for Specific Dates, 1 for Days of the Week
             dateType: 0,
+            start: 8, end: 5, 
+            mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false,
             selectedDays: [],
             timezoneOffset: 0 //getTimeZoneOffset, opposite sign, time in minutes (NY=-540)
         }
@@ -61,8 +61,14 @@ class Setup1Page extends Component{
         }
     }
 
-    handleTimeRangeChanged() {
+    handleTimeRangeChanged(newStart,newEnd) {
         console.log('Time range changed')
+        if (this.state.start !== newStart){
+            this.setState({start:newStart});
+        }
+        if (this.state.end !== newEnd){
+            this.setState({end:newEnd});
+        }
     }
 
     handleCreateEvent() {
@@ -77,12 +83,23 @@ class Setup1Page extends Component{
                     <input id="event-name-input" type="text" className="form-control" placeholder="Event Name"/>
                 </form>
 
-                <button id="create-event-button" onClick={() => history.push({
-                                                            pathname: '/Setup2Page',
+                <button id="create-event-button" onClick={() => {
+                                                        if(this.state.dateType){
+                                                            var days = [this.state.mon,this.state.tue,this.state.wed,this.state.thu,this.state.fri,this.state.sat,this.state.sun]
+                                                        }
+                                                        else{
+                                                            //make days the calander feild
+                                                            var days = this.state.selectedDays
+                                                        }
+                                                        history.push({ 
+                                                            pathname: '/Setup2',
                                                             //pass things through state
-                                                            state: {day: 12,
-                                                                    hour: 16}
-                                                            })}>Continue</button>
+                                                            state: {days: days,
+                                                                    type: this.state.dateType, 
+                                                                    start: this.state.start,
+                                                                    end: this.state.end
+                                                            }
+                                                            })}}>Continue</button>
             </div>
         );
     }
@@ -138,7 +155,7 @@ class Setup1Page extends Component{
     }
     // Left side: Week or Month view
     DateView() {
-        if (this.state.dateType === 0){
+        if (!this.state.dateType){
             // Month View
             console.log('DateView: month view')
             return (
@@ -228,15 +245,15 @@ class Setup1Page extends Component{
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                        <Dropdown.Item onClick={this.handleTimeRangeChanged}>Work-day hours (8-5)</Dropdown.Item>
-                        <Dropdown.Item onClick={this.handleTimeRangeChanged}>All-day (7-11)</Dropdown.Item>
+                        <Dropdown.Item  onSelect={() => this.handleTimeRangeChanged(8,17)}>Work-day hours (8-5)</Dropdown.Item>
+                        <Dropdown.Item  onSelect={() => this.handleTimeRangeChanged(7,23)}>All-day (7-11)</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
 
-                <select id="TimeRange" name="TimeRange" onChange={this.handleTimeRangeChanged}>
+                {/* <select id="TimeRange" name="TimeRange" onChange={this.handleTimeRangeChanged}>
                     <option value="WorkDay">Work-day hours (8-5)</option>
                     <option value="AllDay">All-day (7-11)</option>
-                </select>
+                </select> */}
 
                 <br/>
                 <br/>

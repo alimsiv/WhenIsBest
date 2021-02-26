@@ -14,7 +14,7 @@ export default class Routes extends Component {
                 <Switch>
                     <Route exact path="/" component={ HomePage }/>
                     <Route exact path="/setup1" component={ Setup1Page }/>
-                    <Route exact path="/Setup2Page" component={ Setup2Page }/>
+                    <Route exact path="/Setup2" component={ Setup2Page }/>
                     <Route exact path="/view" component={ ViewPage }/>
                     <Route component={Error} />
                 </Switch>
