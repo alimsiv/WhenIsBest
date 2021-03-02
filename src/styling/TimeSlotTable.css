@@ -49,6 +49,21 @@ th {
     background-color: #71c9e2;
 }
 
+.timeslotUnavailable {
+    background-color: #000000;
+}
+
+.timeslotHourTitleCell {
+    vertical-align:top;
+    display:inline-block;
+    *display:inline;
+    height: 30px;
+    width:70px;
+    font-size:11px;
+    margin-top: 0px;
+    background-color: #282c34;
+    color: white;
+}
 
 .styled-table tbody tr:nth-of-type(even) {
     background-color: #f3f3f3;

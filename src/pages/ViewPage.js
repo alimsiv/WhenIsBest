@@ -19,9 +19,11 @@ class ViewPage extends Component{
                 [new Date(2021, 1, 26, 8, 0), new Date(2021, 1, 27, 16, 0)],
                 [new Date(2021, 1, 26, 8, 0), new Date(2021, 1, 27, 16, 0)]],*/
             times: [["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"], ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"], ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]],
+            showTimeSlot: [[true, true, true], [false, true, true], [false, true, true], [false, true, true], [true, true, false], [true, true, true], [true, true, true], [true, true, true], [true, true, true], [true, true, true], [true, true, true]],
             //times: [[new Date()], "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]
             timezoneOffset: 0,
-            minStartTime: 0, //The earliest time slot for the range of dates/days chosen
+            minStartTime: 540, //The earliest time slot for the range of dates/days chosen (minutes since midnight)
+            // Moment('14:00:00', 'HH:mm:ss')
             maxStopTime: 0, //The latest time slot for the range of dates/days chosen
         }
     }
@@ -42,7 +44,7 @@ class ViewPage extends Component{
                 <h1>View Page</h1>
 
                 <div className="flex">
-                    <TimeSlotTable dates={this.state.dates} times={this.state.times} minStartTime={this.state.minStartTime} maxEndTime={this.state.maxEndTime}/>
+                    <TimeSlotTable dates={this.state.dates} times={this.state.times} showTimeSlot={this.state.showTimeSlot} minStartTime={this.state.minStartTime} maxEndTime={this.state.maxEndTime}/>
                 </div>
 
 
