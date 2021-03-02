@@ -25,10 +25,6 @@
 }
  */
 
-col:first-child {
-    background: #FF0
-}
-
 .styled-table tbody tr:last-of-type {
     border-bottom: 2px solid #101043;
 }
@@ -45,12 +41,22 @@ th {
     border-top: 1px solid #dddddd;
 }
 
-.timeslotClickable:hover {
+.timeslotClickable:hover,
+.timeslotClickableHour:hover,
+.timeslotClickableHalfHour:hover{
     background-color: #71c9e2;
 }
 
-.timeslotUnavailable {
-    background-color: #000000;
+.timeslotClickableHour{
+    border-top: 2px solid #282c34;
+}
+
+.timeslotClickableHalfHour{
+    border-top: 1px dotted #51535a;
+}
+
+.timeslotUnavailable{
+    background-color: #282c34;
 }
 
 .timeslotHourTitleCell {
