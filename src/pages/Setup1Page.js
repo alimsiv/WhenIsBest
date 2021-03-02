@@ -6,7 +6,7 @@ import TimezoneDropdown from "../shared/TimezoneDropdown";
 import TimeSlotTable from "../shared/TimeSlotTable";
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
-import '../styling/Setup1Page.css';
+import '../styling/styles.css';
 import history from './../history'
 import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
