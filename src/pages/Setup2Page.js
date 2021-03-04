@@ -7,14 +7,36 @@ import TimeSlotTable from "../shared/TimeSlotTable";
 
 class Setup2Page extends Component{
     
+    startAndEndStuff(){
+        const state = this.props.location.state 
+        var stSplit = state.start.split(':');
+        var sthr = parseInt(stSplit[0]);
+        var stmin = parseInt(stSplit[1]);
+
+        var endSplit = state.end.split(':');
+        var endhr = parseInt(endSplit[0]);
+        var endmin = parseInt(endSplit[1]);
+
+        var timeslots = (endhr - sthr) * 4;
+        timeslots += Math.ceil((endmin - stmin) / 15);
+
+        var minStart = sthr * 60 + (Math.ceil(stmin / 15) *15)
+
+        return [timeslots,minStart]
+    }
+
+
     daysofweekMode() {
         const state = this.props.location.state 
         var weekdays = ["Monday","Tuesday","Wednesday","Thursday", "Friday", "Saturday", "Sunday"]
         var days = [];
         var innerArr = [];
         const showTimeSlot = [];
-        var timeslots = (state.end - state.start) * 4; //number of 15 min timeslots we need (will need to change to account for minutes)
+        //var timeslots = (state.end - state.start) * 4; //number of 15 min timeslots we need (will need to change to account for minutes)
 
+        var timeStuff = this.startAndEndStuff();
+        var minStart = timeStuff[1];
+        var timeslots = timeStuff[0];
         //translates true/false format into days of week
         for(var i = 0; i < 7;i++){
             if(state.days[i]){
@@ -34,7 +56,7 @@ class Setup2Page extends Component{
 
         return(    
             <> 
-                <TimeSlotTable type = {state.type} dates={days} showTimeSlot={showTimeSlot} minStartTime={state.start*60}/>
+                <TimeSlotTable type = {state.type} dates={days} showTimeSlot={showTimeSlot} minStartTime={minStart}/>
             </>
         );
     }

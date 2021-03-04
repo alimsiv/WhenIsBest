@@ -10,6 +10,7 @@ import '../styling/styles.css';
 import history from './../history'
 import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
+import TimePicker from 'react-time-picker';
 import TableDragSelect from "react-table-drag-select";
 
 
@@ -24,12 +25,14 @@ class Setup1Page extends Component{
         this.handleMonthViewDaySelected = this.handleMonthViewDaySelected.bind(this);
         this.handleDateTypesChanged = this.handleDateTypesChanged.bind(this);
         this.handleTimeRangeChanged = this.handleTimeRangeChanged.bind(this);
+        this.handleTimeRangeStartChanged = this.handleTimeRangeStartChanged.bind(this);
+        this.handleTimeRangeEndChanged = this.handleTimeRangeEndChanged.bind(this);
         this.handleCreateEvent = this.handleCreateEvent.bind(this);
 
         this.state = {
             //0 for Specific Dates, 1 for Days of the Week
             dateType: 0,
-            start: 8, end: 17, 
+            start: '8:00', end: '17:00', 
             mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false,
             selectedDays: [],
             timezoneOffset: 0 //getTimeZoneOffset, opposite sign, time in minutes (NY=-540)
@@ -66,6 +69,20 @@ class Setup1Page extends Component{
         if (this.state.start !== newStart){
             this.setState({start:newStart});
         }
+        if (this.state.end !== newEnd){
+            this.setState({end:newEnd});
+        }
+    }
+
+    handleTimeRangeStartChanged(newStart) {
+        console.log('Time range changed')
+        if (this.state.start !== newStart){
+            this.setState({start:newStart});
+        }
+    }
+
+    handleTimeRangeEndChanged(newEnd) {
+        console.log('Time range changed')
         if (this.state.end !== newEnd){
             this.setState({end:newEnd});
         }
@@ -115,17 +132,16 @@ class Setup1Page extends Component{
                         <small>From:  </small>
                     </div>
                     <div className="flex-child">
-                        <form>
+                        {/* <form>
                             <input id="time-range-start" type="time" className="form-control" placeholder="From" value="8:00am"/>
-                        </form>
+                        </form> */}
+                        <TimePicker onChange={value => this.handleTimeRangeStartChanged(value)} value={this.state.start} />
                     </div>
                     <div className="flex-child">
                         <small>To:  </small>
                     </div>
                     <div className="flex-child">
-                        <form>
-                            <input id="time-range-end" type="time" className="form-control" placeholder="To" value="5:00pm"/>
-                        </form>
+                        <TimePicker onChange={value => this.handleTimeRangeEndChanged(value)} value={this.state.end} />
                     </div>
                 </div>
             </>
@@ -246,8 +262,8 @@ class Setup1Page extends Component{
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                        <Dropdown.Item  onSelect={() => this.handleTimeRangeChanged(8,17)}>Work-day hours (8-5)</Dropdown.Item>
-                        <Dropdown.Item  onSelect={() => this.handleTimeRangeChanged(7,23)}>All-day (7-11)</Dropdown.Item>
+                        <Dropdown.Item  onSelect={() => this.handleTimeRangeChanged('8:00','17:00')}>Work-day hours (8-5)</Dropdown.Item>
+                        <Dropdown.Item  onSelect={() => this.handleTimeRangeChanged('7:00','23:00')}>All-day (7-11)</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
 
