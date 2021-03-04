@@ -2,22 +2,39 @@ import { Component } from 'react'
 import {Table} from 'react-bootstrap'
 import NavigationBar from '../shared/NavigationBar'
 import history from './../history'
+import TimeSlotTable from "../shared/TimeSlotTable";
 
 
 class Setup2Page extends Component{
     
     daysofweekMode() {
         const state = this.props.location.state 
+        var weekdays = ["Monday","Tuesday","Wednesday","Thursday", "Friday", "Saturday", "Sunday"]
+        var days = [];
+        var innerArr = [];
+        const showTimeSlot = [];
+        var timeslots = (state.end - state.start) * 4; //number of 15 min timeslots we need (will need to change to account for minutes)
+
+        //translates true/false format into days of week
+        for(var i = 0; i < 7;i++){
+            if(state.days[i]){
+               days.push(weekdays[i]); 
+            }
+        }
+
+        //make an inner array with all true
+        for(var j = 0; j < days.length; j++){
+            innerArr.push(true);
+        }
+
+        //add an inner array to showTimeSlot for each timeslot
+        for(var i = 0; i < timeslots;i++ ){
+            showTimeSlot.push(innerArr);
+        }
+
         return(    
             <> 
-                <h1>Days Slected</h1>
-                <h2>{(state.type && state.days[0]) ? "mon" : ""}</h2>
-                <h2>{(state.type && state.days[1]) ? "tue" : ""}</h2>
-                <h2>{(state.type && state.days[2]) ? "wed" : ""}</h2>
-                <h2>{(state.type && state.days[3]) ? "thu" : ""}</h2>
-                <h2>{(state.type && state.days[4]) ? "fri" : ""}</h2>
-                <h2>{(state.type && state.days[5]) ? "sat" : ""}</h2>
-                <h2>{(state.type && state.days[6]) ? "sun" : ""}</h2>
+                <TimeSlotTable type = {state.type} dates={days} showTimeSlot={showTimeSlot} minStartTime={state.start*60}/>
             </>
         );
     }
@@ -26,7 +43,7 @@ class Setup2Page extends Component{
         const state = this.props.location.state 
         return(    
             <> 
-                {state.days.forEach(day => day)};
+                {state.days.forEach(day => day)}
             </>
         );
     }
@@ -40,6 +57,14 @@ class Setup2Page extends Component{
             return this.calanderMode();
         }
     }
+
+    groups(){
+        return(
+            <h2>priority/group stuff</h2>
+
+
+        )
+    }
     
     render() {
         //get things passed from the previous page
@@ -47,11 +72,15 @@ class Setup2Page extends Component{
         return (
             <div className="Setup2Page">
                 <h1>Setup2 Page</h1>
-                start:  {state.start} 
-                end:  {state.end}
-
-                <div className="time_table">
+                <div className="flex">
+                    <div className="flex-child">
+                        {
+                            //TODO: List of who has responded and sliders/checkmarks
+                        }
+                    </div>
+                <div className="flex-child"></div>
                     {this.timeTable()}
+                    {this.groups()}
                 </div>
                 <button onClick={() => {history.goBack()}}>Back</button>
                 <button onClick={() => {history.push({ 
