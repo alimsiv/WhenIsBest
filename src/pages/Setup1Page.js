@@ -101,23 +101,34 @@ class Setup1Page extends Component{
                 </form>
 
                 <button id="create-event-button" onClick={() => {
+                                                        var cango = false;
                                                         if(this.state.dateType){
                                                             
                                                             var days = [this.state.mon,this.state.tue,this.state.wed,this.state.thu,this.state.fri,this.state.sat,this.state.sun]
+                                                            if(!days.includes(true)){
+                                                                alert("you have not selected any days");
+                                                            }
+                                                            else{
+                                                                cango = true;
+                                                            }
                                                         }
                                                         else{
                                                             //make days the calander feild
-                                                            var days = this.state.selectedDays
+                                                            var days = this.state.selectedDays;
+                                                            cango = true;
                                                         }
-                                                        history.push({ 
-                                                            pathname: '/Setup2',
-                                                            //pass things through state
-                                                            state: {days: days,
-                                                                    type: this.state.dateType, 
-                                                                    start: this.state.start,
-                                                                    end: this.state.end
-                                                            }
-                                                            })}}>Continue</button>
+                                                        if(cango){
+                                                            history.push({ 
+                                                                pathname: '/Setup2',
+                                                                //pass things through state
+                                                                state: {days: days,
+                                                                        type: this.state.dateType, 
+                                                                        start: this.state.start,
+                                                                        end: this.state.end
+                                                                }
+                                                                })
+                                                        }
+                                                    }}>Continue</button>
             </div>
         );
     }

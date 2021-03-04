@@ -65,7 +65,7 @@ class Setup2Page extends Component{
         const state = this.props.location.state 
         return(    
             <> 
-                {state.days.forEach(day => day)}
+                Calander mode is not done yet. Go back and select days of week. 
             </>
         );
     }
