@@ -20,6 +20,24 @@ const AddHeaderDate = ({date}) => {
     );
 }
 
+/**
+ * Adds each table header to the top row of TimeSlotTable is the dates/days
+ * @param date
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const AddHeaderWeekDay = ({date}) => {
+    //const options = { weekday: 'long', month: 'long', day: 'numeric' };
+    //const dateString = date.toLocaleDateString(undefined, options).split(',') //Uses local OS language
+    return(
+        //Key is Unix time (milliseconds)
+        //Title is day of the week, and then Month and Date
+        <th key={date}>
+            {date}
+        </th>
+    );
+}
+
 const handleTimeSlotClicked = (time) => {
     console.log("Clicked: " + time);
 }
@@ -107,14 +125,14 @@ const TimeSlotCreateRows = (showTimeSlot, minStartTime) => {
 
 
 /** Creates the TimeSlotTable
- *
+ * @param type NEW if days of week or calander
  * @param dates Date objects for each date, which is translated into each column
  * @param showTimeSlot 2x2 Boolean array that is the total size of the table, with each boolean denoting whether or not that element is "available"
  * @param minStartTime Integer. The earliest time that the table should start, aka the first row. Minutes since midnight.
  * @returns {JSX.Element}
  * @constructor
  */
-const TimeSlotTable = ({dates, showTimeSlot, minStartTime}) => {
+const TimeSlotTable = ({type, dates, showTimeSlot, minStartTime}) => {
 
     return (
         <div className="TimeSlotTable">
@@ -122,7 +140,7 @@ const TimeSlotTable = ({dates, showTimeSlot, minStartTime}) => {
                 <thead>
                     <tr>
                         <th/>
-                        {dates.map((date) => <AddHeaderDate date={date}/>)}
+                        {type ? (dates.map((date) => <AddHeaderWeekDay date={date}/>)) : (dates.map((date) => <AddHeaderDate date={date}/>))}
                     </tr>
                 </thead>
                 {TimeSlotCreateRows(showTimeSlot,minStartTime)}

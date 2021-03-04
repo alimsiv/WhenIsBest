@@ -29,7 +29,7 @@ class Setup1Page extends Component{
         this.state = {
             //0 for Specific Dates, 1 for Days of the Week
             dateType: 0,
-            start: 8, end: 5, 
+            start: 8, end: 17, 
             mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false,
             selectedDays: [],
             timezoneOffset: 0 //getTimeZoneOffset, opposite sign, time in minutes (NY=-540)
@@ -85,6 +85,7 @@ class Setup1Page extends Component{
 
                 <button id="create-event-button" onClick={() => {
                                                         if(this.state.dateType){
+                                                            
                                                             var days = [this.state.mon,this.state.tue,this.state.wed,this.state.thu,this.state.fri,this.state.sat,this.state.sun]
                                                         }
                                                         else{
@@ -115,7 +116,7 @@ class Setup1Page extends Component{
                     </div>
                     <div className="flex-child">
                         <form>
-                            <input id="time-range-start" type="time" className="form-control" placeholder="From"/>
+                            <input id="time-range-start" type="time" className="form-control" placeholder="From" value="8:00am"/>
                         </form>
                     </div>
                     <div className="flex-child">
@@ -123,7 +124,7 @@ class Setup1Page extends Component{
                     </div>
                     <div className="flex-child">
                         <form>
-                            <input id="time-range-end" type="time" className="form-control" placeholder="To"/>
+                            <input id="time-range-end" type="time" className="form-control" placeholder="To" value="5:00pm"/>
                         </form>
                     </div>
                 </div>

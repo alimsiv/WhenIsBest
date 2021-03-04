@@ -12,6 +12,7 @@ class ViewPage extends Component{
         //0 for Specific Dates, 1 for Days of the Week
         this.state = {
             dates: [new Date(2021, 1, 22),new Date(2021, 1, 25),new Date(2021, 1, 28)],
+            weekdays: ["Monday","Tuesday","Wednesday"],
             showTimeSlot: [[true, true, true], [false, false, false], [false, true, true], [false, true, true], [true, true, false], [true, true, true], [true, true, true], [true, true, true], [true, true, true], [true, true, true], [true, true, true]],
             minStartTime: 540, //The earliest time slot for the range of dates/days chosen (minutes since midnight)
             timezoneOffset: 0,
@@ -53,7 +54,10 @@ class ViewPage extends Component{
                         }
                     </div>
                     <div className="flex-child">
-                        <TimeSlotTable dates={this.state.dates} showTimeSlot={this.state.showTimeSlot} minStartTime={this.state.minStartTime}/>
+                        {
+                        //<TimeSlotTable type = {0} dates={this.state.dates} showTimeSlot={this.state.showTimeSlot} minStartTime={this.state.minStartTime}/>
+                        }
+                        <TimeSlotTable type = {1} dates={this.state.weekdays} showTimeSlot={this.state.showTimeSlot} minStartTime={this.state.minStartTime}/>
                     </div>
                 </div>
 
