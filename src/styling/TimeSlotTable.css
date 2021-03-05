@@ -37,10 +37,6 @@ th {
     text-align: center;
 }
 
-.timeslotHour {
-    border-top: 1px solid #dddddd;
-}
-
 .timeslotClickable:hover,
 .timeslotClickableHour:hover,
 .timeslotClickableHalfHour:hover{

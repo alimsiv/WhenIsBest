@@ -10,12 +10,25 @@ import {Component} from "react";
  * @constructor
  */
 class TimeSlotTable extends Component {
+    response = this.initialResponseMatrix();
 
     constructor(props) {
         super(props);
+
+        this.handleTimeSlotClicked = this.handleTimeSlotClicked.bind(this);
+
         this.state = {
 
         }
+    }
+
+    initialResponseMatrix(){
+        const response = new Array(this.props.showTimeSlot.length);
+        const width = this.props.showTimeSlot[0].length;
+        for (let i = 0; i < response.length; i++){
+            response[i] = new Array(width).fill(false);
+        }
+        return response;
     }
 
     /**
@@ -45,6 +58,7 @@ class TimeSlotTable extends Component {
      * @constructor
      */
      AddHeaderWeekDay(date){
+        const DaysEnum = Object.freeze({"Sunday":0, "Monday":1, "Tuesday":2, "Wednesday":3, "Thursday":4, "Friday":5, "Saturday":6});
         //const options = { weekday: 'long', month: 'long', day: 'numeric' };
         //const dateString = date.toLocaleDateString(undefined, options).split(',') //Uses local OS language
         return (
@@ -56,9 +70,18 @@ class TimeSlotTable extends Component {
         );
     }
 
+    getMatrixLocation(id){
+        const parsedID = id.split(':'); //example: timeslot:0:540
+        const row = (parsedID[2] - this.props.minStartTime)/15;
+        return [row, parsedID[1]];
+    }
 
-    handleTimeSlotClicked(time){
-        console.log("Clicked: " + time);
+
+    handleTimeSlotClicked(id){
+        console.log("Clicked: " + id);
+        const location = this.getMatrixLocation(id);
+        this.response[location[0]][location[1]] = !this.response[location[0]][location[1]];
+        console.table(this.response);
     }
 
     /**
@@ -106,7 +129,7 @@ class TimeSlotTable extends Component {
                             return <td
                                 key={keyName}
                                 className={rowClassName}
-                                onClick={() => this.handleTimeSlotClicked(timestamp)}/>
+                                onClick={() => this.handleTimeSlotClicked(keyName)}/>
                         } else {
                             return <td
                                 key={keyName}
