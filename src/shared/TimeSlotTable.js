@@ -1,128 +1,5 @@
 import '../styling/TimeSlotTable.css';
-
-/**
- * Adds each table header to the top row of TimeSlotTable is the dates/days
- * @param date
- * @returns {JSX.Element}
- * @constructor
- */
-const AddHeaderDate = ({date}) => {
-    const options = { weekday: 'long', month: 'long', day: 'numeric' };
-    const dateString = date.toLocaleDateString(undefined, options).split(',') //Uses local OS language
-    return(
-        //Key is Unix time (milliseconds)
-        //Title is day of the week, and then Month and Date
-        <th key={date.getTime()}>
-            {dateString[0]}
-            <br/>
-            {dateString[1]}
-        </th>
-    );
-}
-
-/**
- * Adds each table header to the top row of TimeSlotTable is the dates/days
- * @param date
- * @returns {JSX.Element}
- * @constructor
- */
-const AddHeaderWeekDay = ({date}) => {
-    //const options = { weekday: 'long', month: 'long', day: 'numeric' };
-    //const dateString = date.toLocaleDateString(undefined, options).split(',') //Uses local OS language
-    return(
-        //Key is Unix time (milliseconds)
-        //Title is day of the week, and then Month and Date
-        <th key={date}>
-            {date}
-        </th>
-    );
-}
-
-const handleTimeSlotClicked = (time) => {
-    console.log("Clicked: " + time);
-}
-
-/**
- * Creates a tr (a table row) of the TimeSlotTable
- * @param timestamp Integer corresponding to the timestamp for that row. Minutes since midnight.
- * @param showTimeSlot Boolean array for this row, denoting which data cells should be available for users to click on
- * @returns {JSX.Element}
- * @constructor
- */
-const TimeSlotRow = (timestamp, showTimeSlot) => {
-    let title = "";
-    let rowClassName;
-
-    switch(timestamp % 60) {
-        case 0:
-            //if timestamp is an hour mark, add title
-            title = timestamp / 60;
-            title += (title < 12) ? ' AM' : ' PM';
-            rowClassName = 'timeslotClickableHour';
-            break;
-        case 30:
-            //if timestamp is on a half hour mark, change className for styling purposes
-            rowClassName = 'timeslotClickableHalfHour';
-            break;
-        default:
-            rowClassName = 'timeslotClickable';
-    }
-
-    //Counts which day (column) the cell is on. Used for creating key for cells.
-    let dayCount = 0;
-
-    return (
-        <>
-            <tr>
-                <td className="timeslotHourTitleCell">
-                    {title}
-                </td>
-                {showTimeSlot.map(show =>
-                    {
-                        const keyName = 'timeslot:' + dayCount + ':' + timestamp;
-                        dayCount++;
-
-                        if(show){
-                            //if the admin choose for this time to be available to be selected, make it clickable,
-                            // otherwise mark as unavailable slot and do not attach any event handlers
-                            return <td
-                                    key={keyName}
-                                    className={rowClassName}
-                                    onClick={() => handleTimeSlotClicked(timestamp)}/>
-                        }
-                        else {
-                            return <td
-                                    key={keyName}
-                                    className="timeslotUnavailable"/>
-                        }
-                    })}
-            </tr>
-        </>
-    );
-}
-
-/**
- * Creates the tbody of the TimeSlotTable. Goes through each 15-minute timeslot and creates the row for it
- * @param showTimeSlot See TimeSlotTable
- * @param minStartTime See TimeSlotTable
- * @returns {JSX.Element}
- * @constructor
- */
-const TimeSlotCreateRows = (showTimeSlot, minStartTime) => {
-    let timestamp = minStartTime;
-    const rows = [];
-    for (let i = 0; i < showTimeSlot.length; i++) {
-        rows.push(TimeSlotRow(timestamp, showTimeSlot[i]));
-        timestamp += 15; //Add 15 minutes for the next row
-    }
-
-    return (
-        <tbody>
-            {rows}
-        </tbody>
-    )
-}
-
+import {Component} from "react";
 
 /** Creates the TimeSlotTable
  * @param type NEW if days of week or calander
@@ -132,23 +9,154 @@ const TimeSlotCreateRows = (showTimeSlot, minStartTime) => {
  * @returns {JSX.Element}
  * @constructor
  */
-const TimeSlotTable = ({type, dates, showTimeSlot, minStartTime}) => {
+class TimeSlotTable extends Component {
 
-    return (
-        <div className="TimeSlotTable">
-            <table className="styled-table">
-                <thead>
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        }
+    }
+
+    /**
+     * Adds each table header to the top row of TimeSlotTable is the dates/days
+     * @param date
+     * @returns {JSX.Element}
+     * @constructor
+     */
+    AddHeaderDate(date){
+        const options = {weekday: 'long', month: 'long', day: 'numeric'};
+        const dateString = date.toLocaleDateString(undefined, options).split(',') //Uses local OS language
+        return (
+            //Key is Unix time (milliseconds)
+            //Title is day of the week, and then Month and Date
+            <th key={date.getTime()}>
+                {dateString[0]}
+                <br/>
+                {dateString[1]}
+            </th>
+        );
+    }
+
+    /**
+     * Adds each table header to the top row of TimeSlotTable is the dates/days
+     * @param date
+     * @returns {JSX.Element}
+     * @constructor
+     */
+     AddHeaderWeekDay(date){
+        //const options = { weekday: 'long', month: 'long', day: 'numeric' };
+        //const dateString = date.toLocaleDateString(undefined, options).split(',') //Uses local OS language
+        return (
+            //Key is Unix time (milliseconds)
+            //Title is day of the week, and then Month and Date
+            <th key={date}>
+                {date}
+            </th>
+        );
+    }
+
+
+    handleTimeSlotClicked(time){
+        console.log("Clicked: " + time);
+    }
+
+    /**
+     * Creates a tr (a table row) of the TimeSlotTable
+     * @param timestamp Integer corresponding to the timestamp for that row. Minutes since midnight.
+     * @param showTimeSlot Boolean array for this row, denoting which data cells should be available for users to click on
+     * @returns {JSX.Element}
+     * @constructor
+     */
+    TimeSlotRow(timestamp, showTimeSlot){
+        let title = "";
+        let rowClassName;
+
+        switch (timestamp % 60) {
+            case 0:
+                //if timestamp is an hour mark, add title
+                title = timestamp / 60;
+                title += (title < 12) ? ' AM' : ' PM';
+                rowClassName = 'timeslotClickableHour';
+                break;
+            case 30:
+                //if timestamp is on a half hour mark, change className for styling purposes
+                rowClassName = 'timeslotClickableHalfHour';
+                break;
+            default:
+                rowClassName = 'timeslotClickable';
+        }
+
+        //Counts which day (column) the cell is on. Used for creating key for cells.
+        let dayCount = 0;
+
+        return (
+            <>
+                <tr>
+                    <td className="timeslotHourTitleCell">
+                        {title}
+                    </td>
+                    {showTimeSlot.map(show => {
+                        const keyName = 'timeslot:' + dayCount + ':' + timestamp;
+                        dayCount++;
+
+                        if (show) {
+                            //if the admin choose for this time to be available to be selected, make it clickable,
+                            // otherwise mark as unavailable slot and do not attach any event handlers
+                            return <td
+                                key={keyName}
+                                className={rowClassName}
+                                onClick={() => this.handleTimeSlotClicked(timestamp)}/>
+                        } else {
+                            return <td
+                                key={keyName}
+                                className="timeslotUnavailable"/>
+                        }
+                    })}
+                </tr>
+            </>
+        );
+    }
+
+    /**
+     * Creates the tbody of the TimeSlotTable. Goes through each 15-minute timeslot and creates the row for it
+     * @returns {JSX.Element}
+     */
+    const
+    TimeSlotCreateRows(){
+        let timestamp = this.props.minStartTime;
+        const rows = [];
+        for (let i = 0; i < this.props.showTimeSlot.length; i++) {
+            rows.push(this.TimeSlotRow(timestamp, this.props.showTimeSlot[i]));
+            timestamp += 15; //Add 15 minutes for the next row
+        }
+
+        return (
+            <tbody>
+            {rows}
+            </tbody>
+        )
+    }
+
+
+    render() {
+
+        return (
+            <div className="TimeSlotTable">
+                <table className="styled-table">
+                    <thead>
                     <tr>
                         <th/>
-                        {type ? (dates.map((date) => <AddHeaderWeekDay date={date}/>)) : (dates.map((date) => <AddHeaderDate date={date}/>))}
+                        {this.props.type ? (this.props.dates.map((date) => this.AddHeaderWeekDay(date))) :
+                                           (this.props.dates.map((date) => this.AddHeaderDate(date)))}
                     </tr>
-                </thead>
-                {TimeSlotCreateRows(showTimeSlot,minStartTime)}
-            </table>
-        </div>
-    );
+                    </thead>
+                    {this.TimeSlotCreateRows()}
+                </table>
+            </div>
+        );
+    }
 }
-
 export default TimeSlotTable;
 
 /*
