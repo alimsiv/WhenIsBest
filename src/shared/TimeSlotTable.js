@@ -26,7 +26,7 @@ class TimeSlotTable extends Component {
         const response = new Array(this.props.showTimeSlot.length);
         const width = this.props.showTimeSlot[0].length;
         for (let i = 0; i < response.length; i++){
-            response[i] = new Array(width).fill(false);
+            response[i] = new Array(width).fill(0);
         }
         return response;
     }
@@ -80,7 +80,8 @@ class TimeSlotTable extends Component {
     handleTimeSlotClicked(id){
         console.log("Clicked: " + id);
         const location = this.getMatrixLocation(id);
-        this.response[location[0]][location[1]] = !this.response[location[0]][location[1]];
+        const oldVal = this.response[location[0]][location[1]];
+        this.response[location[0]][location[1]] = (oldVal === 0) ? 1 : 0;
         console.table(this.response);
     }
 
