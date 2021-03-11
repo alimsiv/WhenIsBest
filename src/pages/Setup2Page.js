@@ -7,6 +7,98 @@ import TimeSlotTable from "../shared/TimeSlotTable";
 
 class Setup2Page extends Component{
     
+    constructor(props) {
+        super(props);
+
+        this.handleGroupListChange = this.handleGroupListChange.bind(this);
+        this.handleGroupListRemove = this.handleGroupListRemove.bind(this);
+        this.handleAddGroup = this.handleAddGroup.bind(this);
+        this.handleModeChange = this.handleModeChange.bind(this);
+        this.state = {
+            groupList: ["",""],
+            mode: "P"
+        }
+
+    }
+
+    handleGroupListChange(e,index){
+        const {value} = e.target;
+        const ls = this.state.groupList;
+        if(this.state.groupList[index] != value){
+            ls[index] = value;
+            this.setState({groupList: ls});
+        }
+    }
+
+    handleGroupListRemove(index){
+        const ls = this.state.groupList;
+        ls.splice(index,1);
+        this.setState({groupList:ls});
+
+    }
+    
+    handleAddGroup(){
+        var temp = this.state.groupList;
+        temp.push(" ");
+        this.setState({groupList:temp})
+    }
+
+    handleModeChange(type){
+        if(this.state.type != type){
+            this.setState({type: type});
+        }
+        console.log(this.state.type);
+    }
+
+
+    handlegroupList(){
+        var temp = this.state.groupList;
+        return(
+        //<div>
+        temp.map((x, i) => {
+            return(
+                <>
+            <div className="box">
+            <input
+              name="groupName"
+                placeholder="Enter Group Name"
+              value={x}
+              onChange={e => this.handleGroupListChange(e, i)}
+            />
+              {this.state.groupList.length >2 && <button
+                className="mr10"
+                onClick={() => this.handleGroupListRemove(i)}>Remove</button>}
+            </div>
+            <div>
+              {this.state.groupList.length - 1 === i && <button onClick={() => this.handleAddGroup()}>Add</button>}
+            </div>
+            </>
+            )
+        })
+        //</div>
+
+        );
+    }
+
+    groups(){
+        return(
+            <>
+            <div>
+            <form>
+                <p>What type of form</p>
+                <input type="radio" name="chooseone" value="Group"onClick={() => this.handleModeChange("G")}/><label for="Group"> Group</label><br/>
+                <input type="radio" name="chooseone" value="Person"onClick={() => this.handleModeChange("P")}/><label for="Person"> Person</label><br/>
+            </form>
+            <div>
+            {this.state.type == "G" ? this.handlegroupList(): ""}
+            </div>
+            </div>
+            </>
+        )
+    }
+
+
+
     startAndEndStuff(){
         const state = this.props.location.state 
         var stSplit = state.start.split(':');
@@ -78,14 +170,6 @@ class Setup2Page extends Component{
         else{
             return this.calanderMode();
         }
-    }
-
-    groups(){
-        return(
-            <h2>priority/group stuff</h2>
-
-
-        )
     }
     
     render() {

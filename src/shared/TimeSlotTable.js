@@ -1,5 +1,8 @@
 import '../styling/TimeSlotTable.css';
 
+//boolean array for event on which days avaiblible
+//int array (0,1,2 === unavaible, available, preferred) stored for each person
+
 /**
  * Adds each table header to the top row of TimeSlotTable is the dates/days
  * @param date
