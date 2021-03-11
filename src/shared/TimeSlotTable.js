@@ -1,14 +1,14 @@
 import '../styling/TimeSlotTable.css';
 import {Component} from "react";
 
+
 /** Creates the TimeSlotTable
  * @param type NEW if days of week or calander
  * @param dates Date objects for each date, which is translated into each column
  * @param showTimeSlot 2x2 Boolean array that is the total size of the table, with each boolean denoting whether or not that element is "available"
  * @param minStartTime Integer. The earliest time that the table should start, aka the first row. Minutes since midnight.
- * @returns {JSX.Element}
- * @constructor
- */
+*/
+
 class TimeSlotTable extends Component {
     response = this.initialResponseMatrix();
 
