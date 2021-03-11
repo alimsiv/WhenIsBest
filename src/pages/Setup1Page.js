@@ -94,12 +94,16 @@ class Setup1Page extends Component{
         return (
             <div className="flex">
                 <form>
-                    <input id="event-name-input" type="text" className="form-control" placeholder="Event Name"/>
+                    <input id="event-name-input" type="text" className="form-control" placeholder="Event Name" onSubmit/>
                 </form>
 
                 <button id="create-event-button" onClick={() => {
                                                         var cango = false;
-                                                        if(this.state.dateType){
+                                                        var name = document.getElementById("event-name-input").value;
+                                                        if(name == ""){
+                                                            alert("you have not picked an event name");
+                                                        }
+                                                        else if(this.state.dateType){
                                                             
                                                             var days = [this.state.mon,this.state.tue,this.state.wed,this.state.thu,this.state.fri,this.state.sat,this.state.sun]
                                                             if(!days.includes(true)){
@@ -119,6 +123,7 @@ class Setup1Page extends Component{
                                                                 pathname: '/Setup2',
                                                                 //pass things through state
                                                                 state: {days: days,
+                                                                        name: name,
                                                                         type: this.state.dateType, 
                                                                         start: this.state.start,
                                                                         end: this.state.end
