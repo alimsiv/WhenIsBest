@@ -3,6 +3,11 @@ import {Table} from 'react-bootstrap'
 import NavigationBar from '../shared/NavigationBar'
 import history from './../history'
 import TimeSlotTable from "../shared/TimeSlotTable";
+import {AiFillInfoCircle} from "react-icons/ai";
+import { Button } from '@material-ui/core';
+import {IconButton} from '@material-ui/core';
+import InfoIcon from '@material-ui/icons/Info';
+import Popup from 'reactjs-popup';
 
 
 class Setup2Page extends Component{
@@ -14,9 +19,11 @@ class Setup2Page extends Component{
         this.handleGroupListRemove = this.handleGroupListRemove.bind(this);
         this.handleAddGroup = this.handleAddGroup.bind(this);
         this.handleModeChange = this.handleModeChange.bind(this);
+        this.handlePopup = this.handlePopup.bind(this);
         this.state = {
             groupList: ["",""],
-            mode: "P"
+            mode: "P",
+            showPop: false
         }
 
     }
@@ -48,6 +55,14 @@ class Setup2Page extends Component{
             this.setState({type: type});
         }
         console.log(this.state.type);
+    }
+
+    handlePopup(msg,show){
+        console.log(msg);
+        if(this.state.showPop != show){
+            this.setState({showPop: show});
+            console.log(this.state.showPop);
+        }
     }
 
 
@@ -85,7 +100,15 @@ class Setup2Page extends Component{
             <>
             <div>
             <form>
-                <p>What type of form</p>
+                <div>
+                What type of form
+                <IconButton aria-label="info"
+                    onClick={() => this.handlePopup("button",true)}
+                    //onMouseLeave={() => this.handlePopup("bad button",false)}
+                    >
+                       <InfoIcon/> 
+                </IconButton>
+                </div>
                 <input type="radio" name="chooseone" value="Group"onClick={() => this.handleModeChange("G")}/><label for="Group"> Group</label><br/>
                 <input type="radio" name="chooseone" value="Person"onClick={() => this.handleModeChange("P")}/><label for="Person"> Person</label><br/>
             </form>
@@ -117,13 +140,28 @@ class Setup2Page extends Component{
         return [timeslots,minStart]
     }
 
+    makeTimeSlots(timeslots, days){
+        var innerArr = [];
+        var showTimeSlot = [];
+        //make an inner array with all true
+        for(var j = 0; j < days; j++){
+            innerArr.push(true);
+        }
+
+        //add an inner array to showTimeSlot for each timeslot
+        for(var i = 0; i < timeslots;i++ ){
+            showTimeSlot.push(innerArr);
+        }
+
+        return showTimeSlot;
+
+    }
+
 
     daysofweekMode() {
         const state = this.props.location.state 
         var weekdays = ["Monday","Tuesday","Wednesday","Thursday", "Friday", "Saturday", "Sunday"]
         var days = [];
-        var innerArr = [];
-        const showTimeSlot = [];
         //var timeslots = (state.end - state.start) * 4; //number of 15 min timeslots we need (will need to change to account for minutes)
 
         var timeStuff = this.startAndEndStuff();
@@ -136,15 +174,7 @@ class Setup2Page extends Component{
             }
         }
 
-        //make an inner array with all true
-        for(var j = 0; j < days.length; j++){
-            innerArr.push(true);
-        }
-
-        //add an inner array to showTimeSlot for each timeslot
-        for(var i = 0; i < timeslots;i++ ){
-            showTimeSlot.push(innerArr);
-        }
+        var showTimeSlot = this.makeTimeSlots(timeslots,days.length);
 
         return(    
             <> 
@@ -153,11 +183,30 @@ class Setup2Page extends Component{
         );
     }
 
+    pop(){
+            return(
+                <Popup open={this.state.showPop} closeOnDocumentClick onClose= { () => this.handlePopup("autopopup",false)} >
+                    < div style={{backgroundColor: "lightblue"}}>
+                    if you select groups, when someone fills out their avaiblity, they will be asked to select a group.<br/>
+                    Later, you can proitize by group, or set requirements on numbers of people from each group.<br/>
+                    This is recommend if you have a large number of people filling out your form<br/><br/>
+
+                    if you select people, you will be able to set the priority of each individaul person<br/>
+                    <button onClick={ () => this.handlePopup("popup",false)}>close </button>
+                    </div>
+                </Popup>
+            )
+    }
+
     calanderMode() {
-        const state = this.props.location.state 
+        const state = this.props.location.state;
+        var timeStuff = this.startAndEndStuff();
+        var minStart = timeStuff[1];
+        var timeslots = timeStuff[0];
+        var showTimeSlot = this.makeTimeSlots(timeslots,state.days.length);
         return(    
             <> 
-                Calander mode is not done yet. Go back and select days of week. 
+                <TimeSlotTable type = {state.type} dates={state.days} showTimeSlot={showTimeSlot} minStartTime={minStart}/> 
             </>
         );
     }
@@ -177,7 +226,8 @@ class Setup2Page extends Component{
         const state = this.props.location.state 
         return (
             <div className="Setup2Page">
-                <h1>Setup2 Page</h1>
+                <h1>{state.name}</h1>
+                Please select the times you would like to be avaiblile as well as the type
                 <div className="flex">
                     <div className="flex-child">
                         {
@@ -187,6 +237,7 @@ class Setup2Page extends Component{
                 <div className="flex-child"></div>
                     {this.timeTable()}
                     {this.groups()}
+                    {this.pop()}
                 </div>
                 <button onClick={() => {history.goBack()}}>Back</button>
                 <button onClick={() => {history.push({ 
