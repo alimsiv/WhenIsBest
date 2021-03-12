@@ -41,14 +41,16 @@ class Setup1Page extends Component{
 
     handleMonthViewDaySelected(day, {selected}) {
         const {selectedDays} = this.state;
-
         if (selected) {
             const selectedIndex = selectedDays.findIndex(selectedDay =>
                 DateUtils.isSameDay(selectedDay, day)
             );
             selectedDays.splice(selectedIndex, 1);
-        } else {
+        } else if(!DateUtils.isPastDay(day)) {
             selectedDays.push(day);
+        }
+        else{
+            console.log("day is in past, day ignored");
         }
         this.setState({selectedDays});
         console.log(this.state.selectedDays)
@@ -106,6 +108,9 @@ class Setup1Page extends Component{
                                                         if(name == ""){
                                                             alert("you have not picked an event name");
                                                         }
+                                                        else if(!this.validTime(this.state.start,this.state.end)){
+                                                            alert("Your time selection is invalid, make sure your start time is atleast 15 mins before you endtime");
+                                                        }
                                                         else if(this.state.dateType){
                                                             
                                                             var days = [this.state.mon,this.state.tue,this.state.wed,this.state.thu,this.state.fri,this.state.sat,this.state.sun]
@@ -162,6 +167,28 @@ class Setup1Page extends Component{
                 </div>
             </>
         );
+    }
+
+    //figures out if the time selection is valid
+    validTime = (start,end) => {
+        var s = start.split(":");
+        var sH = parseInt(s[0]);
+        var sM = parseInt(s[1]);
+
+        var e = end.split(":");
+        var eH = parseInt(e[0]);
+        var eM = parseInt(e[1]);
+
+        var hD = eH - sH;
+        var mD = eM - sM;
+
+        /*return true if
+            Hour difference > 2                             ie 6:00 and 8:00 is valid
+            Hour difference  = 1 and min difference > 14    ie 7:59 and 8:14 is valid
+            Hour difference = 0 and mind difference > 15    ie 8:00 and 8:15 is valid
+        */
+        return ((hD >= 2) || (hD == 1 && mD > 14) || (hD == 0 && mD >=15));
+
     }
 
 
