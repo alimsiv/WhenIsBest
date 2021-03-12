@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { Alert, Button, Card, Form } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -10,7 +10,7 @@ export default function SignUp() {
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault()
 
         if (passwordRef.current.value !==
