@@ -31,6 +31,27 @@ class TimeSlotTable extends Component {
         return response;
     }
 
+    getMatrixLocation(id){
+        const parsedID = id.split(':'); //example: timeslot:0:540
+        const row = (parsedID[2] - this.props.minStartTime)/15;
+        return [row, parsedID[1]];
+    }
+
+
+    handleTimeSlotClicked(id){
+        console.log("Clicked: " + id);
+        const location = this.getMatrixLocation(id);
+        if (this.response[location[0]][location[1]] === 0){
+            this.response[location[0]][location[1]] = 1;
+            document.getElementById(id).style.backgroundColor = "#84D6E7";
+        }
+        else {
+            this.response[location[0]][location[1]] = 0;
+            document.getElementById(id).style.backgroundColor = "#ffffff";
+        }
+        console.table(this.response);
+    }
+
     /**
      * Adds each table header to the top row of TimeSlotTable is the dates/days
      * @param date
@@ -57,7 +78,7 @@ class TimeSlotTable extends Component {
      * @returns {JSX.Element}
      * @constructor
      */
-     AddHeaderWeekDay(date){
+    AddHeaderWeekDay(date){
         const DaysEnum = Object.freeze({"Sunday":0, "Monday":1, "Tuesday":2, "Wednesday":3, "Thursday":4, "Friday":5, "Saturday":6});
         //const options = { weekday: 'long', month: 'long', day: 'numeric' };
         //const dateString = date.toLocaleDateString(undefined, options).split(',') //Uses local OS language
@@ -70,20 +91,22 @@ class TimeSlotTable extends Component {
         );
     }
 
-    getMatrixLocation(id){
-        const parsedID = id.split(':'); //example: timeslot:0:540
-        const row = (parsedID[2] - this.props.minStartTime)/15;
-        return [row, parsedID[1]];
+    AddSideHeaderHour(timestamp, rows){
+        if(timestamp%60 === 0) {
+            const hour = timestamp / 60;
+            const title = (hour < 12) ? hour + ' AM' : (hour - 12) + ' PM';
+            return (
+                <td className="timeslotHourTitleCell" rowSpan={rows}>
+                    {title}
+                </td>);
+        }
+        else {
+            return (
+                <td className="timeslotHourTitleCell" />);
+        }
     }
 
 
-    handleTimeSlotClicked(id){
-        console.log("Clicked: " + id);
-        const location = this.getMatrixLocation(id);
-        const oldVal = this.response[location[0]][location[1]];
-        this.response[location[0]][location[1]] = (oldVal === 0) ? 1 : 0;
-        console.table(this.response);
-    }
 
     /**
      * Creates a tr (a table row) of the TimeSlotTable
@@ -93,15 +116,14 @@ class TimeSlotTable extends Component {
      * @constructor
      */
     TimeSlotRow(timestamp, showTimeSlot){
-        let title = "";
         let rowClassName;
+        let isHourRow = false;
 
         switch (timestamp % 60) {
             case 0:
                 //if timestamp is an hour mark, add title
-                title = timestamp / 60;
-                title += (title < 12) ? ' AM' : ' PM';
                 rowClassName = 'timeslotClickableHour';
+                isHourRow = true;
                 break;
             case 30:
                 //if timestamp is on a half hour mark, change className for styling purposes
@@ -117,9 +139,7 @@ class TimeSlotTable extends Component {
         return (
             <>
                 <tr>
-                    <td className="timeslotHourTitleCell">
-                        {title}
-                    </td>
+                    {this.AddSideHeaderHour(timestamp, 4)}
                     {showTimeSlot.map(show => {
                         const keyName = 'timeslot:' + dayCount + ':' + timestamp;
                         dayCount++;
@@ -129,11 +149,13 @@ class TimeSlotTable extends Component {
                             // otherwise mark as unavailable slot and do not attach any event handlers
                             return <td
                                 key={keyName}
+                                id={keyName}
                                 className={rowClassName}
                                 onClick={() => this.handleTimeSlotClicked(keyName)}/>
                         } else {
                             return <td
                                 key={keyName}
+                                id={keyName}
                                 className="timeslotUnavailable"/>
                         }
                     })}
@@ -146,7 +168,6 @@ class TimeSlotTable extends Component {
      * Creates the tbody of the TimeSlotTable. Goes through each 15-minute timeslot and creates the row for it
      * @returns {JSX.Element}
      */
-    const
     TimeSlotCreateRows(){
         let timestamp = this.props.minStartTime;
         const rows = [];

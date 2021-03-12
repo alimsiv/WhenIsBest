@@ -13,9 +13,6 @@ import 'react-day-picker/lib/style.css';
 import TimePicker from 'react-time-picker';
 import TableDragSelect from "react-table-drag-select";
 
-
-
-
 class Setup1Page extends Component{
     dateTypes = ["Specific Dates", "Days of the Week"];
 
@@ -159,7 +156,6 @@ class Setup1Page extends Component{
         );
     }
 
-
     changeMon = () => {
         this.setState({mon: (!this.state.mon)});
     }
@@ -181,6 +177,7 @@ class Setup1Page extends Component{
     changeSun = () => {
         this.setState({sun: (!this.state.sun)});
     }
+
     // Left side: Week or Month view
     DateView() {
         if (!this.state.dateType){
@@ -296,8 +293,6 @@ class Setup1Page extends Component{
             </div>
         );
     }
-
-
 
     render() {
         return (

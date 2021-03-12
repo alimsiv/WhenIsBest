@@ -40,7 +40,6 @@ class ViewPage extends Component{
         console.log(Date.formatDate(ny));     // 2017/3/10 21:30
     }
 
-
     render() {
 
         return (
@@ -54,9 +53,6 @@ class ViewPage extends Component{
                         }
                     </div>
                     <div className="flex-child">
-                        {
-                        //<TimeSlotTable type = {0} dates={this.state.dates} showTimeSlot={this.state.showTimeSlot} minStartTime={this.state.minStartTime}/>
-                        }
                         <TimeSlotTable type = {1} dates={this.state.weekdays} showTimeSlot={this.state.showTimeSlot} minStartTime={this.state.minStartTime}/>
                     </div>
                 </div>
