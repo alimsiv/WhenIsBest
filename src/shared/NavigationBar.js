@@ -17,7 +17,7 @@ const NavigationBar = () => {
                         {/* no link yet */}
                         <Nav.Link href="/">Add Availability</Nav.Link>
                         {/* no link yet */}
-                        <Nav.Link href="/">Sign Up</Nav.Link>
+                        <Nav.Link href="/signup">Sign Up</Nav.Link>
                         {/* no link yet */}
                         <Nav.Link href="/">Login</Nav.Link>
                     </Nav>
