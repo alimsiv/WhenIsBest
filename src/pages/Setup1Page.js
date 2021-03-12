@@ -13,9 +13,6 @@ import 'react-day-picker/lib/style.css';
 import TimePicker from 'react-time-picker';
 import TableDragSelect from "react-table-drag-select";
 
-
-
-
 class Setup1Page extends Component{
     dateTypes = ["Specific Dates", "Days of the Week"];
 
@@ -148,6 +145,7 @@ class Setup1Page extends Component{
         return (
             <>
                 <p>Or enter your own hours:</p>
+                Note: (will be rounded to nearest 15 min block)
                 <div className="flex">
                     <div className="flex-child">
                         <small>From:  </small>
@@ -182,12 +180,14 @@ class Setup1Page extends Component{
         var hD = eH - sH;
         var mD = eM - sM;
 
+        var mO = eM + 60 - sM; 
+
         /*return true if
             Hour difference > 2                             ie 6:00 and 8:00 is valid
             Hour difference  = 1 and min difference > 14    ie 7:59 and 8:14 is valid
             Hour difference = 0 and mind difference > 15    ie 8:00 and 8:15 is valid
         */
-        return ((hD >= 2) || (hD == 1 && mD > 14) || (hD == 0 && mD >=15));
+        return ((hD >= 2) || (hD == 1 && mO >= 15) || (hD == 0 && mD >=15));
 
     }
 
@@ -213,6 +213,7 @@ class Setup1Page extends Component{
     changeSun = () => {
         this.setState({sun: (!this.state.sun)});
     }
+
     // Left side: Week or Month view
     DateView() {
         if (!this.state.dateType){
@@ -328,8 +329,6 @@ class Setup1Page extends Component{
             </div>
         );
     }
-
-
 
     render() {
         return (

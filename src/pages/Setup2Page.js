@@ -226,7 +226,7 @@ class Setup2Page extends Component{
         const state = this.props.location.state 
         return (
             <div className="Setup2Page">
-                <h1>{state.name}</h1>
+                <h1>Setup Page 2: {state.name}</h1>
                 Please select the times you would like to be avaiblile as well as the type
                 <div className="flex">
                     <div className="flex-child">

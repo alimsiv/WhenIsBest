@@ -5,6 +5,8 @@
     font-family: sans-serif;
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    //table-layout:fixed;
+    //word-wrap: break-word;
 }
 .styled-table thead tr {
     background-color: #101043;
@@ -37,11 +39,13 @@ th {
     text-align: center;
 }
 
+/*
 .timeslotClickable:hover,
 .timeslotClickableHour:hover,
 .timeslotClickableHalfHour:hover{
     background-color: #71c9e2;
 }
+*/
 
 .timeslotClickableHour{
     border-top: 2px solid #282c34;
@@ -59,14 +63,21 @@ th {
     vertical-align:top;
     display:inline-block;
     *display:inline;
-    height: 30px;
+    height: 12px;
     width:70px;
     font-size:11px;
-    margin-top: 0px;
+    margin-top: 0;
     background-color: #282c34;
     color: white;
 }
 
+.styled-table tbody tr td:first-of-type {
+    background-color: #282c34;
+    border: #282c34;
+}
+
+/*
 .styled-table tbody tr:nth-of-type(even) {
     background-color: #f3f3f3;
 }
+*/
