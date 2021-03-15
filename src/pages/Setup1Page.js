@@ -121,7 +121,12 @@ class Setup1Page extends Component{
                                                         else{
                                                             //make days the calander feild
                                                             var days = this.state.selectedDays;
-                                                            cango = true;
+                                                            if(days.length == 0){
+                                                                alert("you have not selected any days");
+                                                            }
+                                                            else{
+                                                                cango = true;
+                                                            }
                                                         }
                                                         if(cango){
                                                             history.push({ 
