@@ -20,14 +20,22 @@ class TimeSlotTable extends Component {
         this.maybeMulti = this.maybeMulti.bind(this);
 
         this.state = {
-            multiSelect: false
+            multiSelect: false,
+            multiType:true //true == add, false == remove highlight
         }
     }
 
-    handleMulti(isOn){
+    handleMulti(isOn,id){
         if(this.state.multiSelect != isOn){
             this.setState({multiSelect: isOn});
             if(isOn){
+                var location = this.getMatrixLocation(id);
+                if (this.response[location[0]][location[1]] === 0){
+                    this.setState({multiType: true});
+                }
+                else{
+                    this.setState({multiType: false});
+                }
                 console.log("start the shit");
             }
             else{
@@ -36,9 +44,15 @@ class TimeSlotTable extends Component {
         }
     }
 
-    maybeMulti(keyName){
+    //todo: dealing with selecting entire row at once
+    //need more info on keyName
+    maybeMulti(id){
         if(this.state.multiSelect){
-            this.handleTimeSlotClicked(keyName);
+            const location = this.getMatrixLocation(id);
+            var notHighlighted = this.response[location[0]][location[1]] === 0;
+            var highlightMode = this.state.multiType;
+            if (notHighlighted && highlightMode || !notHighlighted && !highlightMode) //is not highlighted and in highlight mode
+            this.handleTimeSlotClicked(id);
         }
     }
 
@@ -172,9 +186,11 @@ class TimeSlotTable extends Component {
                                 id={keyName}
                                 className={rowClassName}
                                 onClick={() => this.handleTimeSlotClicked(keyName)}
-                                onMouseDown = {() => {this.handleMulti(true); this.handleTimeSlotClicked(keyName)}}
-                                //if they dont letup mouse within table, wont register
-                                onMouseUp = {() => {this.handleMulti(false)}}
+
+                                //TODO: make it so that you can only add or remove (depending on what is first selected)
+                                //ie can only do one action during the entire drag select
+                                onMouseDown = {() => {this.handleMulti(true, keyName); this.handleTimeSlotClicked(keyName)}}
+                                onMouseUp = {() => {this.handleMulti(false,keyName)}}
                                 onMouseEnter = {() => {this.maybeMulti(keyName)}}
                                 />
                         } else {
