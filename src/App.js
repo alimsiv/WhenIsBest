@@ -5,7 +5,7 @@ import Setup1Page from './pages/Setup1Page'
 import Setup2Page from './pages/Setup2Page'
 import ViewPage from './pages/ViewPage'
 import history from './history';
-
+import { AuthProvider } from './contexts/AuthContext'
 import logo from './logo.svg';
 import NavigationBar from './shared/NavigationBar'
 import Routes from './Routes';
@@ -16,8 +16,10 @@ class App extends Component{
   render() {
     return (
         <div className="App">
-            <NavigationBar />
-            <Routes />
+            <AuthProvider>
+              <NavigationBar />
+              <Routes />
+            </AuthProvider>
         </div>
     );
   }
