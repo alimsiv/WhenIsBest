@@ -16,9 +16,29 @@ class TimeSlotTable extends Component {
         super(props);
 
         this.handleTimeSlotClicked = this.handleTimeSlotClicked.bind(this);
+        this.handleMulti = this.handleMulti.bind(this);
+        this.maybeMulti = this.maybeMulti.bind(this);
 
         this.state = {
+            multiSelect: false
+        }
+    }
 
+    handleMulti(isOn){
+        if(this.state.multiSelect != isOn){
+            this.setState({multiSelect: isOn});
+            if(isOn){
+                console.log("start the shit");
+            }
+            else{
+                console.log("end this shit");
+            }
+        }
+    }
+
+    maybeMulti(keyName){
+        if(this.state.multiSelect){
+            this.handleTimeSlotClicked(keyName);
         }
     }
 
@@ -151,7 +171,12 @@ class TimeSlotTable extends Component {
                                 key={keyName}
                                 id={keyName}
                                 className={rowClassName}
-                                onClick={() => this.handleTimeSlotClicked(keyName)}/>
+                                onClick={() => this.handleTimeSlotClicked(keyName)}
+                                onMouseDown = {() => {this.handleMulti(true); this.handleTimeSlotClicked(keyName)}}
+                                //if they dont letup mouse within table, wont register
+                                onMouseUp = {() => {this.handleMulti(false)}}
+                                onMouseEnter = {() => {this.maybeMulti(keyName)}}
+                                />
                         } else {
                             return <td
                                 key={keyName}
