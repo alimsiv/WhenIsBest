@@ -213,7 +213,7 @@ class TimeSlotTable extends Component {
 
         return (
             <div className="TimeSlotTable">
-                <table className="styled-table">
+                <table className="styled-table" onMouseLeave = {() => {this.handleMulti(false)}}>
                     <thead>
                     <tr>
                         <th/>
