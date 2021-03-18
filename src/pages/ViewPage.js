@@ -1,11 +1,12 @@
-import { Component } from 'react'
-import NavigationBar from '../shared/NavigationBar'
+import { Component } from 'react';
+import Form from 'react-bootstrap/Form';
+import NavigationBar from '../shared/NavigationBar';
 import TimeSlotTable from "../shared/TimeSlotTable";
 import '../styling/styles.css';
 
 
-
 class ViewPage extends Component{
+
 
     constructor(props) {
         super(props);
@@ -16,6 +17,8 @@ class ViewPage extends Component{
             showTimeSlot: [[true, true, true], [false, false, false], [false, true, true], [false, true, true], [true, true, false], [true, true, true], [true, true, true], [true, true, true], [true, true, true], [true, true, true], [true, true, true]],
             minStartTime: 540, //The earliest time slot for the range of dates/days chosen (minutes since midnight)
             timezoneOffset: 0,
+            responses: ["Marlee", "Ali", "Levi"],
+
 
 
             //NOTE: Leaving these all commented out for now, just in case we decide to change the implementation back to one of these. Sorry for the mess -Ali
@@ -32,12 +35,60 @@ class ViewPage extends Component{
         }
     }
 
+
+
     AdjustTimezone() {
         const seoul = new Date(1489199400000);
         const ny = new Date(1489199400000 - ((this.state.timezoneOffset-seoul.getTimezoneOffset()) * 60 * 1000));
 
         console.log(Date.formatDate(seoul));  // 2017/3/11 11:30
         console.log(Date.formatDate(ny));     // 2017/3/10 21:30
+    }
+
+    handleUpdatePriority(name, priority){
+        //TODO: update priority of name
+        console.log(name + "'s priority is: " + priority);
+    }
+
+    handleUpdateCheckBox(name, status){
+        //TODO: update checkbox of name
+        console.log(name + " has been selected: " + status);
+    }
+
+    LeftSide(response) {
+/*
+        return (
+            <tr>
+                <td className="responses_name">
+                <Form.Group controlId={response + '_checkbox'} className='response'>
+                    <Form.Check type="checkbox" label={response} />
+                </Form.Group>
+                </td>
+                <td className="responses_range">
+                <Form.Group controlId={response + '_range'}>
+                    <Form.Control type="range" custom
+                                  onChange={(e) => this.handleUpdatePriority(response, e.target.value)} />
+                </Form.Group>
+                </td>
+
+            </tr>
+        );
+
+ */
+        return (
+            <tr>
+                <td className="responses_name">
+                    <Form.Group controlId={response + '_checkbox'} className='response'>
+                        <Form.Check type="checkbox" label={response} onChange={(e) => this.handleUpdateCheckBox(response, e.target.value)}/>
+                    </Form.Group>
+                </td>
+                <td className="responses_range">
+                    <input type="range" id={response + "_range"} min="1" max="5" step="1" onChange={(e) => this.handleUpdatePriority(response, e.target.value)}/>
+
+                </td>
+
+            </tr>
+        );
     }
 
     render() {
@@ -48,9 +99,26 @@ class ViewPage extends Component{
 
                 <div className="flex">
                     <div className="flex-child">
+                        <h4>Responses</h4>
+                        <br/>
+                        <tr>
+                            <td/>
+                            <td className="flex">
+                                <h7>low</h7>
+                                <h7>high</h7>
+                            </td>
+                        </tr>
+                        {this.state.responses.map((response) => this.LeftSide(response))}
+                    </div>
+                    <div className="flex-child">
                         {
-                            //TODO: List of who has responded and sliders/checkmarks
+                            //TODO: input from user
                         }
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <p>Input from user here</p>
                     </div>
                     <div className="flex-child">
                         <TimeSlotTable type = {1} dates={this.state.weekdays} showTimeSlot={this.state.showTimeSlot} minStartTime={this.state.minStartTime}/>

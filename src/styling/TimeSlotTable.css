@@ -47,6 +47,9 @@ th {
 }
 */
 
+
+
+
 .timeslotClickableHour{
     border-top: 2px solid #282c34;
 }
@@ -69,11 +72,12 @@ th {
     margin-top: 0;
     background-color: #282c34;
     color: white;
+    border: 1px solid #282c34;
 }
 
 .styled-table tbody tr td:first-of-type {
-    background-color: #282c34;
-    border: #282c34;
+    //background-color: #282c34;
+    //border: #282c34;
 }
 
 /*

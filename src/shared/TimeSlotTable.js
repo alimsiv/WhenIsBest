@@ -126,18 +126,17 @@ class TimeSlotTable extends Component {
     }
 
     AddSideHeaderHour(timestamp, rows){
+        let title = "";
         if(timestamp%60 === 0) {
             const hour = timestamp / 60;
-            const title = (hour < 12) ? hour + ' AM' : (hour - 12) + ' PM';
-            return (
-                <td className="timeslotHourTitleCell" rowSpan={rows}>
-                    {title}
-                </td>);
+            title = (hour < 12) ? hour + ' AM' : (hour - 12) + ' PM';
+
         }
-        else {
-            return (
-                <td className="timeslotHourTitleCell" />);
-        }
+        return (
+            <td className="timeslotHourTitleCell">
+                {title}
+            </td>);
+
     }
 
 
