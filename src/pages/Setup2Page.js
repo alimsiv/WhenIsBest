@@ -10,8 +10,17 @@ import InfoIcon from '@material-ui/icons/Info';
 import Popup from 'reactjs-popup';
 
 
+//import app from "../apis/firebase"
+
+
+import firebase from 'firebase/app';
+import 'firebase/firestore';
+
+
+
+
 class Setup2Page extends Component{
-    
+
     constructor(props) {
         super(props);
         this.currentTable = React.createRef();
@@ -93,6 +102,27 @@ class Setup2Page extends Component{
         //</div>
 
         );
+    }
+
+    addtoDB(days,minStart,table,type){
+        //const firestore = firebase.firestore();
+        const state = this.props.location.state;
+        var oneDTable = table.flat();
+        var uid = "testUserID";
+        console.log("here");
+        const db = firebase.firestore();
+            let docRef = db.collection("meetings").doc();
+            let setAda = docRef.set({
+              hostID: uid,
+              days: days,
+              name: state.name,
+              type:type,
+              showTimeSlot:oneDTable,
+              tableCol:table[0].length,
+              tableRow:table.length,
+              minStart:minStart,  
+            });
+        return(docRef.id);
     }
 
     groups(){
@@ -285,7 +315,10 @@ class Setup2Page extends Component{
 
                                             }
 
-                                            console.log("table when submmitting");
+                                            var mID = this.addtoDB(days,minStart,table,state.type);
+
+
+                                            console.log(days);
                                             console.table(table);
                                             history.push({ 
                                                             pathname: '/view',
@@ -294,7 +327,8 @@ class Setup2Page extends Component{
                                                                     days: days,
                                                                     minStart:minStart,
                                                                     showTimeSlotTable:table,
-                                                                    type: state.type
+                                                                    type: state.type,
+                                                                    meetingID:mID,
                                                                 }
                                                             })}}>Submit
                                                             </button>
