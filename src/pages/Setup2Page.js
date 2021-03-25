@@ -240,9 +240,20 @@ class Setup2Page extends Component{
                 //need to make sure feilds are selected
                  }
                 <button onClick={() => {
+                                            var timeStuff = this.startAndEndStuff();
+                                            var minStart = timeStuff[1];
+                                            var days;
+                                            if(state.type){
+                                                days = this.daysofweekMode();
+                                            }
+                                            else{
+                                                days =  this.calanderMode();
+                                            }
+                                            
                                             var table = this.currentTable.current.GetResponce();
                                             console.log(table.length);
                                             var notEmpty = false;
+                                            //converts timeslotTable to boolean table so can be used for showTimeslot when pulling from db
                                             for(var i = 0;i < table.length;i++){
                                                 for(var j = 0;j< table[0].length;j++){
                                                     if(table[i][j] == 1){
@@ -263,16 +274,11 @@ class Setup2Page extends Component{
                                                 //change all values to yes
                                                 console.log("changed all values to true")
 
-
-                                                var temp = Array.from({ length: table.length }, () => 
+                                                //initilaze table with all elements set to true
+                                                table = Array.from({ length: table.length }, () => 
                                                 Array.from({ length: table[0].length }, () => true)
                                                 );
-                                                table = temp;
-                                                // for(var i = 0;i < table.length;i++){
-                                                //     for(var j = 0;j< table[0].length;j++){
-                                                //         table[i][j] = 1;
-                                                //     }
-                                                // }
+                                                //table = temp;
                                             }
                                             //is in group mode
                                             if(this.state.mode == "G"){
@@ -284,8 +290,12 @@ class Setup2Page extends Component{
                                             history.push({ 
                                                             pathname: '/view',
                                                             //pass things through state
-                                                            state: {days: 2,
-                                                                    type: state.type}
+                                                            state: {
+                                                                    days: days,
+                                                                    minStart:minStart,
+                                                                    showTimeSlotTable:table,
+                                                                    type: state.type
+                                                                }
                                                             })}}>Submit
                                                             </button>
             </div>

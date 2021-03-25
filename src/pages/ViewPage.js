@@ -92,7 +92,7 @@ class ViewPage extends Component{
     }
 
     render() {
-
+        var tableInfo = this.props.location.state;
         return (
             <div className="ViewPage">
                 <h1>View Page</h1>
@@ -121,7 +121,7 @@ class ViewPage extends Component{
                         <p>Input from user here</p>
                     </div>
                     <div className="flex-child">
-                        <TimeSlotTable type = {1} dates={this.state.weekdays} showTimeSlot={this.state.showTimeSlot} minStartTime={this.state.minStartTime}/>
+                        <TimeSlotTable type = {tableInfo.type} dates={tableInfo.days} showTimeSlot={tableInfo.showTimeSlotTable} minStartTime={tableInfo.minStart}/>
                     </div>
                 </div>
 
