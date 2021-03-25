@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 import {Table} from 'react-bootstrap'
 import NavigationBar from '../shared/NavigationBar'
 import history from './../history'
@@ -14,7 +14,7 @@ class Setup2Page extends Component{
     
     constructor(props) {
         super(props);
-
+        this.currentTable = React.createRef();
         this.handleGroupListChange = this.handleGroupListChange.bind(this);
         this.handleGroupListRemove = this.handleGroupListRemove.bind(this);
         this.handleAddGroup = this.handleAddGroup.bind(this);
@@ -162,24 +162,14 @@ class Setup2Page extends Component{
         const state = this.props.location.state 
         var weekdays = ["Monday","Tuesday","Wednesday","Thursday", "Friday", "Saturday", "Sunday"]
         var days = [];
-        //var timeslots = (state.end - state.start) * 4; //number of 15 min timeslots we need (will need to change to account for minutes)
-
-        var timeStuff = this.startAndEndStuff();
-        var minStart = timeStuff[1];
-        var timeslots = timeStuff[0];
-        //translates true/false format into days of week
         for(var i = 0; i < 7;i++){
             if(state.days[i]){
                days.push(weekdays[i]); 
             }
         }
 
-        var showTimeSlot = this.makeTimeSlots(timeslots,days.length);
-
-        return(    
-            <> 
-                <TimeSlotTable type = {state.type} dates={days} showTimeSlot={showTimeSlot} minStartTime={minStart}/>
-            </>
+        return(   
+             days 
         );
     }
 
@@ -199,26 +189,31 @@ class Setup2Page extends Component{
     }
 
     calanderMode() {
-        const state = this.props.location.state;
-        var timeStuff = this.startAndEndStuff();
-        var minStart = timeStuff[1];
-        var timeslots = timeStuff[0];
-        var showTimeSlot = this.makeTimeSlots(timeslots,state.days.length);
         return(    
-            <> 
-                <TimeSlotTable type = {state.type} dates={state.days} showTimeSlot={showTimeSlot} minStartTime={minStart}/> 
-            </>
+            this.props.location.state.days
         );
     }
     
     timeTable() {
         //true = days of week, false = calander
+        const state = this.props.location.state;
+        var timeStuff = this.startAndEndStuff();
+        var minStart = timeStuff[1];
+        var timeslots = timeStuff[0];
+        var days;
         if(this.props.location.state.type){
-            return this.daysofweekMode();
+            days = this.daysofweekMode();
         }
         else{
-            return this.calanderMode();
+            days =  this.calanderMode();
         }
+        var showTimeSlot = this.makeTimeSlots(timeslots,days.length);
+        return(
+            <>
+            <TimeSlotTable ref = {this.currentTable} type = {state.type} dates={days} showTimeSlot={showTimeSlot} minStartTime={minStart}
+                />
+            </>
+        );
     }
     
     render() {
@@ -227,7 +222,8 @@ class Setup2Page extends Component{
         return (
             <div className="Setup2Page">
                 <h1>{state.name}</h1>
-                Please select the times you would like to be avaiblile as well as the type
+                Please select the times you would like to be available as well as the type<br/>
+                (To select all the feilds, just submit without selecting any times)
                 <div className="flex">
                     <div className="flex-child">
                         {
@@ -240,12 +236,48 @@ class Setup2Page extends Component{
                     {this.pop()}
                 </div>
                 <button onClick={() => {history.goBack()}}>Back</button>
-                <button onClick={() => {history.push({ 
+                {
+                //need to make sure feilds are selected
+                 }
+                <button onClick={() => {
+                                            var table = this.currentTable.current.GetResponce();
+                                            console.log(table.length);
+                                            var notEmpty = false;
+                                            for(var i = 0;i < table.length;i++){
+                                                for(var j = 0;j< table[0].length;j++){
+                                                    if(table[i][j] == 1){
+                                                        notEmpty = true;
+                                                    }
+                                                }
+                                            }
+                                            if(notEmpty){
+
+                                                console.log("no changes nessesary")   
+                                            }
+                                            else {
+                                                //change all values to yes
+                                                console.log("changed all values to true")
+
+                                                for(var i = 0;i < table.length;i++){
+                                                    for(var j = 0;j< table[0].length;j++){
+                                                        table[i][j] = 1;
+                                                    }
+                                                }
+                                            }
+                                            //is in group mode
+                                            if(this.state.mode == "G"){
+
+                                            }
+
+                                            console.log("table when submmitting");
+                                            console.table(table);
+                                            history.push({ 
                                                             pathname: '/view',
                                                             //pass things through state
                                                             state: {days: 2,
                                                                     type: state.type}
-                                                            })}}>Continue</button>
+                                                            })}}>Submit
+                                                            </button>
             </div>
         );
     }

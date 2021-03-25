@@ -139,6 +139,10 @@ class TimeSlotTable extends Component {
 
     }
 
+    GetReconstruction(){
+        return this.response;
+    }
+
 
 
     /**
@@ -184,7 +188,7 @@ class TimeSlotTable extends Component {
                                 key={keyName}
                                 id={keyName}
                                 className={rowClassName}
-                                onClick={() => this.handleTimeSlotClicked(keyName)}
+                                //onClick={() => this.handleTimeSlotClicked(keyName)}
 
                                 //TODO: make it so that you can only add or remove (depending on what is first selected)
                                 //ie can only do one action during the entire drag select
