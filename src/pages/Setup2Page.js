@@ -246,23 +246,33 @@ class Setup2Page extends Component{
                                             for(var i = 0;i < table.length;i++){
                                                 for(var j = 0;j< table[0].length;j++){
                                                     if(table[i][j] == 1){
+                                                        table[i][j] = true;
                                                         notEmpty = true;
+                                                    }
+                                                    else{
+                                                        table[i][j] = false;
                                                     }
                                                 }
                                             }
                                             if(notEmpty){
 
-                                                console.log("no changes nessesary")   
+                                                console.log("no changes nessesary");
+
                                             }
                                             else {
                                                 //change all values to yes
                                                 console.log("changed all values to true")
 
-                                                for(var i = 0;i < table.length;i++){
-                                                    for(var j = 0;j< table[0].length;j++){
-                                                        table[i][j] = 1;
-                                                    }
-                                                }
+
+                                                var temp = Array.from({ length: table.length }, () => 
+                                                Array.from({ length: table[0].length }, () => true)
+                                                );
+                                                table = temp;
+                                                // for(var i = 0;i < table.length;i++){
+                                                //     for(var j = 0;j< table[0].length;j++){
+                                                //         table[i][j] = 1;
+                                                //     }
+                                                // }
                                             }
                                             //is in group mode
                                             if(this.state.mode == "G"){

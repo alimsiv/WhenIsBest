@@ -139,7 +139,7 @@ class TimeSlotTable extends Component {
 
     }
 
-    GetReconstruction(){
+    GetResponce(){
         return this.response;
     }
 
