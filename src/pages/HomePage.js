@@ -28,7 +28,6 @@ class HomePage extends Component{
   constructor(props) {
     super(props);
     this.handleCodeChange = this.handleCodeChange.bind(this);
-    this.pollDBandGo = this.pollDBandGo.bind(this);
     this.state = {
         code: "",
     }
@@ -90,7 +89,7 @@ class HomePage extends Component{
                                 onClick={() => history.push({
                                     pathname: '/view',
                                     //pass things through state
-                                    state: {code:this.state.code}
+                                    state: {meetingID:this.state.code}
                                 })}>Go</button>}
                             </div>
                           </div>
