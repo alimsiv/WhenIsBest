@@ -174,7 +174,6 @@ class ViewPage extends Component{
                         </div>
                     </div>
 
-
                 </div>
             );
         }

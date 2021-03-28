@@ -327,6 +327,8 @@ class Setup2Page extends Component{
                                                             //pass things through state
                                                             state: {
                                                                     meetingID:mID,
+                                                                    priorityType:this.state.mode,
+                                                                    groupList:this.state.groupList
                                                                 }
                                                             })}}>Submit
                                                             </button>
