@@ -18,7 +18,7 @@ class ViewPage extends Component{
             days: [],
             minStart: [],
             showTimeSlotTable: [],
-            type: [],
+            daytype: [],
             name: [],
             hostID: [],
             priorityType: [],
@@ -41,13 +41,13 @@ class ViewPage extends Component{
         const meetingID = this.getID();
         const info = await getMeetingInfo(meetingID);
         const twoDTable = fixTable(info.showTimeSlot,info.tableCol);
-        const days = (info.type === 1) ? info.days : fixDays(info.days);
+        const days = (info.daytype === 1) ? info.days : fixDays(info.days);
 
         this.setState({
             days: days,
             minStart:info.minStart,
             showTimeSlotTable:twoDTable,
-            type: info.dayType,
+            daytype: info.daytype,
             name: info.name,
             hostID: info.hostID,
             priorityType:info.priorityType,
@@ -154,7 +154,7 @@ class ViewPage extends Component{
 
                     <div className="flex">
                         <div className="flex-child">
-                            <h4>Responses</h4>
+                            <h4>{(this.state.priorityType == "G" ? "Groups" : "Responces")}</h4>
                             <br/>
                             <tr>
                                 <td/>
@@ -176,7 +176,7 @@ class ViewPage extends Component{
                             <p>Input from user here</p>
                         </div>
                         <div className="flex-child">
-                            <TimeSlotTable type={this.state.type} dates={this.state.days}
+                            <TimeSlotTable type={this.state.daytype} dates={this.state.days}
                                            showTimeSlot={this.state.showTimeSlotTable}
                                            minStartTime={this.state.minStart}/>
                         </div>
