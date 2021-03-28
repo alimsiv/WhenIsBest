@@ -6,6 +6,7 @@ import Setup1Page from './pages/Setup1Page';
 import Setup2Page from './pages/Setup2Page';
 import ViewPage from './pages/ViewPage';
 import SignUp from './pages/SignUp'
+import Confirmation from './pages/Confirmation';
 import history from './history';
 
 export default class Routes extends Component {
@@ -18,6 +19,7 @@ export default class Routes extends Component {
                     <Route exact path="/Setup2" component={ Setup2Page }/>
                     <Route exact path="/view" component={ ViewPage }/>
                     <Route exact path="/signup" component={ SignUp }/>
+                    <Route exact path="/confirmation" component={Confirmation}/>
                     <Route component={Error} />
                 </Switch>
             </Router>

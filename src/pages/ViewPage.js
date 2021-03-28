@@ -103,13 +103,14 @@ class ViewPage extends Component{
     render() {
         var tableInfo = this.props.location.state;
         var responses = this.getResponces(tableInfo.priorityType,tableInfo.groupList);
+        var Header = (tableInfo.priorityType == "G" ? "Groups" : "Responses");
         return (
             <div className="ViewPage">
                 <h1>View Page</h1>
 
                 <div className="flex">
                     <div className="flex-child">
-                        <h4>Responses</h4>
+                        <h4>{Header}</h4>
                         <br/>
                         <tr>
                             <td/>
