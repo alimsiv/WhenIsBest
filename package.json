@@ -47,6 +47,7 @@
     ]
   },
   "devDependencies": {
+    "mathjs": "^9.3.0",
     "react-router-dom": "^5.2.0"
   }
 }
