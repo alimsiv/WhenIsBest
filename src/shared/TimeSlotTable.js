@@ -129,7 +129,8 @@ class TimeSlotTable extends Component {
         let title = "";
         if(timestamp%60 === 0) {
             const hour = timestamp / 60;
-            title = (hour < 12) ? hour + ' AM' : (hour - 12) + ' PM';
+            title = (hour < 13) ? hour : (hour - 12);
+            title += (hour < 12) ? ' AM' : ' PM';
 
         }
         return (
