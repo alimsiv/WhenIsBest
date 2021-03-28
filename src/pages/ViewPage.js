@@ -38,11 +38,10 @@ class ViewPage extends Component{
     }
 
     async componentDidMount() {
-        const info = await getMeetingInfo(this.props.location.state.meetingID);
-        console.log("THIS IS THE MEETING INFO: ")
-        console.log(info)
+        const meetingID = this.getID();
+        const info = await getMeetingInfo(meetingID);
         const twoDTable = fixTable(info.showTimeSlot,info.tableCol);
-        const days = (info.type == 1) ? info.days : fixDays(info.days);
+        const days = (info.type === 1) ? info.days : fixDays(info.days);
 
         this.setState({
             days: days,
@@ -64,6 +63,15 @@ class ViewPage extends Component{
             */
 
         });
+    }
+
+    getID() {
+        const url = window.location.href.toString();
+        const url_split = url.split("/");
+        const id = url_split.slice(-1)[0];
+        console.log("CONSOLE url: " + url_split);
+        console.log("CONSOLE id: " + id);
+        return id;
     }
 
     AdjustTimezone() {
@@ -139,7 +147,7 @@ class ViewPage extends Component{
             );
         }
         else {
-            //var responses = this.getResponses(this.state.priorityType, this.state.groupList);
+            var responses = this.getResponses(this.state.priorityType, this.state.groupList);
             return (
                 <div className="ViewPage">
                     <h1>View Page</h1>
@@ -155,7 +163,7 @@ class ViewPage extends Component{
                                     <h7>high</h7>
                                 </td>
                             </tr>
-                            {this.state.responses.map((response) => this.LeftSide(response))}
+                            {responses.map((response) => this.LeftSide(response))}
                         </div>
                         <div className="flex-child">
                             {
