@@ -15,7 +15,7 @@ class ViewPage extends Component{
             days: [],
             minStart: [],
             showTimeSlotTable: [],
-            type: [],
+            daytype: [],
             name: [],
             hostID: [],
             priorityType: [], //"G" for group, "P" for person
@@ -47,7 +47,7 @@ class ViewPage extends Component{
             days: days,
             minStart:info.minStart,
             showTimeSlotTable:twoDTable,
-            type: info.dayType,
+            daytype: info.daytype,
             name: info.name,
             hostID: info.hostID,
             priorityType:info.priorityType,
@@ -194,7 +194,7 @@ class ViewPage extends Component{
 
                     <div className="flex">
                         <div className="flex-child">
-                            <h4>Responses</h4>
+                            <h4>{(this.state.priorityType == "G" ? "Groups" : "Responces")}</h4>
                             <br/>
                             {this.GroupOrPeopleResponses()}
                         </div>
@@ -209,7 +209,7 @@ class ViewPage extends Component{
                             <p>Input from user here</p>
                         </div>
                         <div className="flex-child">
-                            <TimeSlotTable type={this.state.type} dates={this.state.days}
+                            <TimeSlotTable type={this.state.daytype} dates={this.state.days}
                                            showTimeSlot={this.state.showTimeSlotTable}
                                            minStartTime={this.state.minStart}/>
                         </div>

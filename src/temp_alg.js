@@ -2,9 +2,15 @@ const math = require('mathjs')
 const rownum = 2, colnum = 3;
 
 // notation for creating person
-// var person = {Name:"John", priority:5, avail_map: avail};
-// var group = {people: {list of people}, req: 1; priority: 3, avail_map: avail}
+// var person = {Name: "John", priority:3, avail_map: avail, group = ''};
+// people = list of persons
+// var group = {people: {list of people}, req: 0; priority: 3, avail_map: avail}
 // var groups = list of groups
+
+function outputColorMap(people = null, groups = null, reqs = false){
+    let avail = updateAvailability(people, groups, reqs);
+    return createColorMap(avail)
+}
 
 function updateAvailability(people = null, groups = null, reqs = false){
     let pg, reqMap, numPeople
@@ -41,7 +47,7 @@ function updateAvail(pg, reqMap, numPeople, reqs = false){
         let weightedMap = math.multiply(weights[pg[i].priority-1],pg[i].avail_map)
         updated = math.add(updated, weightedMap);
     }
-    if (matSum(reqMap) > 1)
+    if (matSum(reqMap) > 0)
         return math.dotMultiply(updated, reqMap);
     return updated
 }
@@ -86,12 +92,12 @@ function matSum(mat) {
     return sum
 }
 
-function setGroupMap(group){
+function getGroupMap(people){
     // Get availability map for each group
     // Only need when more people are added to a group
     let map = math.zeros(rownum, colnum)
-    for (let i = 0; i < group.people.length; i++){
-        map = map + group.people[i].avail_map;
+    for (let i = 0; i < people.length; i++){
+        map = map + people[i].avail_map;
     }
     return map;
 }
@@ -104,3 +110,25 @@ function getTotalNumPeople(groups){
     return num;
 }
 
+function convertToGroups(people, GroupList){
+    let groupDict = initializeGroups(GroupList)
+    let groups = [];
+    for (let i = 0; i < people.length; i++){
+        groupDict[people[i].group].push(people[i]);
+    }
+
+    for (let i = 0; GroupList.length; i++){
+        let peopleList = groupDict[GroupList[i]];
+        let group = {people: peopleList, req: 0, priority: 3, avail_map: getGroupMap(peopleList)}
+        groups.push(group);
+    }
+
+    return groups;
+}
+
+function initializeGroups(GroupList){
+    let groupDict = {}
+    for (let i = 0; i < GroupList.length; i++)
+        groupDict[GroupList[i]] = [];
+    return groupDict;
+}
