@@ -176,7 +176,7 @@ class TimeSlotTable extends Component {
 
         return (
             <>
-                <tr>
+                <tr className="timeslotRow">
                     {this.AddSideHeaderHour(timestamp, 4)}
                     {showTimeSlot.map(show => {
                         const keyName = 'timeslot:' + dayCount + ':' + timestamp;
