@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import NavigationBar from '../shared/NavigationBar'
+import database from '../database/database'
 import logo from "../logo.svg";
 import history from './../history'
 
@@ -42,64 +43,6 @@ class HomePage extends Component{
         console.log(value);
     }
   }
-
-  fixTable(oneDtable,cols){
-    var twoDTable = [];
-    var row;
-    while(oneDtable.length > 0){
-      row = oneDtable.splice(0,cols);
-      twoDTable.push(row);
-    }
-
-    return twoDTable;
-  }
-
-  fixDays(days){
-    var fixed = [];
-    days.forEach(day => fixed.push(new Date(day.seconds * 1000)));
-    return fixed;
-  }
-
-  pollDBandGo(){
-    console.log("go");
-    const db = firebase.firestore();
-    var docRef = db.collection("meetings").doc(this.state.code);
-    docRef.get().then((doc) => {
-        if (doc.exists) {
-            const info = doc.data();
-            var twoDTable = this.fixTable(info.showTimeSlot,info.tableCol);
-            var days;
-            if(info.type == 1){
-            //twoDTable = this.fixTable(info.showTimeSlot,info.tableCol);
-              days = info.days;
-            }
-            else{
-              days = this.fixDays(info.days);
-            }
-            console.log("Document data:", days);
-            history.push({ 
-              pathname: '/view',
-              //pass things through state
-              state: {
-                      days: days,
-                      minStart:info.minStart,
-                      showTimeSlotTable:twoDTable,
-                      type: info.type,
-                      name: info.name,
-                      hostID: info.hostID,
-                  }
-              })
-        } else {
-            // doc.data() will be undefined in this case
-            alert("meeting code not found");
-            console.log("No such document!");
-        }
-    }).catch((error) => {
-        console.log("Error getting document:", error);
-    });
-
-  }
-
 
     render() {
         return (
@@ -144,7 +87,11 @@ class HomePage extends Component{
                                 onChange={e => this.handleCodeChange(e)}
                             />
                             {<button className="mr10"
-                                onClick={() => this.pollDBandGo()}>Go</button>}
+                                onClick={() => history.push({
+                                    pathname: '/view',
+                                    //pass things through state
+                                    state: {code:this.state.code}
+                                })}>Go</button>}
                             </div>
                           </div>
                         </div>

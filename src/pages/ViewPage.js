@@ -2,40 +2,54 @@ import { Component } from 'react';
 import Form from 'react-bootstrap/Form';
 import NavigationBar from '../shared/NavigationBar';
 import TimeSlotTable from "../shared/TimeSlotTable";
+import {getMeetingInfo} from "../database/database";
 import '../styling/styles.css';
+import firebase from "firebase";
+import history from "../history";
 
 
 class ViewPage extends Component{
 
-
     constructor(props) {
         super(props);
         //0 for Specific Dates, 1 for Days of the Week
+
+        const info = getMeetingInfo(this.props.code);
+        const twoDTable = this.fixTable(info.showTimeSlot,info.tableCol);
+        const days = (info.type == 1) ? info.days : this.fixDays(info.days);
+
         this.state = {
+            days: days,
+            minStart:info.minStart,
+            showTimeSlotTable:twoDTable,
+            type: info.type,
+            name: info.name,
+
+            /*
             dates: [new Date(2021, 1, 22),new Date(2021, 1, 25),new Date(2021, 1, 28)],
             weekdays: ["Monday","Tuesday","Wednesday"],
             showTimeSlot: [[true, true, true], [false, false, false], [false, true, true], [false, true, true], [true, true, false], [true, true, true], [true, true, true], [true, true, true], [true, true, true], [true, true, true], [true, true, true]],
             minStartTime: 540, //The earliest time slot for the range of dates/days chosen (minutes since midnight)
             timezoneOffset: 0,
             responses: ["Marlee", "Ali", "Levi"],
+            */
 
-
-
-            //NOTE: Leaving these all commented out for now, just in case we decide to change the implementation back to one of these. Sorry for the mess -Ali
-
-            /*times: [[new Date(2021, 1, 22, 8, 0), new Date(2021, 1, 22, 16, 0)],
-                [new Date(2021, 1, 26, 8, 0), new Date(2021, 1, 27, 16, 0)],
-                [new Date(2021, 1, 26, 8, 0), new Date(2021, 1, 27, 16, 0)]],*/
-            //times: [["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"], ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"], ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]],
-            //times: [[new Date()], "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]
-            //maxStopTime: 0, //The latest time slot for the range of dates/days chosen
-            /*dateTimes: [[new Date(2021, 1, 22), ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]],
-                [new Date(2021, 1, 26), ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]],
-                [new Date(2021, 1, 27), ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]]],*/
         }
     }
 
 
+    pollDBandGo(){
+        const info = getMeetingInfo(this.props.code);
+        const twoDTable = this.fixTable(info.showTimeSlot,info.tableCol);
+        const days = (info.type == 1) ? info.days : this.fixDays(info.days);
+        this.setState({
+            days: days,
+            minStart:info.minStart,
+            showTimeSlotTable:twoDTable,
+            type: info.type,
+            name: info.name,
+        });
+    }
 
     AdjustTimezone() {
         const seoul = new Date(1489199400000);

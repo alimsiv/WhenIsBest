@@ -324,11 +324,7 @@ class Setup2Page extends Component{
                                                             pathname: '/view',
                                                             //pass things through state
                                                             state: {
-                                                                    days: days,
-                                                                    minStart:minStart,
-                                                                    showTimeSlotTable:table,
-                                                                    type: state.type,
-                                                                    meetingID:mID,
+                                                                    code: mID
                                                                 }
                                                             })}}>Submit
                                                             </button>
