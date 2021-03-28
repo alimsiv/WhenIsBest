@@ -8,8 +8,10 @@ import {useCollectionData} from 'react-firebase-hooks/firestore';
 //const auth = firebase.auth();
 //const firestore = firebase.firestore();
 
-//const meetingsRef = firestore.collection('meetings');
-//const usersRef = firestore.collection('users');
+const meetingRef = (meetingID) => {
+    const db = firebase.firestore();
+    return db.collection("meetings").doc(meetingID);
+}
 
 /*
 function getEventRef(id) {
@@ -49,24 +51,48 @@ function meetingExists(code){
 }
 */
 /***
- * Return a all into for a given meeting
+ * Return a all info for a given meeting
  * @param code
  */
 export async function getMeetingInfo(code){
     //const docRef = meetingsRef.doc(code);
-    const db = firebase.firestore();
-    var docRef = db.collection("meetings").doc(code);
-    const doc = await docRef.get();
-    console.log(doc.data());
+    const doc = await meetingRef(code).get();
     if (doc.exists) {
-        const meetingInfo = doc.data()
-        console.log("Document data:", meetingInfo);
-        return meetingInfo;
+        return doc.data()
     } else {
         // doc.data() will be undefined in this case
         alert("meeting code not found");
         console.log("No such document!");
     }
+}
+
+/***
+ * Returns a list of people responses for a given meeting
+ * @param code
+ */
+export async function getResponses(code){
+    const responses = [];
+    const responsesCol = await meetingRef(code).collection("responses").get();
+    if (responsesCol != null){
+
+        responsesCol.forEach((doc) => responses.push({ ...doc.data(), id: doc.id, priority: 3 }));
+    }
+    console.log(responses);
+    return responses;
+
+
+    /*
+    return meetingRef(code).collection("responses").onSnapshot((snapshot) => {
+        const responses = [];
+        snapshot.forEach((doc) => responses.push({ ...doc.data(), id: doc.id, priority: 3 }));
+        console.log("GetResponses in database");
+        console.log(responses);
+        //return responses;
+
+    }).catch(error => {
+            alert("Error: " + error);
+        });
+     */
 }
 
 export function fixTable(oneDtable,cols){

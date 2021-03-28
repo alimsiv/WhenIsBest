@@ -1,11 +1,8 @@
 import { Component } from 'react';
 import Form from 'react-bootstrap/Form';
-import NavigationBar from '../shared/NavigationBar';
 import TimeSlotTable from "../shared/TimeSlotTable";
-import {getMeetingInfo, fixTable, fixDays} from "../database/database";
+import {getMeetingInfo, fixTable, fixDays, getResponses} from "../database/database";
 import '../styling/styles.css';
-import firebase from "firebase";
-import history from "../history";
 
 
 class ViewPage extends Component{
@@ -21,9 +18,11 @@ class ViewPage extends Component{
             type: [],
             name: [],
             hostID: [],
-            priorityType: [],
-            groupList: [],
+            priorityType: [], //"G" for group, "P" for person
+            groupList: [], //List of group names
             responses: ["Marlee", "Ali", "Levi"],
+            userName: [],
+            userGroup: [],
 
             /*
             dates: [new Date(2021, 1, 22),new Date(2021, 1, 25),new Date(2021, 1, 28)],
@@ -41,7 +40,8 @@ class ViewPage extends Component{
         const meetingID = this.getID();
         const info = await getMeetingInfo(meetingID);
         const twoDTable = fixTable(info.showTimeSlot,info.tableCol);
-        const days = (info.type === 1) ? info.days : fixDays(info.days);
+        const days = (info.daytype === 1) ? info.days : fixDays(info.days);
+        const responseList = await getResponses(meetingID);
 
         this.setState({
             days: days,
@@ -51,17 +51,8 @@ class ViewPage extends Component{
             name: info.name,
             hostID: info.hostID,
             priorityType:info.priorityType,
-            groupList:info.groupList
-
-            /*
-            dates: [new Date(2021, 1, 22),new Date(2021, 1, 25),new Date(2021, 1, 28)],
-            weekdays: ["Monday","Tuesday","Wednesday"],
-            showTimeSlot: [[true, true, true], [false, false, false], [false, true, true], [false, true, true], [true, true, false], [true, true, true], [true, true, true], [true, true, true], [true, true, true], [true, true, true], [true, true, true]],
-            minStartTime: 540, //The earliest time slot for the range of dates/days chosen (minutes since midnight)
-            timezoneOffset: 0,
-            responses: ["Marlee", "Ali", "Levi"],
-            */
-
+            groupList:info.groupList,
+            responses: responseList
         });
     }
 
@@ -69,8 +60,6 @@ class ViewPage extends Component{
         const url = window.location.href.toString();
         const url_split = url.split("/");
         const id = url_split.slice(-1)[0];
-        console.log("CONSOLE url: " + url_split);
-        console.log("CONSOLE id: " + id);
         return id;
     }
 
@@ -82,9 +71,14 @@ class ViewPage extends Component{
         console.log(Date.formatDate(ny));     // 2017/3/10 21:30
     }
 
-    handleUpdatePriority(name, priority){
+    handleUpdatePriority(person, priority){
         //TODO: update priority of name
-        console.log(name + "'s priority is: " + priority);
+        console.log(person.name + "'s priority is: " + priority);
+    }
+
+    handleUpdateCheckBox(person, status){
+        //TODO: update checkbox of name
+        console.log(person.name + " has been selected: " + status);
     }
 
     getResponses(mode,groupList){
@@ -96,12 +90,7 @@ class ViewPage extends Component{
         }
     }
 
-    handleUpdateCheckBox(name, status){
-        //TODO: update checkbox of name
-        console.log(name + " has been selected: " + status);
-    }
-
-    LeftSide(response) {
+    PeopleResponses(response) {
 /*
         return (
             <tr>
@@ -124,12 +113,12 @@ class ViewPage extends Component{
         return (
             <tr>
                 <td className="responses_name">
-                    <Form.Group controlId={response + '_checkbox'} className='response'>
-                        <Form.Check type="checkbox" label={response} onChange={(e) => this.handleUpdateCheckBox(response, e.target.value)}/>
+                    <Form.Group controlId={response.id + '_checkbox'} className='response'>
+                        <Form.Check type="checkbox" label={response.name} onChange={(e) => this.handleUpdateCheckBox(response, e.target.value)}/>
                     </Form.Group>
                 </td>
                 <td className="responses_range">
-                    <input type="range" id={response + "_range"} min="1" max="5" step="1" onChange={(e) => this.handleUpdatePriority(response, e.target.value)}/>
+                    <input type="range" id={response.id + "_range"} min="1" max="5" step="1" onChange={(e) => this.handleUpdatePriority(response, e.target.value)}/>
 
                 </td>
 
@@ -137,9 +126,59 @@ class ViewPage extends Component{
         );
     }
 
+    GroupResponses(group) {
+        return (
+            <tr>
+                <td className="responses_name">
+                    <Form.Group controlId={group + '_checkbox'} className='response'>
+                        <Form.Check type="checkbox" label={group} onChange={(e) => this.handleUpdateCheckBox(group, e.target.value)}/>
+                    </Form.Group>
+                </td>
+                <td className="responses_range">
+                    <input type="range" id={group + "_range"} min="1" max="5" step="1" onChange={(e) => this.handleUpdatePriority(group, e.target.value)}/>
+
+                </td>
+
+            </tr>
+        );
+    }
+
+    GroupOrPeopleResponses() {
+        if (this.state.priorityType === "P"){
+            console.log("People Responses");
+            return (
+                <>
+                    <tr>
+                        <td/>
+                        <td className="flex">
+                            <h7>low</h7>
+                            <h7>high</h7>
+                        </td>
+                    </tr>
+                    {this.state.responses.map((response) => this.PeopleResponses(response))}
+                </>
+            );
+        }
+        else{
+            console.log("Group Responses");
+            return (
+                <>
+                    <tr>
+                        <td/>
+                        <td className="flex">
+                            <h7>low</h7>
+                            <h7>high</h7>
+                        </td>
+                    </tr>
+                    {this.state.groupList.map((group) => this.GroupResponses(group))}
+                </>
+            );
+        }
+    }
+
     render() {
         if (this.state.days.length === 0){
-            console.log("This is where we want to be")
+            console.log("Loading database still")
             return (
               <div>
                   <p>This is a loading page.</p>
@@ -147,6 +186,7 @@ class ViewPage extends Component{
             );
         }
         else {
+            console.log(this.state);
             //var responses = this.getResponses(this.state.priorityType, this.state.groupList);
             return (
                 <div className="ViewPage">
@@ -156,14 +196,7 @@ class ViewPage extends Component{
                         <div className="flex-child">
                             <h4>Responses</h4>
                             <br/>
-                            <tr>
-                                <td/>
-                                <td className="flex">
-                                    <h7>low</h7>
-                                    <h7>high</h7>
-                                </td>
-                            </tr>
-                            {this.state.responses.map((response) => this.LeftSide(response))}
+                            {this.GroupOrPeopleResponses()}
                         </div>
                         <div className="flex-child">
                             {
