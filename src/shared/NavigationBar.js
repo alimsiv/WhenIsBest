@@ -19,7 +19,7 @@ const NavigationBar = () => {
                         {/* no link yet */}
                         <Nav.Link href="/signup">Sign Up</Nav.Link>
                         {/* no link yet */}
-                        <Nav.Link href="/">Login</Nav.Link>
+                        <Nav.Link href="/login">Login</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
