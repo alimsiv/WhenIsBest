@@ -60,10 +60,10 @@ class Setup2Page extends Component{
     }
 
     handleModeChange(type){
-        if(this.state.type != type){
-            this.setState({type: type});
+        if(this.state.mode != type){
+            this.setState({mode: type});
         }
-        console.log(this.state.type);
+        console.log(this.state.mode);
     }
 
     handlePopup(msg,show){
@@ -116,11 +116,13 @@ class Setup2Page extends Component{
               hostID: uid,
               days: days,
               name: state.name,
-              type:type,
+              daytype:type,
               showTimeSlot:oneDTable,
               tableCol:table[0].length,
               tableRow:table.length,
-              minStart:minStart,  
+              minStart:minStart,
+              priorityType:this.state.mode,
+              groupList:this.state.groupList  
             });
         return(docRef.id);
     }
@@ -143,7 +145,7 @@ class Setup2Page extends Component{
                 <input type="radio" name="chooseone" value="Person"onClick={() => this.handleModeChange("P")}/><label for="Person"> Person</label><br/>
             </form>
             <div>
-            {this.state.type == "G" ? this.handlegroupList(): ""}
+            {this.state.mode == "G" ? this.handlegroupList(): ""}
             </div>
             </div>
             </>
@@ -329,6 +331,8 @@ class Setup2Page extends Component{
                                                                     showTimeSlotTable:table,
                                                                     type: state.type,
                                                                     meetingID:mID,
+                                                                    priorityType:this.state.mode,
+                                                                    groupList:this.state.groupList
                                                                 }
                                                             })}}>Submit
                                                             </button>

@@ -84,9 +84,12 @@ class HomePage extends Component{
                       days: days,
                       minStart:info.minStart,
                       showTimeSlotTable:twoDTable,
-                      type: info.type,
+                      type: info.dayType,
                       name: info.name,
                       hostID: info.hostID,
+                      priorityType:info.priorityType,
+                      groupList:info.groupList
+
                   }
               })
         } else {

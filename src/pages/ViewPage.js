@@ -50,6 +50,15 @@ class ViewPage extends Component{
         console.log(name + "'s priority is: " + priority);
     }
 
+    getResponces(mode,groupList){
+        if(mode == "G"){
+            return groupList
+        }
+        else{
+            return this.state.responses
+        }
+    }
+
     handleUpdateCheckBox(name, status){
         //TODO: update checkbox of name
         console.log(name + " has been selected: " + status);
@@ -93,6 +102,7 @@ class ViewPage extends Component{
 
     render() {
         var tableInfo = this.props.location.state;
+        var responses = this.getResponces(tableInfo.priorityType,tableInfo.groupList);
         return (
             <div className="ViewPage">
                 <h1>View Page</h1>
@@ -108,7 +118,7 @@ class ViewPage extends Component{
                                 <h7>high</h7>
                             </td>
                         </tr>
-                        {this.state.responses.map((response) => this.LeftSide(response))}
+                        {responses.map((response) => this.LeftSide(response))}
                     </div>
                     <div className="flex-child">
                         {
