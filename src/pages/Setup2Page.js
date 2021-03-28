@@ -299,11 +299,11 @@ class Setup2Page extends Component{
                                             for(var i = 0;i < table.length;i++){
                                                 for(var j = 0;j< table[0].length;j++){
                                                     if(table[i][j] == 1){
-                                                        table[i][j] = true;
+                                                        table[i][j] = 1;
                                                         notEmpty = true;
                                                     }
                                                     else{
-                                                        table[i][j] = false;
+                                                        table[i][j] = 0;
                                                     }
                                                 }
                                             }
@@ -318,7 +318,7 @@ class Setup2Page extends Component{
 
                                                 //initialize table with all elements set to true
                                                 table = Array.from({ length: table.length }, () => 
-                                                Array.from({ length: table[0].length }, () => true)
+                                                Array.from({ length: table[0].length }, () => 1)
                                                 );
                                                 //table = temp;
                                             }
