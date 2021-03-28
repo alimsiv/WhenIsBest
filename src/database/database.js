@@ -13,11 +13,9 @@ const meetingRef = (meetingID) => {
     return db.collection("meetings").doc(meetingID);
 }
 
-/*
-function getEventRef(id) {
-    return firestore.collection('events').doc(id);
+const responsesRef = (meetingID) => {
+    return meetingRef(meetingID).collection("responses");
 }
- */
 
 /*
 const updateDatabase = async(e) => {
@@ -39,18 +37,6 @@ const updateDatabase = async(e) => {
 */
 
 /***
- * Returns true if meeting exists in database, false otherwise
- * @param code
- * @returns {*}
- */
-/*
-function meetingExists(code){
-    var docRef = meetingsRef.doc(code);
-    const doc = docRef.get();
-    return doc.exists;
-}
-*/
-/***
  * Return a all info for a given meeting
  * @param code
  */
@@ -68,31 +54,36 @@ export async function getMeetingInfo(code){
 
 /***
  * Returns a list of people responses for a given meeting
+ * Each entry has the fields: name, availability, group, id, priority
  * @param code
  */
 export async function getResponses(code){
     const responses = [];
-    const responsesCol = await meetingRef(code).collection("responses").get();
-    if (responsesCol != null){
+    const responsesCollection = await responsesRef(code).get();
+    if (responsesCollection != null){
 
-        responsesCol.forEach((doc) => responses.push({ ...doc.data(), id: doc.id, priority: 3 }));
+        responsesCollection.forEach((doc) => responses.push({ ...doc.data(), id: doc.id, priority: 3 }));
     }
     console.log(responses);
     return responses;
+}
 
+export function addResponseToDB(meetingID, name, group, responses){
+    const docRef = responsesRef(meetingID).doc();
 
-    /*
-    return meetingRef(code).collection("responses").onSnapshot((snapshot) => {
-        const responses = [];
-        snapshot.forEach((doc) => responses.push({ ...doc.data(), id: doc.id, priority: 3 }));
-        console.log("GetResponses in database");
-        console.log(responses);
-        //return responses;
+        docRef.set({
+            name: name,
+            availability: responses.flat(),
+            group: group
+        })
+        return docRef.id;
+}
 
-    }).catch(error => {
-            alert("Error: " + error);
-        });
-     */
+export function updateResponseInDB(meetingID, id, name, responses){
+    responsesRef(meetingID).doc(id).update({
+            name: name,
+            availability: responses.flat(),
+    })
 }
 
 export function fixTable(oneDtable,cols){

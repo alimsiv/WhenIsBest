@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import Form from 'react-bootstrap/Form';
 import TimeSlotTable from "../shared/TimeSlotTable";
-import {getMeetingInfo, fixTable, fixDays, getResponses} from "../database/database";
+import {getMeetingInfo, fixTable, fixDays, getResponses, addResponseToDB, updateResponseInDB} from "../database/database";
 import '../styling/styles.css';
 
 
@@ -11,7 +11,9 @@ class ViewPage extends Component{
         super(props);
         //0 for Specific Dates, 1 for Days of the Week
 
+        this.handleUpdateDB = this.handleUpdateDB.bind(this);
         this.state = {
+            meetingID: [],
             days: [],
             minStart: [],
             showTimeSlotTable: [],
@@ -20,9 +22,10 @@ class ViewPage extends Component{
             hostID: [],
             priorityType: [], //"G" for group, "P" for person
             groupList: [], //List of group names
-            responses: ["Marlee", "Ali", "Levi"],
-            userName: [],
-            userGroup: [],
+            responses: [],
+            userGroup: "",
+            userID: "",
+            //TODO set to authenticated user id if logged in
 
             /*
             dates: [new Date(2021, 1, 22),new Date(2021, 1, 25),new Date(2021, 1, 28)],
@@ -44,6 +47,7 @@ class ViewPage extends Component{
         const responseList = await getResponses(meetingID);
 
         this.setState({
+            meetingID: meetingID,
             days: days,
             minStart:info.minStart,
             showTimeSlotTable:twoDTable,
@@ -81,6 +85,34 @@ class ViewPage extends Component{
         console.log(person.name + " has been selected: " + status);
     }
 
+    handleUpdateDB(response){
+        console.log("Updating database");
+        const name = document.getElementById("user-name-input").value;
+        if (this.state.userID !== ""){
+            //user already exists in responses database
+            updateResponseInDB(this.state.meetingID, this.state.userID, name, response)
+        }
+        else {
+            const userID = addResponseToDB(this.state.meetingID, name,
+                this.state.userGroup, response)
+            this.setState({
+                userID: userID
+            });
+        }
+
+
+
+    }
+
+    initialResponseMatrix(){
+        const response = new Array(this.props.showTimeSlot.length);
+        const width = this.props.showTimeSlot[0].length;
+        for (let i = 0; i < response.length; i++){
+            response[i] = new Array(width).fill(0);
+        }
+        return response;
+    }
+
     getResponses(mode,groupList){
         if(mode == "G"){
             return groupList
@@ -91,25 +123,6 @@ class ViewPage extends Component{
     }
 
     PeopleResponses(response) {
-/*
-        return (
-            <tr>
-                <td className="responses_name">
-                <Form.Group controlId={response + '_checkbox'} className='response'>
-                    <Form.Check type="checkbox" label={response} />
-                </Form.Group>
-                </td>
-                <td className="responses_range">
-                <Form.Group controlId={response + '_range'}>
-                    <Form.Control type="range" custom
-                                  onChange={(e) => this.handleUpdatePriority(response, e.target.value)} />
-                </Form.Group>
-                </td>
-
-            </tr>
-        );
-
- */
         return (
             <tr>
                 <td className="responses_name">
@@ -146,6 +159,13 @@ class ViewPage extends Component{
     GroupOrPeopleResponses() {
         if (this.state.priorityType === "P"){
             console.log("People Responses");
+            if (this.state.responses.length === 0){
+                return (
+                    <div>
+                        There are no responses yet.
+                    </div>
+                );
+            }
             return (
                 <>
                     <tr>
@@ -176,6 +196,30 @@ class ViewPage extends Component{
         }
     }
 
+    /*
+    AddAvailabilityButton() {
+        return (
+            <button id="update-availability-button" onClick={() => {
+                    var name = document.getElementById("user-name-input").value;
+                    if(name == ""){
+                        alert("you have not picked an event name");
+                    }
+                    else if(!this.validTime(this.state.start,this.state.end)){
+                        alert("Your time selection is invalid, make sure your start time is atleast 15 mins before you endtime");
+                    }
+                    else {
+                        addResponseToDB(this.state.meetingID, this.state.userName, this.state.userGroup, this.state.userID, )
+                    }
+
+                }}>
+                Add Availability
+            </button>
+        );
+        //TODO: change to Update Availability
+    }
+
+     */
+
     render() {
         if (this.state.days.length === 0){
             console.log("Loading database still")
@@ -191,10 +235,17 @@ class ViewPage extends Component{
             return (
                 <div className="ViewPage">
                     <h1>View Page</h1>
+                    <br/>
+                    <br/>
+                    <div className="flex">
+                    <form>
+                        <input id="user-name-input" type="text" className="form-control" placeholder="Your Name" onSubmit/>
+                    </form>
+                    </div>
 
                     <div className="flex">
                         <div className="flex-child">
-                            <h4>{(this.state.priorityType == "G" ? "Groups" : "Responces")}</h4>
+                            <h4>{(this.state.priorityType === "G" ? "Groups" : "Responses")}</h4>
                             <br/>
                             {this.GroupOrPeopleResponses()}
                         </div>
@@ -211,7 +262,9 @@ class ViewPage extends Component{
                         <div className="flex-child">
                             <TimeSlotTable type={this.state.daytype} dates={this.state.days}
                                            showTimeSlot={this.state.showTimeSlotTable}
-                                           minStartTime={this.state.minStart}/>
+                                           minStartTime={this.state.minStart}
+                                           handleUpdateDB={this.handleUpdateDB}
+                                            AddAvailabilityButton={this.AddAvailabilityButton}/>
                         </div>
                     </div>
 

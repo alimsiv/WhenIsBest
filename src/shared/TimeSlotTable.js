@@ -26,7 +26,7 @@ class TimeSlotTable extends Component {
     }
 
     handleMulti(isOn,id){
-        if(this.state.multiSelect != isOn){
+        if(this.state.multiSelect !== isOn){
             this.setState({multiSelect: isOn});
             if(isOn){
                 var location = this.getMatrixLocation(id);
@@ -139,7 +139,7 @@ class TimeSlotTable extends Component {
 
     }
 
-    GetResponce(){
+    GetResponse(){
         return this.response;
     }
 
@@ -231,18 +231,33 @@ class TimeSlotTable extends Component {
     render() {
 
         return (
-            <div className="TimeSlotTable">
-                <table className="styled-table" onMouseLeave = {() => {this.handleMulti(false)}}>
-                    <thead>
-                    <tr>
-                        <th/>
-                        {this.props.type ? (this.props.dates.map((date) => this.AddHeaderWeekDay(date))) :
-                                           (this.props.dates.map((date) => this.AddHeaderDate(date)))}
-                    </tr>
-                    </thead>
-                    {this.TimeSlotCreateRows()}
-                </table>
-            </div>
+            <>
+                <button id="update-availability-button" onClick={() => {
+                    if(document.getElementById("user-name-input").value === ""){
+                        alert("Please enter your name.");
+                    }
+                    else if(this.response.flat().reduce((total, num) => {return total + num}) === 0){
+                        alert("Please select some availabilities.");
+                    }
+                    else {
+                        this.props.handleUpdateDB(this.response)
+                    }
+                }}>
+                    Add Availability
+                </button>
+                <div className="TimeSlotTable">
+                    <table className="styled-table" onMouseLeave = {() => {this.handleMulti(false)}}>
+                        <thead>
+                        <tr>
+                            <th/>
+                            {this.props.type ? (this.props.dates.map((date) => this.AddHeaderWeekDay(date))) :
+                                               (this.props.dates.map((date) => this.AddHeaderDate(date)))}
+                        </tr>
+                        </thead>
+                        {this.TimeSlotCreateRows()}
+                    </table>
+                </div>
+            </>
         );
     }
 }
