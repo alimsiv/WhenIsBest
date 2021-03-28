@@ -55,15 +55,15 @@ class Setup2Page extends Component{
     
     handleAddGroup(){
         var temp = this.state.groupList;
-        temp.push(" ");
+        temp.push("");
         this.setState({groupList:temp})
     }
 
     handleModeChange(type){
-        if(this.state.type != type){
-            this.setState({type: type});
+        if(this.state.mode != type){
+            this.setState({mode: type});
         }
-        console.log(this.state.type);
+        console.log(this.state.mode);
     }
 
     handlePopup(msg,show){
@@ -104,7 +104,7 @@ class Setup2Page extends Component{
         );
     }
 
-    addtoDB(days,minStart,table,type){
+    addtoDB(days,minStart,table,type,groupList){
         //const firestore = firebase.firestore();
         const state = this.props.location.state;
         var oneDTable = table.flat();
@@ -116,11 +116,13 @@ class Setup2Page extends Component{
               hostID: uid,
               days: days,
               name: state.name,
-              type:type,
+              daytype:type,
               showTimeSlot:oneDTable,
               tableCol:table[0].length,
               tableRow:table.length,
-              minStart:minStart,  
+              minStart:minStart,
+              priorityType:this.state.mode,
+              groupList: groupList  
             });
         return(docRef.id);
     }
@@ -143,7 +145,7 @@ class Setup2Page extends Component{
                 <input type="radio" name="chooseone" value="Person"onClick={() => this.handleModeChange("P")}/><label for="Person"> Person</label><br/>
             </form>
             <div>
-            {this.state.type == "G" ? this.handlegroupList(): ""}
+            {this.state.mode == "G" ? this.handlegroupList(): ""}
             </div>
             </div>
             </>
@@ -187,6 +189,15 @@ class Setup2Page extends Component{
 
     }
 
+    uniqueNames(groupList){
+        const uniqueGroups = new Set();
+        for(var i = 0;i < groupList.length; i++){
+            uniqueGroups.add(groupList[i]);
+            //console.log(groupList[i])
+        }
+        return(uniqueGroups.size == groupList.length);
+
+    }
 
     daysofweekMode() {
         const state = this.props.location.state 
@@ -272,6 +283,7 @@ class Setup2Page extends Component{
                 <button onClick={() => {
                                             var timeStuff = this.startAndEndStuff();
                                             var minStart = timeStuff[1];
+                                            var allGood = true;
                                             var days;
                                             if(state.type){
                                                 days = this.daysofweekMode();
@@ -281,17 +293,17 @@ class Setup2Page extends Component{
                                             }
                                             
                                             var table = this.currentTable.current.GetResponce();
-                                            console.log(table.length);
+                                            //console.log(table.length);
                                             var notEmpty = false;
                                             //converts timeslotTable to boolean table so can be used for showTimeslot when pulling from db
                                             for(var i = 0;i < table.length;i++){
                                                 for(var j = 0;j< table[0].length;j++){
                                                     if(table[i][j] == 1){
-                                                        table[i][j] = true;
+                                                        table[i][j] = 1;
                                                         notEmpty = true;
                                                     }
                                                     else{
-                                                        table[i][j] = false;
+                                                        table[i][j] = 0;
                                                     }
                                                 }
                                             }
@@ -304,34 +316,52 @@ class Setup2Page extends Component{
                                                 //change all values to yes
                                                 console.log("changed all values to true")
 
-                                                //initilaze table with all elements set to true
+                                                //initialize table with all elements set to true
                                                 table = Array.from({ length: table.length }, () => 
-                                                Array.from({ length: table[0].length }, () => true)
+                                                Array.from({ length: table[0].length }, () => 1)
                                                 );
                                                 //table = temp;
                                             }
                                             //is in group mode
+                                            var modifiedGroupList = [];
                                             if(this.state.mode == "G"){
+                                                allGood = false;
 
+                                                var count = 0;
+                                                for(var i = 0; i < this.state.groupList.length; i++){
+                                                    if(this.state.groupList[i] != ""){
+                                                        count++;
+                                                        console.log(this.state.groupList[i]);
+                                                        modifiedGroupList.push(this.state.groupList[i]);//push to DB
+                                                    }
+                                                    else{
+                                                        //
+                                                    }
+                                                }
+                                                if(count >= 2 && this.uniqueNames(modifiedGroupList)){
+                                                    allGood = true;
+                                                }
+                                                else{
+                                                    alert("You must have at least two groups all with unique names to use group mode")
+                                                }
                                             }
+                                            //push to DB
+                                            var mID = this.addtoDB(days,minStart,table,state.type, modifiedGroupList);
 
-                                            var mID = this.addtoDB(days,minStart,table,state.type);
 
-
-                                            console.log(days);
-                                            console.table(table);
-                                            history.push({ 
-                                                            pathname: '/view',
-                                                            //pass things through state
-                                                            state: {
-                                                                    days: days,
-                                                                    minStart:minStart,
-                                                                    showTimeSlotTable:table,
-                                                                    type: state.type,
-                                                                    meetingID:mID,
+                                            //console.log(days);
+                                            //console.table(table);
+                                            if(allGood){
+                                                history.push({ 
+                                                                pathname: '/confirmation',
+                                                                //pass things through state
+                                                                state: {
+                                                                        meetingID:mID,
                                                                 }
-                                                            })}}>Submit
-                                                            </button>
+                                                            })
+                                                        }
+                                                    }}>Submit
+                                                                </button>
             </div>
         );
     }

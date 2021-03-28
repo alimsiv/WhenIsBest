@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import NavigationBar from '../shared/NavigationBar'
+import database from '../database/database'
 import logo from "../logo.svg";
 import wig from '../WIG.png'
 import history from './../history'
@@ -51,7 +52,6 @@ class HomePage extends Component{
     //const ls = this.state.code;
     if(this.state.code != value){
         this.setState({code: value});
-        console.log(value);
     }
   }
 
