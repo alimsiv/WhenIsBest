@@ -39,7 +39,6 @@ class HomePage extends Component{
     //const ls = this.state.code;
     if(this.state.code != value){
         this.setState({code: value});
-        console.log(value);
     }
   }
 
@@ -87,9 +86,7 @@ class HomePage extends Component{
                             />
                             {<button className="mr10"
                                 onClick={() => history.push({
-                                    pathname: '/view',
-                                    //pass things through state
-                                    state: {meetingID:this.state.code}
+                                    pathname: '/view/' + this.state.code,
                                 })}>Go</button>}
                             </div>
                           </div>
