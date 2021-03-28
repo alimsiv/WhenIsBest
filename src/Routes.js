@@ -17,7 +17,7 @@ export default class Routes extends Component {
                     <Route exact path="/" component={ HomePage }/>
                     <Route exact path="/setup1" component={ Setup1Page }/>
                     <Route exact path="/Setup2" component={ Setup2Page }/>
-                    <Route exact path="/view" component={ ViewPage }/>
+                    <Route exact path="/view/:meetingID" component={ ViewPage }/>
                     <Route exact path="/signup" component={ SignUp }/>
                     <Route exact path="/confirmation" component={Confirmation}/>
                     <Route component={Error} />

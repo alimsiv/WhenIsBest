@@ -30,17 +30,8 @@ render() {
                         }}>Home</button>
                         <button onClick={() => {
                             history.push({ 
-                                    pathname: '/view',
+                                    pathname: '/view/' + tableInfo.meetingID,
                                     //pass things through state
-                                    state: {
-                                            days: tableInfo.days,
-                                            minStart: tableInfo.minStart,
-                                            showTimeSlotTable: tableInfo.showTimeSlotTable,
-                                            type: tableInfo.type,
-                                            meetingID:tableInfo.meetingID,
-                                            priorityType:tableInfo.priorityType,
-                                            groupList:tableInfo.groupList,
-                                        }
                                     })}}>Continue
                                     </button>
                     </div>

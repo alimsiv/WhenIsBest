@@ -2,40 +2,77 @@ import { Component } from 'react';
 import Form from 'react-bootstrap/Form';
 import NavigationBar from '../shared/NavigationBar';
 import TimeSlotTable from "../shared/TimeSlotTable";
+import {getMeetingInfo, fixTable, fixDays} from "../database/database";
 import '../styling/styles.css';
+import firebase from "firebase";
+import history from "../history";
 
 
 class ViewPage extends Component{
 
-
     constructor(props) {
         super(props);
         //0 for Specific Dates, 1 for Days of the Week
+
         this.state = {
+            days: [],
+            minStart: [],
+            showTimeSlotTable: [],
+            type: [],
+            name: [],
+            hostID: [],
+            priorityType: [],
+            groupList: [],
+            responses: ["Marlee", "Ali", "Levi"],
+
+            /*
             dates: [new Date(2021, 1, 22),new Date(2021, 1, 25),new Date(2021, 1, 28)],
             weekdays: ["Monday","Tuesday","Wednesday"],
             showTimeSlot: [[true, true, true], [false, false, false], [false, true, true], [false, true, true], [true, true, false], [true, true, true], [true, true, true], [true, true, true], [true, true, true], [true, true, true], [true, true, true]],
             minStartTime: 540, //The earliest time slot for the range of dates/days chosen (minutes since midnight)
             timezoneOffset: 0,
             responses: ["Marlee", "Ali", "Levi"],
+            */
 
-
-
-            //NOTE: Leaving these all commented out for now, just in case we decide to change the implementation back to one of these. Sorry for the mess -Ali
-
-            /*times: [[new Date(2021, 1, 22, 8, 0), new Date(2021, 1, 22, 16, 0)],
-                [new Date(2021, 1, 26, 8, 0), new Date(2021, 1, 27, 16, 0)],
-                [new Date(2021, 1, 26, 8, 0), new Date(2021, 1, 27, 16, 0)]],*/
-            //times: [["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"], ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"], ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]],
-            //times: [[new Date()], "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]
-            //maxStopTime: 0, //The latest time slot for the range of dates/days chosen
-            /*dateTimes: [[new Date(2021, 1, 22), ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]],
-                [new Date(2021, 1, 26), ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]],
-                [new Date(2021, 1, 27), ["9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"]]],*/
         }
     }
 
+    async componentDidMount() {
+        const meetingID = this.getID();
+        const info = await getMeetingInfo(meetingID);
+        const twoDTable = fixTable(info.showTimeSlot,info.tableCol);
+        const days = (info.type === 1) ? info.days : fixDays(info.days);
 
+        this.setState({
+            days: days,
+            minStart:info.minStart,
+            showTimeSlotTable:twoDTable,
+            type: info.dayType,
+            name: info.name,
+            hostID: info.hostID,
+            priorityType:info.priorityType,
+            groupList:info.groupList
+
+            /*
+            dates: [new Date(2021, 1, 22),new Date(2021, 1, 25),new Date(2021, 1, 28)],
+            weekdays: ["Monday","Tuesday","Wednesday"],
+            showTimeSlot: [[true, true, true], [false, false, false], [false, true, true], [false, true, true], [true, true, false], [true, true, true], [true, true, true], [true, true, true], [true, true, true], [true, true, true], [true, true, true]],
+            minStartTime: 540, //The earliest time slot for the range of dates/days chosen (minutes since midnight)
+            timezoneOffset: 0,
+            responses: ["Marlee", "Ali", "Levi"],
+            */
+
+        });
+    }
+
+    getID() {
+        const url = window.location.href.toString();
+        const url_split = url.split("/");
+        const id = url_split.slice(-1)[0];
+        console.log("CONSOLE url: " + url_split);
+        console.log("CONSOLE id: " + id);
+        return id;
+    }
 
     AdjustTimezone() {
         const seoul = new Date(1489199400000);
@@ -50,7 +87,7 @@ class ViewPage extends Component{
         console.log(name + "'s priority is: " + priority);
     }
 
-    getResponces(mode,groupList){
+    getResponses(mode,groupList){
         if(mode == "G"){
             return groupList
         }
@@ -101,44 +138,53 @@ class ViewPage extends Component{
     }
 
     render() {
-        var tableInfo = this.props.location.state;
-        var responses = this.getResponces(tableInfo.priorityType,tableInfo.groupList);
-        var Header = (tableInfo.priorityType == "G" ? "Groups" : "Responses");
-        return (
-            <div className="ViewPage">
-                <h1>View Page</h1>
+        if (this.state.days.length === 0){
+            console.log("This is where we want to be")
+            return (
+              <div>
+                  <p>This is a loading page.</p>
+              </div>
+            );
+        }
+        else {
+            var responses = this.getResponses(this.state.priorityType, this.state.groupList);
+            return (
+                <div className="ViewPage">
+                    <h1>View Page</h1>
 
-                <div className="flex">
-                    <div className="flex-child">
-                        <h4>{Header}</h4>
-                        <br/>
-                        <tr>
-                            <td/>
-                            <td className="flex">
-                                <h7>low</h7>
-                                <h7>high</h7>
-                            </td>
-                        </tr>
-                        {responses.map((response) => this.LeftSide(response))}
+                    <div className="flex">
+                        <div className="flex-child">
+                            <h4>Responses</h4>
+                            <br/>
+                            <tr>
+                                <td/>
+                                <td className="flex">
+                                    <h7>low</h7>
+                                    <h7>high</h7>
+                                </td>
+                            </tr>
+                            {responses.map((response) => this.LeftSide(response))}
+                        </div>
+                        <div className="flex-child">
+                            {
+                                //TODO: input from user
+                            }
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <p>Input from user here</p>
+                        </div>
+                        <div className="flex-child">
+                            <TimeSlotTable type={this.state.type} dates={this.state.days}
+                                           showTimeSlot={this.state.showTimeSlotTable}
+                                           minStartTime={this.state.minStart}/>
+                        </div>
                     </div>
-                    <div className="flex-child">
-                        {
-                            //TODO: input from user
-                        }
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <p>Input from user here</p>
-                    </div>
-                    <div className="flex-child">
-                        <TimeSlotTable type = {tableInfo.type} dates={tableInfo.days} showTimeSlot={tableInfo.showTimeSlotTable} minStartTime={tableInfo.minStart}/>
-                    </div>
+
                 </div>
-
-
-            </div>
-        );
+            );
+        }
     }
 }
 

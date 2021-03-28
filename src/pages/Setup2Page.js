@@ -104,7 +104,7 @@ class Setup2Page extends Component{
         );
     }
 
-    addtoDB(days,minStart,table,type){
+    addtoDB(days,minStart,table,type,groupList){
         //const firestore = firebase.firestore();
         const state = this.props.location.state;
         var oneDTable = table.flat();
@@ -122,7 +122,7 @@ class Setup2Page extends Component{
               tableRow:table.length,
               minStart:minStart,
               priorityType:this.state.mode,
-              groupList:this.state.groupList  
+              groupList: groupList  
             });
         return(docRef.id);
     }
@@ -316,7 +316,7 @@ class Setup2Page extends Component{
                                                 //change all values to yes
                                                 console.log("changed all values to true")
 
-                                                //initilaze table with all elements set to true
+                                                //initialize table with all elements set to true
                                                 table = Array.from({ length: table.length }, () => 
                                                 Array.from({ length: table[0].length }, () => true)
                                                 );
@@ -332,7 +332,7 @@ class Setup2Page extends Component{
                                                     if(this.state.groupList[i] != ""){
                                                         count++;
                                                         console.log(this.state.groupList[i]);
-                                                        modifiedGroupList.push(this.state.groupList[i]);
+                                                        modifiedGroupList.push(this.state.groupList[i]);//push to DB
                                                     }
                                                     else{
                                                         //
@@ -345,8 +345,8 @@ class Setup2Page extends Component{
                                                     alert("You must have at least two groups all with unique names to use group mode")
                                                 }
                                             }
-
-                                            var mID = this.addtoDB(days,minStart,table,state.type);
+                                            //push to DB
+                                            var mID = this.addtoDB(days,minStart,table,state.type, modifiedGroupList);
 
 
                                             //console.log(days);
@@ -356,13 +356,7 @@ class Setup2Page extends Component{
                                                                 pathname: '/confirmation',
                                                                 //pass things through state
                                                                 state: {
-                                                                        days: days,
-                                                                        minStart:minStart,
-                                                                        showTimeSlotTable:table,
-                                                                        type: state.type,
                                                                         meetingID:mID,
-                                                                        priorityType:this.state.mode,
-                                                                        groupList:modifiedGroupList
                                                                 }
                                                             })
                                                         }
