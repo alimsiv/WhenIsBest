@@ -11,6 +11,7 @@ import Profile from './pages/Profile'
 import history from './history';
 import PrivateRoute from './PrivateRoutes'
 import ForgotPassword from './pages/ForgotPassword'
+import UpdateProfile from './pages/UpdateProfile'
 
 export default class Routes extends Component {
     render() {
@@ -25,6 +26,7 @@ export default class Routes extends Component {
                     <Route exact path="/login" component={ Login }/>
                     <Route exact path="/forgot-password" component={ ForgotPassword }/>
                     <PrivateRoute exact path="/profile" component = { Profile }/>
+                    <PrivateRoute exact path="/update-profile" component = { UpdateProfile }/>
                     <Route component={Error} />
                 </Switch>
             </Router>
