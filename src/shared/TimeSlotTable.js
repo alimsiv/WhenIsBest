@@ -26,7 +26,7 @@ class TimeSlotTable extends Component {
     }
 
     handleMulti(isOn,id){
-        if(this.state.multiSelect != isOn){
+        if(this.state.multiSelect !== isOn){
             this.setState({multiSelect: isOn});
             if(isOn){
                 var location = this.getMatrixLocation(id);
@@ -129,17 +129,16 @@ class TimeSlotTable extends Component {
         let title = "";
         if(timestamp%60 === 0) {
             const hour = timestamp / 60;
-            title = (hour < 12) ? hour + ' AM' : (hour - 12) + ' PM';
-
+            title = (hour < 13) ? hour : (hour - 12);
+            title += (hour < 12) ? ' AM' : ' PM';
         }
         return (
             <td className="timeslotHourTitleCell">
                 {title}
             </td>);
-
     }
 
-    GetResponce(){
+    GetResponse(){
         return this.response;
     }
 
@@ -175,7 +174,7 @@ class TimeSlotTable extends Component {
 
         return (
             <>
-                <tr>
+                <tr className="timeslotRow">
                     {this.AddSideHeaderHour(timestamp, 4)}
                     {showTimeSlot.map(show => {
                         const keyName = 'timeslot:' + dayCount + ':' + timestamp;
@@ -184,18 +183,29 @@ class TimeSlotTable extends Component {
                         if (show) {
                             //if the admin choose for this time to be available to be selected, make it clickable,
                             // otherwise mark as unavailable slot and do not attach any event handlers
-                            return <td
-                                key={keyName}
-                                id={keyName}
-                                className={rowClassName}
-                                //onClick={() => this.handleTimeSlotClicked(keyName)}
+                            if (this.props.isInputTable){
+                                // If this table need to accept input
+                                return <td
+                                    key={keyName}
+                                    id={keyName}
+                                    className={rowClassName}
+                                    //onClick={() => this.handleTimeSlotClicked(keyName)}
 
-                                //TODO: make it so that you can only add or remove (depending on what is first selected)
-                                //ie can only do one action during the entire drag select
-                                onMouseDown = {() => {this.handleMulti(true, keyName); this.handleTimeSlotClicked(keyName)}}
-                                onMouseUp = {() => {this.handleMulti(false,keyName)}}
-                                onMouseEnter = {() => {this.maybeMulti(keyName)}}
-                                />
+                                    //TODO: make it so that you can only add or remove (depending on what is first selected)
+                                    //ie can only do one action during the entire drag select
+                                    onMouseDown = {() => {this.handleMulti(true, keyName); this.handleTimeSlotClicked(keyName)}}
+                                    onMouseUp = {() => {this.handleMulti(false,keyName)}}
+                                    onMouseEnter = {() => {this.maybeMulti(keyName)}}
+                                    />
+                            }
+                            else {
+                                // If this table is used for the colormap
+                                return <td
+                                    key={keyName}
+                                    id={keyName}
+                                    className={rowClassName}
+                                    />
+                            }
                         } else {
                             return <td
                                 key={keyName}
@@ -231,18 +241,19 @@ class TimeSlotTable extends Component {
     render() {
 
         return (
-            <div className="TimeSlotTable">
-                <table className="styled-table" onMouseLeave = {() => {this.handleMulti(false)}}>
-                    <thead>
-                    <tr>
-                        <th/>
-                        {this.props.type ? (this.props.dates.map((date) => this.AddHeaderWeekDay(date))) :
-                                           (this.props.dates.map((date) => this.AddHeaderDate(date)))}
-                    </tr>
-                    </thead>
-                    {this.TimeSlotCreateRows()}
-                </table>
-            </div>
+                <div className="TimeSlotTable">
+                    <table className="styled-table" onMouseLeave = {() => {this.handleMulti(false)}}>
+                        <thead>
+                        <tr>
+                            <th/>
+                            {this.props.type ? (this.props.dates.map((date) => this.AddHeaderWeekDay(date))) :
+                                               (this.props.dates.map((date) => this.AddHeaderDate(date)))}
+                        </tr>
+                        </thead>
+                        {this.TimeSlotCreateRows()}
+                    </table>
+                </div>
+            
         );
     }
 }
