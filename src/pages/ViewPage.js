@@ -284,8 +284,9 @@ class ViewPage extends Component{
                                            dates={this.state.days}
                                            showTimeSlot={this.state.showTimeSlotTable}
                                            minStartTime={this.state.minStart}
-                                           colorMap={outputColorMap(this.state.responses, null, false)}
+                                           
                                            />
+                                           {/*colorMap={outputColorMap(this.state.responses, null, false)}*/}
                                            {/*TODO make it work with groups too*/}
                         </div>
                     </div>
