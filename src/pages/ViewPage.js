@@ -7,6 +7,11 @@ import {outputColorMap} from '../shared/temp_alg';
 
 
 class ViewPage extends Component{
+    inputOptions = {
+        OPTIONS: "options",
+        GOOGLE_CALENDAR: "google_calendar",
+        MANUAL: "manual"
+    }
 
     constructor(props) {
         super(props);
@@ -30,6 +35,8 @@ class ViewPage extends Component{
             userGroup: "",
             userID: "",
             userName: "",
+            inputChoice: this.inputOptions.OPTIONS,
+
             //TODO set to authenticated user id if logged in
 
             /*
@@ -43,6 +50,9 @@ class ViewPage extends Component{
 
         }
     }
+
+    
+
 
     async componentDidMount() {
         const meetingID = this.getID();
@@ -241,6 +251,77 @@ class ViewPage extends Component{
         );
     }
 
+    GoogleCalendarInput(){
+
+        return (
+            <p>
+                google calendar integration
+            </p>
+        );
+    }
+
+    InputTable(){
+
+        return (
+            <div className="flex-child">
+                <TimeSlotTable ref = {this.inputTable} 
+                    isInputTable = {true}
+                    type={this.state.daytype} 
+                    dates={this.state.days}
+                    showTimeSlot={this.state.showTimeSlotTable}
+                    minStartTime={this.state.minStart}
+                    handleUpdateDB={this.handleUpdateDB}
+                    />
+            </div>
+        );
+    }
+
+    InputOptions(){
+        switch (this.state.inputChoice) {
+            case this.inputOptions.OPTIONS:
+                return (
+                    <div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        
+                        <button id="get-google-calendar-button" onClick={() => {
+                                    this.setState({
+                                        inputChoice: this.inputOptions.GOOGLE_CALENDAR
+                                    });
+                                }}>
+                            Get availabilites from Google Calendar
+                        </button>
+        
+                        <br/>
+                        <br/>
+                        <br/>
+        
+                        <button id="get-input-table-button" onClick={() => {
+                                    this.setState({
+                                        inputChoice: this.inputOptions.MANUAL
+                                    });
+                                }}>
+                            Input availabilities manually
+                        </button>
+        
+                    </div>
+                );
+            case this.inputOptions.GOOGLE_CALENDAR:
+                return this.GoogleCalendarInput();
+            case this.inputOptions.MANUAL:
+                return this.InputTable();
+        
+            default:
+                console.log("InputOptions ERROR")
+                break;
+        }
+
+        
+    }
+
     render() {
         if (this.state.days.length === 0){
             console.log("Loading database still")
@@ -267,16 +348,8 @@ class ViewPage extends Component{
                             {this.GroupOrPeopleResponses()}
                         </div>
                         
-                        <div className="flex-child">
-                            <TimeSlotTable ref = {this.inputTable} 
-                                           isInputTable = {true}
-                                           type={this.state.daytype} 
-                                           dates={this.state.days}
-                                           showTimeSlot={this.state.showTimeSlotTable}
-                                           minStartTime={this.state.minStart}
-                                           handleUpdateDB={this.handleUpdateDB}
-                                           />
-                        </div>
+                        {this.InputOptions()}
+
                         <div className="flex-child">
                             <TimeSlotTable ref = {this.responsesTable}
                                            isInputTable = {false}
@@ -284,7 +357,6 @@ class ViewPage extends Component{
                                            dates={this.state.days}
                                            showTimeSlot={this.state.showTimeSlotTable}
                                            minStartTime={this.state.minStart}
-                                           
                                            />
                                            {/*colorMap={outputColorMap(this.state.responses, null, false)}*/}
                                            {/*TODO make it work with groups too*/}
