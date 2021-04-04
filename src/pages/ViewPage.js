@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form';
 import TimeSlotTable from "../shared/TimeSlotTable";
 import {getMeetingInfo, fixTable, fixDays, getResponses, addResponseToDB, updateResponseInDB} from "../database/database";
 import '../styling/styles.css';
+import {outputColorMap} from '../shared/temp_alg';
 
 
 class ViewPage extends Component{
@@ -13,7 +14,7 @@ class ViewPage extends Component{
 
         this.handleUpdateDB = this.handleUpdateDB.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
-        this.currentTable = React.createRef();
+        this.inputTable = React.createRef();
 
         this.state = {
             meetingID: [],
@@ -210,8 +211,9 @@ class ViewPage extends Component{
                             <input id="user-name-input" type="text" className="form-control" placeholder="Your Name" onChange={this.handleNameChange}/>
                         </form>
                         <button id="update-availability-button" onClick={() => {
-                            if(this.currentTable != null){
-                                const availability = this.currentTable.current.responses;
+                            if(this.inputTable != null){
+                                const availability = this.inputTable.current.GetResponse();
+                                if (availability != null){
                                 if(this.state.userName === ""){
                                     alert("Please enter your name.");
                                 }
@@ -223,6 +225,10 @@ class ViewPage extends Component{
 
                                     this.handleUpdateDB(availability)           
                                 }
+                            }
+                            else {
+                                console.log("Availability responses is null")
+                            }
                             }
                             else {
                                 console.log("TimeSlotTable does not exist yet.");
@@ -260,23 +266,27 @@ class ViewPage extends Component{
                             <br/>
                             {this.GroupOrPeopleResponses()}
                         </div>
+                        
                         <div className="flex-child">
-                            {
-                                //TODO: input from user
-                            }
-                            <br/>
-                            <br/>
-                            <br/>
-                            <br/>
-                            <p>Input from user here</p>
-                        </div>
-                        <div className="flex-child">
-                            <TimeSlotTable ref = {this.currentTable} type={this.state.daytype} 
+                            <TimeSlotTable ref = {this.inputTable} 
+                                           isInputTable = {true}
+                                           type={this.state.daytype} 
                                            dates={this.state.days}
                                            showTimeSlot={this.state.showTimeSlotTable}
                                            minStartTime={this.state.minStart}
                                            handleUpdateDB={this.handleUpdateDB}
-                                           AddAvailabilityButton={this.AddAvailabilityButton}/>
+                                           />
+                        </div>
+                        <div className="flex-child">
+                            <TimeSlotTable ref = {this.responsesTable}
+                                           isInputTable = {false}
+                                           type={this.state.daytype} 
+                                           dates={this.state.days}
+                                           showTimeSlot={this.state.showTimeSlotTable}
+                                           minStartTime={this.state.minStart}
+                                           colorMap={outputColorMap(this.state.responses, null, false)}
+                                           />
+                                           {/*TODO make it work with groups too*/}
                         </div>
                     </div>
                     <br/>

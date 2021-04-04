@@ -131,13 +131,11 @@ class TimeSlotTable extends Component {
             const hour = timestamp / 60;
             title = (hour < 13) ? hour : (hour - 12);
             title += (hour < 12) ? ' AM' : ' PM';
-
         }
         return (
             <td className="timeslotHourTitleCell">
                 {title}
             </td>);
-
     }
 
     GetResponse(){
@@ -185,18 +183,29 @@ class TimeSlotTable extends Component {
                         if (show) {
                             //if the admin choose for this time to be available to be selected, make it clickable,
                             // otherwise mark as unavailable slot and do not attach any event handlers
-                            return <td
-                                key={keyName}
-                                id={keyName}
-                                className={rowClassName}
-                                //onClick={() => this.handleTimeSlotClicked(keyName)}
+                            if (this.props.isInputTable){
+                                // If this table need to accept input
+                                return <td
+                                    key={keyName}
+                                    id={keyName}
+                                    className={rowClassName}
+                                    //onClick={() => this.handleTimeSlotClicked(keyName)}
 
-                                //TODO: make it so that you can only add or remove (depending on what is first selected)
-                                //ie can only do one action during the entire drag select
-                                onMouseDown = {() => {this.handleMulti(true, keyName); this.handleTimeSlotClicked(keyName)}}
-                                onMouseUp = {() => {this.handleMulti(false,keyName)}}
-                                onMouseEnter = {() => {this.maybeMulti(keyName)}}
-                                />
+                                    //TODO: make it so that you can only add or remove (depending on what is first selected)
+                                    //ie can only do one action during the entire drag select
+                                    onMouseDown = {() => {this.handleMulti(true, keyName); this.handleTimeSlotClicked(keyName)}}
+                                    onMouseUp = {() => {this.handleMulti(false,keyName)}}
+                                    onMouseEnter = {() => {this.maybeMulti(keyName)}}
+                                    />
+                            }
+                            else {
+                                // If this table is used for the colormap
+                                return <td
+                                    key={keyName}
+                                    id={keyName}
+                                    className={rowClassName}
+                                    />
+                            }
                         } else {
                             return <td
                                 key={keyName}

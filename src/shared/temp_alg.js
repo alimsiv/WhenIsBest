@@ -7,7 +7,7 @@ const rownum = 2, colnum = 3;
 // var group = {people: {list of people}, req: 0; priority: 3, avail_map: avail}
 // var groups = list of groups
 
-function outputColorMap(people = null, groups = null, reqs = false){
+export function outputColorMap(people = null, groups = null, reqs = false){
     let avail = updateAvailability(people, groups, reqs);
     return createColorMap(avail)
 }
