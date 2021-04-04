@@ -78,8 +78,8 @@ function getWeights(numPeople) {
     // return weights based on total number of people
     let weights = []
     let i
-    for (i = 0; i < 5; i++) {
-        weights[i] = numPeople / (numPeople ^ (4 - i));
+    for (i = 0; i < 4; i++) {
+        weights[i] = numPeople / (4 ^ i);
     }
     return weights
 }
@@ -143,4 +143,17 @@ function initializeGroups(GroupList) {
     for (let i = 0; i < GroupList.length; i++)
         groupDict[GroupList[i]] = [];
     return groupDict;
+}
+
+function getPrefMap(avail_map) {
+    let i, j
+    let prefMap =  avail_map
+    for (i = 0; i < rownum; i++){
+        for (j = 0; j < colnum; j++){
+            if (prefMap[i][j] == 2)
+                prefMap[i][j] = 1
+            else
+                prefMap[i][j] = 0
+        }
+    }
 }
