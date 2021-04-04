@@ -9,22 +9,6 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { InfoRounded } from '@material-ui/icons';
 
-// <h1>Home Page</h1>
-//<img src={logo} className="App-logo" alt="logo"/>
-//<p>
-//    Edit <code>src/App.js</code> and save to reload.
-//</p>
-//<a
-//    className="App-link"
-//    href="https://reactjs.org"
-//    target="_blank"
-//    rel="noopener noreferrer">
-//    Learn React
-//</a>
-//<br/>
-//<br/>
-
-
 class HomePage extends Component{
 
   constructor(props) {
@@ -33,6 +17,7 @@ class HomePage extends Component{
     this.pollDBandGo = this.pollDBandGo.bind(this);
     this.createMeeting = this.createMeeting.bind(this);
     this.createAccount = this.createAccount.bind(this);
+    this.loginFunciton = this.loginFunction.bind(this);
 
     this.state = {
         code: "",
@@ -54,6 +39,14 @@ class HomePage extends Component{
     if(this.state.code != value){
         this.setState({code: value});
     }
+    // if the meeting is valid go to view page, else error
+    // go to the valid view page
+    history.push({
+      pathname: "/view/:meetingID",
+      state: {
+
+      }
+    });
   }
 
   fixTable(oneDtable,cols){
@@ -112,6 +105,17 @@ class HomePage extends Component{
     });
   }
 
+  loginFunction() {
+    // need to make sure that the username and password are valid
+    history.push({
+      pathname: "/account",
+      state: {
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value,
+      }
+    });
+  }
+
     render() {
       return (
           <div className="HomePage">
@@ -137,7 +141,7 @@ class HomePage extends Component{
                       <input type="text" id="username" name="username"/><br/>
                       <label for="password">Password: </label>
                       <input type="text" id="password" name="password"/><br/>
-                      <a href="/views">See your dashboard</a>
+                      <a href="" onClick={() => this.loginFunction() }>See your dashboard</a>
                     </fieldset>
                   </form>
                 </div>
