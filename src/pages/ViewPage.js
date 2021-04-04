@@ -79,6 +79,7 @@ class ViewPage extends Component{
         const url = window.location.href.toString();
         const url_split = url.split("/");
         const id = url_split.slice(-1)[0];
+        console.log(id);
         return id;
     }
 

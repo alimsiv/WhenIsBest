@@ -41,6 +41,7 @@ class HomePage extends Component{
     }
     // if the meeting is valid go to view page, else error
     // go to the valid view page
+    
   }
 
   fixTable(oneDtable,cols){
@@ -61,43 +62,31 @@ class HomePage extends Component{
   }
 
   pollDBandGo(){
-    console.log("go");
+    
+    
+    //checks for the meeting code first, if found goes to view page
     const db = firebase.firestore();
-    var docRef = db.collection("meetings").doc(this.state.code);
-    docRef.get().then((doc) => {
-        if (doc.exists) {
-            const info = doc.data();
-            var twoDTable = this.fixTable(info.showTimeSlot,info.tableCol);
-            var days;
-            if(info.type == 1){
-            //twoDTable = this.fixTable(info.showTimeSlot,info.tableCol);
-              days = info.days;
-            }
-            else{
-              days = this.fixDays(info.days);
-            }
-            alert("Document data:", days);
+    const docRef = db.collection("meetings").doc(this.state.code);
+    const doc = docRef.get().then((doc) => {
+          if (doc.exists) {
             history.push({
-              pathname: '/view/:meetingID',
-              //pass things through state
+              pathname: "/view/" + this.state.code,
               state: {
-                      days: days,
-                      minStart:info.minStart,
-                      showTimeSlotTable:twoDTable,
-                      type: info.type,
-                      name: info.name,
-                      hostID: info.hostID,
+              }
+            }); 
+          }
+          else {
+                  // doc.data() will be undefined in this case
+                  alert("meeting code not found");
+                  console.log("No such document!");
                   }
-              })
-        } else {
-            // doc.data() will be undefined in this case
-            alert("meeting code not found");
-            console.log("No such document!");
-        }
-    }).catch((error) => {
-        console.log("Error getting document:", error);
-    });
+              }).catch((error) => {
+                  console.log("Error getting document:", error);
+              });
+              //console.log("bttom")
+            
   }
+   
 
   loginFunction() {
     // need to make sure that the username and password are valid
@@ -148,10 +137,11 @@ class HomePage extends Component{
                           value={this.state.code}
                           onChange={e => this.handleCodeChange(e)}
                       /><br/>
-                      <label for="abcs"></label>
+                      <button id="codeEnter" type = "button" onClick={() => this.pollDBandGo()}>Enter your availability</button>
+                      {/* <label for="abcs"></label>
                       {<a className="mr10" href="" name="abcs"
                           onClick={() => this.pollDBandGo()}>Enter your availability</a>}
-                      <br/>
+                      <br/> */}
                     </fieldset>
                   </form>
                   <br/>
