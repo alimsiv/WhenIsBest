@@ -3,6 +3,7 @@ import NavigationBar from '../shared/NavigationBar'
 import database from '../database/database'
 import logo from "../logo.svg";
 import wig from '../WIG.png'
+import yeah_boi from '../yeah_boi.png'
 import history from './../history'
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -123,7 +124,7 @@ class HomePage extends Component{
             <br/>
             <div className="flex">
               <div className="flex-child" style={{"float": "left"}}>
-                <img src={wig} width="400" height="400"/>
+                <img src={yeah_boi} width="500" height="420"/>
               </div>
               <div className="flex-child" style={{'border': "solid", "border-width": "thin", "border-radius": "5px", "background-color": "peachpuff", "width": "40%", "float": "right"}}>
                 <br/>
