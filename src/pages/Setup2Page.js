@@ -292,7 +292,7 @@ class Setup2Page extends Component{
                                                 days =  this.calanderMode();
                                             }
                                             
-                                            var table = this.currentTable.current.GetResponce();
+                                            var table = this.currentTable.current.GetResponse();
                                             //console.log(table.length);
                                             var notEmpty = false;
                                             //converts timeslotTable to boolean table so can be used for showTimeslot when pulling from db

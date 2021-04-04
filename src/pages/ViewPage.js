@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import Form from 'react-bootstrap/Form';
 import TimeSlotTable from "../shared/TimeSlotTable";
 import {getMeetingInfo, fixTable, fixDays, getResponses, addResponseToDB, updateResponseInDB} from "../database/database";
@@ -12,6 +12,9 @@ class ViewPage extends Component{
         //0 for Specific Dates, 1 for Days of the Week
 
         this.handleUpdateDB = this.handleUpdateDB.bind(this);
+        this.handleNameChange = this.handleNameChange.bind(this);
+        this.currentTable = React.createRef();
+
         this.state = {
             meetingID: [],
             days: [],
@@ -25,6 +28,7 @@ class ViewPage extends Component{
             responses: [],
             userGroup: "",
             userID: "",
+            userName: "",
             //TODO set to authenticated user id if logged in
 
             /*
@@ -99,9 +103,12 @@ class ViewPage extends Component{
                 userID: userID
             });
         }
+    }
 
-
-
+    handleNameChange(e){
+        this.setState({
+            userName: e.target.value
+        })
     }
 
     initialResponseMatrix(){
@@ -196,29 +203,37 @@ class ViewPage extends Component{
         }
     }
 
-    /*
-    AddAvailabilityButton() {
+    NameAndSubmit(){
         return (
-            <button id="update-availability-button" onClick={() => {
-                    var name = document.getElementById("user-name-input").value;
-                    if(name == ""){
-                        alert("you have not picked an event name");
-                    }
-                    else if(!this.validTime(this.state.start,this.state.end)){
-                        alert("Your time selection is invalid, make sure your start time is atleast 15 mins before you endtime");
-                    }
-                    else {
-                        addResponseToDB(this.state.meetingID, this.state.userName, this.state.userGroup, this.state.userID, )
-                    }
+            <div className="flex">
+                        <form>
+                            <input id="user-name-input" type="text" className="form-control" placeholder="Your Name" onChange={this.handleNameChange}/>
+                        </form>
+                        <button id="update-availability-button" onClick={() => {
+                            if(this.currentTable != null){
+                                const availability = this.currentTable.current.responses;
+                                if(this.state.userName === ""){
+                                    alert("Please enter your name.");
+                                }
+                                else if(availability.flat().reduce((total, num) => {return total + num}) === 0){
+                                    alert("Please select some availabilities.");
+                                }
+                                else {
+                                    console.log("Updating availability");
 
-                }}>
-                Add Availability
-            </button>
+                                    this.handleUpdateDB(availability)           
+                                }
+                            }
+                            else {
+                                console.log("TimeSlotTable does not exist yet.");
+                            }
+                            }}>
+                            Add Availability
+                        </button>
+                    </div>
+
         );
-        //TODO: change to Update Availability
     }
-
-     */
 
     render() {
         if (this.state.days.length === 0){
@@ -237,11 +252,7 @@ class ViewPage extends Component{
                     <h1>View Page</h1>
                     <br/>
                     <br/>
-                    <div className="flex">
-                    <form>
-                        <input id="user-name-input" type="text" className="form-control" placeholder="Your Name" onSubmit/>
-                    </form>
-                    </div>
+                    
 
                     <div className="flex">
                         <div className="flex-child">
@@ -260,13 +271,19 @@ class ViewPage extends Component{
                             <p>Input from user here</p>
                         </div>
                         <div className="flex-child">
-                            <TimeSlotTable type={this.state.daytype} dates={this.state.days}
+                            <TimeSlotTable ref = {this.currentTable} type={this.state.daytype} 
+                                           dates={this.state.days}
                                            showTimeSlot={this.state.showTimeSlotTable}
                                            minStartTime={this.state.minStart}
                                            handleUpdateDB={this.handleUpdateDB}
-                                            AddAvailabilityButton={this.AddAvailabilityButton}/>
+                                           AddAvailabilityButton={this.AddAvailabilityButton}/>
                         </div>
                     </div>
+                    <br/>
+                    {this.NameAndSubmit()}
+                    <br/>
+                    <br/>
+                    <br/>
 
                 </div>
             );

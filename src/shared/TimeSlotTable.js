@@ -232,20 +232,6 @@ class TimeSlotTable extends Component {
     render() {
 
         return (
-            <>
-                <button id="update-availability-button" onClick={() => {
-                    if(document.getElementById("user-name-input").value === ""){
-                        alert("Please enter your name.");
-                    }
-                    else if(this.response.flat().reduce((total, num) => {return total + num}) === 0){
-                        alert("Please select some availabilities.");
-                    }
-                    else {
-                        this.props.handleUpdateDB(this.response)
-                    }
-                }}>
-                    Add Availability
-                </button>
                 <div className="TimeSlotTable">
                     <table className="styled-table" onMouseLeave = {() => {this.handleMulti(false)}}>
                         <thead>
@@ -258,7 +244,7 @@ class TimeSlotTable extends Component {
                         {this.TimeSlotCreateRows()}
                     </table>
                 </div>
-            </>
+            
         );
     }
 }
