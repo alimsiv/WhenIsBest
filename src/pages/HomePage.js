@@ -63,28 +63,31 @@ class HomePage extends Component{
 
   pollDBandGo(){
     
-    
+    if(this.state.code != ""){
     //checks for the meeting code first, if found goes to view page
-    const db = firebase.firestore();
-    const docRef = db.collection("meetings").doc(this.state.code);
-    const doc = docRef.get().then((doc) => {
-          if (doc.exists) {
-            history.push({
-              pathname: "/view/" + this.state.code,
-              state: {
-              }
-            }); 
-          }
-          else {
-                  // doc.data() will be undefined in this case
-                  alert("meeting code not found");
-                  console.log("No such document!");
-                  }
-              }).catch((error) => {
-                  console.log("Error getting document:", error);
-              });
-              //console.log("bttom")
-            
+      const db = firebase.firestore();
+      const docRef = db.collection("meetings").doc(this.state.code);
+      const doc = docRef.get().then((doc) => {
+            if (doc.exists) {
+              history.push({
+                pathname: "/view/" + this.state.code,
+                state: {
+                }
+              }); 
+            }
+            else {
+                    // doc.data() will be undefined in this case
+                    alert("meeting code not found");
+                    console.log("No such document!");
+                    }
+                }).catch((error) => {
+                    console.log("Error getting document:", error);
+                });
+                //console.log("bttom")
+    }
+    else{
+      console.log("no meeting code entered")
+    }       
   }
    
 
