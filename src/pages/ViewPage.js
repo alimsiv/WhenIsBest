@@ -272,6 +272,7 @@ class ViewPage extends Component{
                     showTimeSlot={this.state.showTimeSlotTable}
                     minStartTime={this.state.minStart}
                     handleUpdateDB={this.handleUpdateDB}
+                    perferred= {true}
                     />
             </div>
         );
@@ -358,6 +359,7 @@ class ViewPage extends Component{
                                            dates={this.state.days}
                                            showTimeSlot={this.state.showTimeSlotTable}
                                            minStartTime={this.state.minStart}
+                                           perferred = {false}
                                            />
                                            {/*colorMap={outputColorMap(this.state.responses, null, false)}*/}
                                            {/*TODO make it work with groups too*/}
