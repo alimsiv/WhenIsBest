@@ -54,8 +54,9 @@ class TimeSlotTable extends Component {
     maybeMulti(id){
         if(this.state.multiSelect){
             const location = this.getMatrixLocation(id);
-            if (this.response[location[0]][location[1]] != this.state.multiType) 
-            this.handleTimeSlotClicked(id);
+            var current = this.response[location[0]][location[1]];
+            if (current != this.state.multiType && !(this.state.avaibiltyType == "A" ? (current == 2 && this.state.multiType == 0) : (current == 1 && this.state.multiType == 0))) //decides if the current spot should change
+                this.handleTimeSlotClicked(id);
         }
     }
 
@@ -249,7 +250,6 @@ class TimeSlotTable extends Component {
     handleAvaibiltyType(type){
         if(this.state.avaibiltyType != type){
             this.setState({avaibiltyType: type});
-            console.log(this.state.avaibiltyType);
         }
     }
 
