@@ -5,26 +5,26 @@
   "dependencies": {
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
-    "@testing-library/jest-dom": "^5.11.10",
-    "@testing-library/react": "^11.2.6",
-    "@testing-library/user-event": "^12.8.3",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.7.3",
     "bootstrap": "^4.6.0",
     "firebase": "^8.3.0",
     "firebase-admin": "^9.5.0",
     "googleapis": "^39.2.0",
     "jquery": "^3.6.0",
     "moment": "^2.29.1",
-    "react": "^17.0.2",
+    "react": "^17.0.1",
     "react-bootstrap": "^1.5.2",
     "react-calendar": "^3.3.1",
-    "react-day-picker": "^7.4.10",
-    "react-dom": "^17.0.2",
+    "react-day-picker": "^7.4.8",
+    "react-dom": "^17.0.1",
     "react-icons": "^4.2.0",
     "react-scripts": "4.0.2",
     "react-table-drag-select": "^0.3.1",
-    "react-time-picker": "^4.2.1",
+    "react-time-picker": "^4.1.2",
     "reactjs-popup": "^2.0.4",
-    "web-vitals": "^1.1.1"
+    "web-vitals": "^1.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -51,12 +51,7 @@
     ]
   },
   "devDependencies": {
-<<<<<<< Updated upstream
     "react-firebase-hooks": "^3.0.2",
-=======
-    "mathjs": "^9.3.0",
-    "react-firebase-hooks": "^3.0.3",
->>>>>>> Stashed changes
     "react-router-dom": "^5.2.0"
   }
 }
