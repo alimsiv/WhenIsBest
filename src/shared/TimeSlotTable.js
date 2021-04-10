@@ -257,10 +257,10 @@ class TimeSlotTable extends Component {
         return (
             <form>
                 <div>
-                What type of form:
+                Input Type:
                 </div>
-                <input type="radio" name="chooseone" value="Group"onClick={() => this.handleAvaibiltyType("A")}/><label for="Group"> Availabile    </label>
-                <input type="radio" name="chooseone" value="Person"onClick={() =>this.handleAvaibiltyType("P")}/><label for="Person"> Perffered</label><br/>
+                <input type="radio" name="chooseone" value="Group"onClick={() => this.handleAvaibiltyType("A")}/><label for="Group"> Availabile</label>
+                <input type="radio" name="chooseone" value="Person"onClick={() =>this.handleAvaibiltyType("P")}/><label for="Person"> Preferred</label><br/>
             </form>
         )
     }
