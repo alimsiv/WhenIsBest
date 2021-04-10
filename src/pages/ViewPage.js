@@ -8,6 +8,7 @@ import { getMeetingInfo, fixTable, fixDays, getResponses, addResponseToDB, updat
 import '../styling/styles.css';
 import { outputColorMap } from '../shared/temp_alg';
 import { mod } from 'mathjs';
+import ApiCalendar from 'react-google-calendar-api';
 
 
 class ViewPage extends Component {
@@ -27,6 +28,7 @@ class ViewPage extends Component {
         this.handleUserGroup = this.handleUserGroup.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
         this.inputTable = React.createRef();
+        this.handleCalenderClick = this.handleCalenderClick.bind(this);
 
         this.state = {
             meetingID: [],
@@ -45,6 +47,7 @@ class ViewPage extends Component {
             inputChoice: this.inputOptions.OPTIONS,
             showAdvancedSettings: false,
             showModal: false,
+            signedIn: false,
 
             //TODO set to authenticated user id if logged in
         }
@@ -149,8 +152,21 @@ class ViewPage extends Component {
         return response;
     }
 
-    getResponses(mode, groupList) {
-        if (mode == "G") {
+    handleCalenderClick(name){
+        if (name === 'sign-in') {
+          ApiCalendar.handleAuthClick();
+          if (ApiCalendar.sign && !this.state.signedIn){
+            this.setState({signedIn:true})
+            console.log("successfully signed in");
+          }
+        }
+        // } else if (name === 'sign-out') {
+        //   ApiCalendar.handleSignoutClick();
+        // }
+      }
+
+    getResponses(mode,groupList){
+        if(mode == "G"){
             return groupList
         }
         else {
@@ -258,12 +274,54 @@ class ViewPage extends Component {
         );
     }
 
-    GoogleCalendarInput() {
-        return (
-            <p>
-                google calendar integration
-            </p>
-        );
+    GetEvents(){
+        if (ApiCalendar.sign){
+            //ApiCalendar.listEvents().then(({ result }) => {       //gets all events in calander
+            ApiCalendar.listUpcomingEvents(5).then(({ result }) => {   //gets 5 upcoming events //unsure what upcoming is defined at
+                console.log(result.items)
+                return(
+                    result.items.map((x) => {
+                        //console.log(x.summary)
+                        return(
+                        <>
+                            <div>
+                            {x.summary} 
+                            </div>
+                            <div>
+                                {x.start} 
+                                {x.end}
+                            </div>
+                        </>
+                        )
+                    })
+                );
+            });
+        }
+    }
+
+    GoogleCalendarInput(){
+
+
+        if(this.state.signedIn){
+            return(
+                <p>
+                   Your Events
+                    {this.GetEvents()}
+                </p>
+
+            );
+        }
+        else{
+            return (
+                <p>
+                    <button
+                    onClick={(e) => this.handleCalenderClick('sign-in')}
+                >
+                    sign-in
+                </button>
+                </p>
+            );
+        }
     }
 
     InputTable() {
