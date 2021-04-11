@@ -79,6 +79,7 @@ class ViewPage extends Component {
         const url = window.location.href.toString();
         const url_split = url.split("/");
         const id = url_split.slice(-1)[0];
+        console.log(id);
         return id;
     }
 
@@ -281,6 +282,7 @@ class ViewPage extends Component {
                     showTimeSlot={this.state.showTimeSlotTable}
                     minStartTime={this.state.minStart}
                     handleUpdateDB={this.handleUpdateDB}
+                    perferred={true}
                 />
             </div>
         );
@@ -367,6 +369,7 @@ class ViewPage extends Component {
                                 dates={this.state.days}
                                 showTimeSlot={this.state.showTimeSlotTable}
                                 minStartTime={this.state.minStart}
+                                perferred={false}
                             />
                             {/*colorMap={outputColorMap(this.state.responses, null, false)}*/}
                             {/*TODO make it work with groups too*/}

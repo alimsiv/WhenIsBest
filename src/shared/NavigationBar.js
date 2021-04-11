@@ -1,7 +1,11 @@
 import {Nav, Navbar, NavDropdown, Form, FormControl, Button} from 'react-bootstrap'
-import { withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 const NavigationBar = () => {
+
+    const { currentUser } = useAuth()
+
     return (
         <div className="NavigationBar">
             <link rel="stylesheet"
@@ -12,14 +16,15 @@ const NavigationBar = () => {
                 <Navbar.Brand href="/">WhenIsBest</Navbar.Brand>
 
                 <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="menu-options">
+                    <Nav className="container-fluid">
                         <Nav.Link href="/setup1">Create Meeting</Nav.Link>
-                        {/* no link yet */}
                         <Nav.Link href="/">Add Availability</Nav.Link>
-                        {/* no link yet */}
-                        <Nav.Link href="/signup">Sign Up</Nav.Link>
-                        {/* no link yet */}
-                        <Nav.Link href="/">Login</Nav.Link>
+                        { currentUser && <Nav.Link href="/profile">Profile</Nav.Link> }
+                        <Nav className = "ml-auto">
+                            { !currentUser && <Nav.Link href="/signup">Sign Up</Nav.Link> }
+                            { !currentUser && <Nav.Link href="/login">Login</Nav.Link> }
+                            { currentUser && <Nav.Link href="/login">Logout (Button Not Working Yet, Use Button in Profile Page)</Nav.Link> }
+                        </Nav>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

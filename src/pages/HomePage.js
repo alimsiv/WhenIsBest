@@ -41,12 +41,7 @@ class HomePage extends Component{
     }
     // if the meeting is valid go to view page, else error
     // go to the valid view page
-    history.push({
-      pathname: "/view/:meetingID",
-      state: {
-
-      }
-    });
+    
   }
 
   fixTable(oneDtable,cols){
@@ -67,43 +62,34 @@ class HomePage extends Component{
   }
 
   pollDBandGo(){
-    console.log("go");
-    const db = firebase.firestore();
-    var docRef = db.collection("meetings").doc(this.state.code);
-    docRef.get().then((doc) => {
-        if (doc.exists) {
-            const info = doc.data();
-            var twoDTable = this.fixTable(info.showTimeSlot,info.tableCol);
-            var days;
-            if(info.type == 1){
-            //twoDTable = this.fixTable(info.showTimeSlot,info.tableCol);
-              days = info.days;
+    
+    if(this.state.code != ""){
+    //checks for the meeting code first, if found goes to view page
+      const db = firebase.firestore();
+      const docRef = db.collection("meetings").doc(this.state.code);
+      const doc = docRef.get().then((doc) => {
+            if (doc.exists) {
+              history.push({
+                pathname: "/view/" + this.state.code,
+                state: {
+                }
+              }); 
             }
-            else{
-              days = this.fixDays(info.days);
-            }
-            console.log("Document data:", days);
-            history.push({
-              pathname: '/view',
-              //pass things through state
-              state: {
-                      days: days,
-                      minStart:info.minStart,
-                      showTimeSlotTable:twoDTable,
-                      type: info.type,
-                      name: info.name,
-                      hostID: info.hostID,
-                  }
-              })
-        } else {
-            // doc.data() will be undefined in this case
-            alert("meeting code not found");
-            console.log("No such document!");
-        }
-    }).catch((error) => {
-        console.log("Error getting document:", error);
-    });
+            else {
+                    // doc.data() will be undefined in this case
+                    alert("meeting code not found");
+                    console.log("No such document!");
+                    }
+                }).catch((error) => {
+                    console.log("Error getting document:", error);
+                });
+                //console.log("bttom")
+    }
+    else{
+      console.log("no meeting code entered")
+    }       
   }
+   
 
   loginFunction() {
     // need to make sure that the username and password are valid
@@ -154,10 +140,11 @@ class HomePage extends Component{
                           value={this.state.code}
                           onChange={e => this.handleCodeChange(e)}
                       /><br/>
-                      <label for="abcs"></label>
+                      <button id="codeEnter" type = "button" onClick={() => this.pollDBandGo()}>Enter your availability</button>
+                      {/* <label for="abcs"></label>
                       {<a className="mr10" href="" name="abcs"
                           onClick={() => this.pollDBandGo()}>Enter your availability</a>}
-                      <br/>
+                      <br/> */}
                     </fieldset>
                   </form>
                   <br/>
