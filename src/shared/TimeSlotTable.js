@@ -83,7 +83,6 @@ class TimeSlotTable extends Component {
             this.response[location[0]][location[1]] = 0;
             document.getElementById(id).style.backgroundColor = "#ffffff";
         }
-        console.table(this.response);
     }
 
     /**
