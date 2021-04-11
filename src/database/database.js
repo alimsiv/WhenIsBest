@@ -1,8 +1,12 @@
 import firebase from 'firebase/app';
+import { useAuth } from '../contexts/AuthContext'
+import { auth, firestore } from  '../apis/firebase'
+
+
 //import firebase from '../apis/firebase';
 
-import {useAuthState} from 'react-firebase-hooks/auth';
-import {useCollectionData} from 'react-firebase-hooks/firestore';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 
 //const auth = firebase.auth();
@@ -17,30 +21,16 @@ const responsesRef = (meetingID) => {
     return meetingRef(meetingID).collection("responses");
 }
 
-/*
-const updateDatabase = async(e) => {
-    e.preventDefault();
-
-    const {uid, photoURL} = auth.currentUser;
-
-    //TODO: add to specific event
-
-    await eventsRef.add({
-        name: "Bob",
-        availability: [[1,1,0],[0,0,1]],
-        group: "Student Group"
-    })
-
-
-    //setAvailability();
+const userRef = (userID) => {
+    const db = firebase.firestore();
+    return db.collection("users").doc(userID);
 }
-*/
 
 /***
  * Return a all info for a given meeting
  * @param code
  */
-export async function getMeetingInfo(code){
+export async function getMeetingInfo(code) {
     //const docRef = meetingsRef.doc(code);
     const doc = await meetingRef(code).get();
     if (doc.exists) {
@@ -57,10 +47,10 @@ export async function getMeetingInfo(code){
  * Each entry has the fields: name, availability, group, id, priority
  * @param code
  */
-export async function getResponses(code){
+export async function getResponses(code) {
     const responses = [];
     const responsesCollection = await responsesRef(code).get();
-    if (responsesCollection != null){
+    if (responsesCollection != null) {
 
         responsesCollection.forEach((doc) => responses.push({ ...doc.data(), id: doc.id, priority: 3 }));
     }
@@ -68,36 +58,73 @@ export async function getResponses(code){
     return responses;
 }
 
-export function addResponseToDB(meetingID, name, group, responses){
+export function addResponseToDB(meetingID, name, group, responses) {
     const docRef = responsesRef(meetingID).doc();
 
-        docRef.set({
-            name: name,
-            availability: responses.flat(),
-            group: group
-        })
-        return docRef.id;
+    docRef.set({
+        name: name,
+        availability: responses.flat(),
+        group: group
+    })
+    return docRef.id;
 }
 
-export function updateResponseInDB(meetingID, id, name, responses){
+export function updateResponseInDB(meetingID, id, name, responses) {
     responsesRef(meetingID).doc(id).update({
-            name: name,
-            availability: responses.flat(),
+        name: name,
+        availability: responses.flat(),
     })
 }
 
-export function fixTable(oneDtable,cols){
+export function addMeetingToUser(meetingID) {
+    const uid = auth.currentUser.uid;
+    try {
+        userRef(uid).update({
+            meetings: firebase.firestore.FieldValue.arrayUnion(meetingID),
+        });
+    }
+    catch {
+        console.log("User does not exist")
+    }
+    
+    
+    /*
+    const doc = await userRef(userID).get();
+    if (doc.exists) {
+        userRef(userID).update({
+            meetings: firebase.firestore.FieldValue.arrayUnion(meetingID),
+        });
+    }
+    else {
+        console.log("User does not exist")
+    }
+    */
+
+}
+
+export async function getUserMeetings(userID) {
+    const doc = await userRef(userID).get();
+    if (doc.exists) {
+        return doc.data().meetings;
+    } else {
+        // doc.data() will be undefined in this case
+        alert("No such user or user has no meetings yet.");
+        console.log("No such document!");
+    }
+}
+
+export function fixTable(oneDtable, cols) {
     var twoDTable = [];
     var row;
-    while(oneDtable.length > 0){
-        row = oneDtable.splice(0,cols);
+    while (oneDtable.length > 0) {
+        row = oneDtable.splice(0, cols);
         twoDTable.push(row);
     }
 
     return twoDTable;
 }
 
-export function fixDays(days){
+export function fixDays(days) {
     var fixed = [];
     days.forEach(day => fixed.push(new Date(day.seconds * 1000)));
     return fixed;

@@ -66,6 +66,7 @@ export async function handleLogout(setError, logout) {
     try {
         await logout()
     } catch {
-        setError("Failed to log out")
+        console.log("Logout failure");
+        setError("Failed to log out");
     }
 }
