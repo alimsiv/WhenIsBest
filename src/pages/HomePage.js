@@ -3,26 +3,11 @@ import NavigationBar from '../shared/NavigationBar'
 import database from '../database/database'
 import logo from "../logo.svg";
 import wig from '../WIG.png'
+import yeah_boi from '../yeah_boi.png'
 import history from './../history'
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { InfoRounded } from '@material-ui/icons';
-
-// <h1>Home Page</h1>
-//<img src={logo} className="App-logo" alt="logo"/>
-//<p>
-//    Edit <code>src/App.js</code> and save to reload.
-//</p>
-//<a
-//    className="App-link"
-//    href="https://reactjs.org"
-//    target="_blank"
-//    rel="noopener noreferrer">
-//    Learn React
-//</a>
-//<br/>
-//<br/>
-
 
 class HomePage extends Component{
 
@@ -32,6 +17,7 @@ class HomePage extends Component{
     this.pollDBandGo = this.pollDBandGo.bind(this);
     this.createMeeting = this.createMeeting.bind(this);
     this.createAccount = this.createAccount.bind(this);
+    this.loginFunciton = this.loginFunction.bind(this);
 
     this.state = {
         code: "",
@@ -53,6 +39,9 @@ class HomePage extends Component{
     if(this.state.code != value){
         this.setState({code: value});
     }
+    // if the meeting is valid go to view page, else error
+    // go to the valid view page
+    
   }
 
   fixTable(oneDtable,cols){
@@ -73,41 +62,43 @@ class HomePage extends Component{
   }
 
   pollDBandGo(){
-    console.log("go");
-    const db = firebase.firestore();
-    var docRef = db.collection("meetings").doc(this.state.code);
-    docRef.get().then((doc) => {
-        if (doc.exists) {
-            const info = doc.data();
-            var twoDTable = this.fixTable(info.showTimeSlot,info.tableCol);
-            var days;
-            if(info.type == 1){
-            //twoDTable = this.fixTable(info.showTimeSlot,info.tableCol);
-              days = info.days;
+    
+    if(this.state.code != ""){
+    //checks for the meeting code first, if found goes to view page
+      const db = firebase.firestore();
+      const docRef = db.collection("meetings").doc(this.state.code);
+      const doc = docRef.get().then((doc) => {
+            if (doc.exists) {
+              history.push({
+                pathname: "/view/" + this.state.code,
+                state: {
+                }
+              }); 
             }
-            else{
-              days = this.fixDays(info.days);
-            }
-            console.log("Document data:", days);
-            history.push({
-              pathname: '/view',
-              //pass things through state
-              state: {
-                      days: days,
-                      minStart:info.minStart,
-                      showTimeSlotTable:twoDTable,
-                      type: info.type,
-                      name: info.name,
-                      hostID: info.hostID,
-                  }
-              })
-        } else {
-            // doc.data() will be undefined in this case
-            alert("meeting code not found");
-            console.log("No such document!");
-        }
-    }).catch((error) => {
-        console.log("Error getting document:", error);
+            else {
+                    // doc.data() will be undefined in this case
+                    alert("meeting code not found");
+                    console.log("No such document!");
+                    }
+                }).catch((error) => {
+                    console.log("Error getting document:", error);
+                });
+                //console.log("bttom")
+    }
+    else{
+      console.log("no meeting code entered")
+    }       
+  }
+   
+
+  loginFunction() {
+    // need to make sure that the username and password are valid
+    history.push({
+      pathname: "/account",
+      state: {
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value,
+      }
     });
   }
 
@@ -123,7 +114,7 @@ class HomePage extends Component{
             <br/>
             <div className="flex">
               <div className="flex-child" style={{"float": "left"}}>
-                <img src={wig} width="400" height="400"/>
+                <img src={yeah_boi} width="500" height="420"/>
               </div>
               <div className="flex-child" style={{'border': "solid", "border-width": "thin", "border-radius": "5px", "background-color": "peachpuff", "width": "40%", "float": "right"}}>
                 <br/>
@@ -136,7 +127,7 @@ class HomePage extends Component{
                       <input type="text" id="username" name="username"/><br/>
                       <label for="password">Password: </label>
                       <input type="text" id="password" name="password"/><br/>
-                      <a href="/views">See your dashboard</a>
+                      <a href="" onClick={() => this.loginFunction() }>See your dashboard</a>
                     </fieldset>
                   </form>
                 </div>
@@ -149,10 +140,11 @@ class HomePage extends Component{
                           value={this.state.code}
                           onChange={e => this.handleCodeChange(e)}
                       /><br/>
-                      <label for="abcs"></label>
+                      <button id="codeEnter" type = "button" onClick={() => this.pollDBandGo()}>Enter your availability</button>
+                      {/* <label for="abcs"></label>
                       {<a className="mr10" href="" name="abcs"
                           onClick={() => this.pollDBandGo()}>Enter your availability</a>}
-                      <br/>
+                      <br/> */}
                     </fieldset>
                   </form>
                   <br/>

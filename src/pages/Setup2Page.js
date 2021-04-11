@@ -251,7 +251,7 @@ class Setup2Page extends Component{
         var showTimeSlot = this.makeTimeSlots(timeslots,days.length);
         return(
             <>
-            <TimeSlotTable ref = {this.currentTable} type = {state.type} dates={days} showTimeSlot={showTimeSlot} minStartTime={minStart}
+            <TimeSlotTable ref = {this.currentTable} type = {state.type} dates={days} showTimeSlot={showTimeSlot} minStartTime={minStart} perferred = {false} isInputTable = {true}
                 />
             </>
         );
@@ -292,7 +292,7 @@ class Setup2Page extends Component{
                                                 days =  this.calanderMode();
                                             }
                                             
-                                            var table = this.currentTable.current.GetResponce();
+                                            var table = this.currentTable.current.GetResponse();
                                             //console.log(table.length);
                                             var notEmpty = false;
                                             //converts timeslotTable to boolean table so can be used for showTimeslot when pulling from db

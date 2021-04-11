@@ -1,17 +1,26 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import Form from 'react-bootstrap/Form';
 import TimeSlotTable from "../shared/TimeSlotTable";
 import {getMeetingInfo, fixTable, fixDays, getResponses, addResponseToDB, updateResponseInDB} from "../database/database";
 import '../styling/styles.css';
+import {outputColorMap} from '../shared/temp_alg';
 
 
 class ViewPage extends Component{
+    inputOptions = {
+        OPTIONS: "options",
+        GOOGLE_CALENDAR: "google_calendar",
+        MANUAL: "manual"
+    }
 
     constructor(props) {
         super(props);
         //0 for Specific Dates, 1 for Days of the Week
 
         this.handleUpdateDB = this.handleUpdateDB.bind(this);
+        this.handleNameChange = this.handleNameChange.bind(this);
+        this.inputTable = React.createRef();
+
         this.state = {
             meetingID: [],
             days: [],
@@ -25,6 +34,9 @@ class ViewPage extends Component{
             responses: [],
             userGroup: "",
             userID: "",
+            userName: "",
+            inputChoice: this.inputOptions.OPTIONS,
+
             //TODO set to authenticated user id if logged in
 
             /*
@@ -38,6 +50,9 @@ class ViewPage extends Component{
 
         }
     }
+
+    
+
 
     async componentDidMount() {
         const meetingID = this.getID();
@@ -64,6 +79,7 @@ class ViewPage extends Component{
         const url = window.location.href.toString();
         const url_split = url.split("/");
         const id = url_split.slice(-1)[0];
+        console.log(id);
         return id;
     }
 
@@ -99,9 +115,12 @@ class ViewPage extends Component{
                 userID: userID
             });
         }
+    }
 
-
-
+    handleNameChange(e){
+        this.setState({
+            userName: e.target.value
+        })
     }
 
     initialResponseMatrix(){
@@ -196,29 +215,114 @@ class ViewPage extends Component{
         }
     }
 
-    /*
-    AddAvailabilityButton() {
+    NameAndSubmit(){
         return (
-            <button id="update-availability-button" onClick={() => {
-                    var name = document.getElementById("user-name-input").value;
-                    if(name == ""){
-                        alert("you have not picked an event name");
-                    }
-                    else if(!this.validTime(this.state.start,this.state.end)){
-                        alert("Your time selection is invalid, make sure your start time is atleast 15 mins before you endtime");
-                    }
-                    else {
-                        addResponseToDB(this.state.meetingID, this.state.userName, this.state.userGroup, this.state.userID, )
-                    }
+            <div className="flex">
+                        <form>
+                            <input id="user-name-input" type="text" className="form-control" placeholder="Your Name" onChange={this.handleNameChange}/>
+                        </form>
+                        <button id="update-availability-button" onClick={() => {
+                            if(this.inputTable != null){
+                                const availability = this.inputTable.current.GetResponse();
+                                if (availability != null){
+                                if(this.state.userName === ""){
+                                    alert("Please enter your name.");
+                                }
+                                else if(availability.flat().reduce((total, num) => {return total + num}) === 0){
+                                    alert("Please select some availabilities.");
+                                }
+                                else {
+                                    console.log("Updating availability");
 
-                }}>
-                Add Availability
-            </button>
+                                    this.handleUpdateDB(availability)           
+                                }
+                            }
+                            else {
+                                console.log("Availability responses is null")
+                            }
+                            }
+                            else {
+                                console.log("TimeSlotTable does not exist yet.");
+                            }
+                            }}>
+                            Add Availability
+                        </button>
+                    </div>
+
         );
-        //TODO: change to Update Availability
     }
 
-     */
+    GoogleCalendarInput(){
+
+        return (
+            <p>
+                google calendar integration
+            </p>
+        );
+    }
+
+    InputTable(){
+
+        return (
+            <div className="flex-child">
+                <TimeSlotTable ref = {this.inputTable} 
+                    isInputTable = {true}
+                    type={this.state.daytype} 
+                    dates={this.state.days}
+                    showTimeSlot={this.state.showTimeSlotTable}
+                    minStartTime={this.state.minStart}
+                    handleUpdateDB={this.handleUpdateDB}
+                    perferred= {true}
+                    />
+            </div>
+        );
+    }
+
+    InputOptions(){
+        switch (this.state.inputChoice) {
+            case this.inputOptions.OPTIONS:
+                return (
+                    <div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        
+                        <button id="get-google-calendar-button" onClick={() => {
+                                    this.setState({
+                                        inputChoice: this.inputOptions.GOOGLE_CALENDAR
+                                    });
+                                }}>
+                            Get availabilites from Google Calendar
+                        </button>
+        
+                        <br/>
+                        <br/>
+                        <br/>
+        
+                        <button id="get-input-table-button" onClick={() => {
+                                    this.setState({
+                                        inputChoice: this.inputOptions.MANUAL
+                                    });
+                                }}>
+                            Input availabilities manually
+                        </button>
+        
+                    </div>
+                );
+            case this.inputOptions.GOOGLE_CALENDAR:
+                return this.GoogleCalendarInput();
+            case this.inputOptions.MANUAL:
+                return this.InputTable();
+        
+            default:
+                console.log("InputOptions ERROR")
+                break;
+        }
+
+        
+    }
 
     render() {
         if (this.state.days.length === 0){
@@ -237,11 +341,7 @@ class ViewPage extends Component{
                     <h1>View Page</h1>
                     <br/>
                     <br/>
-                    <div className="flex">
-                    <form>
-                        <input id="user-name-input" type="text" className="form-control" placeholder="Your Name" onSubmit/>
-                    </form>
-                    </div>
+                    
 
                     <div className="flex">
                         <div className="flex-child">
@@ -249,24 +349,27 @@ class ViewPage extends Component{
                             <br/>
                             {this.GroupOrPeopleResponses()}
                         </div>
+                        
+                        {this.InputOptions()}
+
                         <div className="flex-child">
-                            {
-                                //TODO: input from user
-                            }
-                            <br/>
-                            <br/>
-                            <br/>
-                            <br/>
-                            <p>Input from user here</p>
-                        </div>
-                        <div className="flex-child">
-                            <TimeSlotTable type={this.state.daytype} dates={this.state.days}
+                            <TimeSlotTable ref = {this.responsesTable}
+                                           isInputTable = {false}
+                                           type={this.state.daytype} 
+                                           dates={this.state.days}
                                            showTimeSlot={this.state.showTimeSlotTable}
                                            minStartTime={this.state.minStart}
-                                           handleUpdateDB={this.handleUpdateDB}
-                                            AddAvailabilityButton={this.AddAvailabilityButton}/>
+                                           perferred = {false}
+                                           />
+                                           {/*colorMap={outputColorMap(this.state.responses, null, false)}*/}
+                                           {/*TODO make it work with groups too*/}
                         </div>
                     </div>
+                    <br/>
+                    {this.NameAndSubmit()}
+                    <br/>
+                    <br/>
+                    <br/>
 
                 </div>
             );

@@ -18,10 +18,12 @@ class TimeSlotTable extends Component {
         this.handleTimeSlotClicked = this.handleTimeSlotClicked.bind(this);
         this.handleMulti = this.handleMulti.bind(this);
         this.maybeMulti = this.maybeMulti.bind(this);
+        this.handleAvaibiltyType = this.handleAvaibiltyType.bind(this);
 
         this.state = {
             multiSelect: false,
-            multiType:true //true == add, false == remove highlight
+            multiType:true, //true == add, false == remove highlight
+            avaibiltyType:"A"
         }
     }
 
@@ -31,10 +33,13 @@ class TimeSlotTable extends Component {
             if(isOn){
                 var location = this.getMatrixLocation(id);
                 if (this.response[location[0]][location[1]] === 0){
-                    this.setState({multiType: true});
+                    this.setState({multiType: (this.state.avaibiltyType == "A" ? 1:2) });
+                }
+                else if (this.response[location[0]][location[1]] === 1){
+                    this.setState({multiType: (this.state.avaibiltyType == "A" ? 0:2) });
                 }
                 else{
-                    this.setState({multiType: false});
+                    this.setState({multiType: (this.state.avaibiltyType == "A" ? 1:0) });
                 }
                 console.log("start the shit");
             }
@@ -49,10 +54,9 @@ class TimeSlotTable extends Component {
     maybeMulti(id){
         if(this.state.multiSelect){
             const location = this.getMatrixLocation(id);
-            var notHighlighted = this.response[location[0]][location[1]] === 0;
-            var highlightMode = this.state.multiType;
-            if (notHighlighted && highlightMode || !notHighlighted && !highlightMode) //is not highlighted and in highlight mode
-            this.handleTimeSlotClicked(id);
+            var current = this.response[location[0]][location[1]];
+            if (current != this.state.multiType && !(this.state.avaibiltyType == "A" ? (current == 2 && this.state.multiType == 0) : (current == 1 && this.state.multiType == 0))) //decides if the current spot should change
+                this.handleTimeSlotClicked(id);
         }
     }
 
@@ -73,15 +77,22 @@ class TimeSlotTable extends Component {
 
 
     handleTimeSlotClicked(id){
+        var availColor = "#84D6E7";
+        var perColor = "#14D6E7";
+        var unselColor = "#ffffff"
         console.log("Clicked: " + id);
         const location = this.getMatrixLocation(id);
         if (this.response[location[0]][location[1]] === 0){
-            this.response[location[0]][location[1]] = 1;
-            document.getElementById(id).style.backgroundColor = "#84D6E7";
+            this.response[location[0]][location[1]] = (this.state.avaibiltyType == "A" ? 1 : 2) ;
+            document.getElementById(id).style.backgroundColor = (this.state.avaibiltyType == "A" ? availColor : perColor);
         }
-        else {
-            this.response[location[0]][location[1]] = 0;
-            document.getElementById(id).style.backgroundColor = "#ffffff";
+        else if (this.response[location[0]][location[1]] === 1){
+            this.response[location[0]][location[1]] = (this.state.avaibiltyType == "A" ? 0 : 2);
+            document.getElementById(id).style.backgroundColor = (this.state.avaibiltyType == "A" ?  unselColor :perColor);
+        }
+        else{
+            this.response[location[0]][location[1]] = (this.state.avaibiltyType == "A" ? 1 : 0);
+            document.getElementById(id).style.backgroundColor = (this.state.avaibiltyType == "A" ?  availColor :unselColor);
         }
         console.table(this.response);
     }
@@ -131,13 +142,11 @@ class TimeSlotTable extends Component {
             const hour = timestamp / 60;
             title = (hour < 13) ? hour : (hour - 12);
             title += (hour < 12) ? ' AM' : ' PM';
-
         }
         return (
             <td className="timeslotHourTitleCell">
                 {title}
             </td>);
-
     }
 
     GetResponse(){
@@ -185,18 +194,28 @@ class TimeSlotTable extends Component {
                         if (show) {
                             //if the admin choose for this time to be available to be selected, make it clickable,
                             // otherwise mark as unavailable slot and do not attach any event handlers
-                            return <td
-                                key={keyName}
-                                id={keyName}
-                                className={rowClassName}
-                                //onClick={() => this.handleTimeSlotClicked(keyName)}
+                            if (this.props.isInputTable){
+                                // If this table need to accept input
+                                return <td
+                                    key={keyName}
+                                    id={keyName}
+                                    className={rowClassName}
+                                    //onClick={() => this.handleTimeSlotClicked(keyName)}
 
-                                //TODO: make it so that you can only add or remove (depending on what is first selected)
-                                //ie can only do one action during the entire drag select
-                                onMouseDown = {() => {this.handleMulti(true, keyName); this.handleTimeSlotClicked(keyName)}}
-                                onMouseUp = {() => {this.handleMulti(false,keyName)}}
-                                onMouseEnter = {() => {this.maybeMulti(keyName)}}
-                                />
+
+                                    onMouseDown = {() => {this.handleMulti(true, keyName); this.handleTimeSlotClicked(keyName)}}
+                                    onMouseUp = {() => {this.handleMulti(false,keyName)}}
+                                    onMouseEnter = {() => {this.maybeMulti(keyName)}}
+                                    />
+                            }
+                            else {
+                                // If this table is used for the colormap
+                                return <td
+                                    key={keyName}
+                                    id={keyName}
+                                    className={rowClassName}
+                                    />
+                            }
                         } else {
                             return <td
                                 key={keyName}
@@ -228,25 +247,31 @@ class TimeSlotTable extends Component {
         )
     }
 
+    handleAvaibiltyType(type){
+        if(this.state.avaibiltyType != type){
+            this.setState({avaibiltyType: type});
+        }
+    }
+
+    PerfferedButton(){
+        return (
+            <form>
+                <div>
+                Input Type:
+                </div>
+                <input type="radio" name="chooseone" value="Group"onClick={() => this.handleAvaibiltyType("A")}/><label for="Group"> Availabile</label>
+                <input type="radio" name="chooseone" value="Person"onClick={() =>this.handleAvaibiltyType("P")}/><label for="Person"> Preferred</label><br/>
+            </form>
+        )
+    }
+
+
 
     render() {
 
         return (
-            <>
-                <button id="update-availability-button" onClick={() => {
-                    if(document.getElementById("user-name-input").value === ""){
-                        alert("Please enter your name.");
-                    }
-                    else if(this.response.flat().reduce((total, num) => {return total + num}) === 0){
-                        alert("Please select some availabilities.");
-                    }
-                    else {
-                        this.props.handleUpdateDB(this.response)
-                    }
-                }}>
-                    Add Availability
-                </button>
                 <div className="TimeSlotTable">
+                    {this.props.perferred ? (this.PerfferedButton()) : null}
                     <table className="styled-table" onMouseLeave = {() => {this.handleMulti(false)}}>
                         <thead>
                         <tr>
@@ -258,7 +283,7 @@ class TimeSlotTable extends Component {
                         {this.TimeSlotCreateRows()}
                     </table>
                 </div>
-            </>
+            
         );
     }
 }

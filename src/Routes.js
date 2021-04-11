@@ -9,6 +9,7 @@ import SignUp from './pages/SignUp'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
 import Confirmation from './pages/Confirmation';
+import AccountPage from './pages/AccountPage'
 import history from './history';
 import PrivateRoute from './PrivateRoutes'
 import ForgotPassword from './pages/ForgotPassword'
@@ -22,6 +23,7 @@ export default class Routes extends Component {
                     <PrivateRoute exact path="/profile" component = { Profile }/>
                     <PrivateRoute exact path="/update-profile" component = { UpdateProfile }/>
                     <Route exact path="/" component={ HomePage }/>
+                    <Route exact path="/account" component={ AccountPage }/>
                     <Route exact path="/setup1" component={ Setup1Page }/>
                     <Route exact path="/Setup2" component={ Setup2Page }/>
                     <Route exact path="/view/:meetingID" component={ ViewPage }/>
