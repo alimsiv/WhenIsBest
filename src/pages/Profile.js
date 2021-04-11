@@ -1,24 +1,11 @@
 import React, { useState } from 'react' 
 import { Card, Button, Alert, Container } from 'react-bootstrap'
-import { useAuth } from '../contexts/AuthContext'
-import { Link, useHistory } from 'react-router-dom'
-import { firestore } from '../apis/firebase'
+import { useAuth, handleLogout} from '../contexts/AuthContext'
+import { Link } from 'react-router-dom'
 
 export default function Profile() {
     const [error, setError] = useState("")
     const { currentUser, logout } = useAuth()
-    const history = useHistory()
-    
-    async function handleLogout() {
-        setError("")
-    
-        try {
-            await logout()
-            history.push("/")
-        } catch {
-            setError("Failed to log out")
-        }
-    }
 
     return (
         <>
@@ -40,7 +27,7 @@ export default function Profile() {
                 </Card.Body>
             </Card>
                  <div className="w-100 text-center mt-2">
-                <Button variant="link" onClick={handleLogout}>
+                <Button variant="link" onClick={() => handleLogout(setError, logout)}>
                     Log Out
                 </Button>
             </div>    

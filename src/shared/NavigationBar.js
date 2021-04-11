@@ -1,10 +1,12 @@
-import {Nav, Navbar, NavDropdown, Form, FormControl, Button} from 'react-bootstrap'
+import { useState } from 'react' 
+import {Nav, Navbar} from 'react-bootstrap'
 import { withRouter } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth, handleLogout } from '../contexts/AuthContext'
 
 const NavigationBar = () => {
 
-    const { currentUser } = useAuth()
+    const [error, setError] = useState("")
+    const { currentUser, logout } = useAuth()
 
     return (
         <div className="NavigationBar">
@@ -23,7 +25,7 @@ const NavigationBar = () => {
                         <Nav className = "ml-auto">
                             { !currentUser && <Nav.Link href="/signup">Sign Up</Nav.Link> }
                             { !currentUser && <Nav.Link href="/login">Login</Nav.Link> }
-                            { currentUser && <Nav.Link href="/login">Logout (Button Not Working Yet, Use Button in Profile Page)</Nav.Link> }
+                            { currentUser && <Nav.Link href="/login" onSelect={() => handleLogout(setError, logout)}>Logout</Nav.Link> }
                         </Nav>
                     </Nav>
                 </Navbar.Collapse>

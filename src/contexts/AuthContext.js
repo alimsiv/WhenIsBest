@@ -59,3 +59,13 @@ export function AuthProvider({ children }) {
         </AuthContext.Provider>
     )
 }
+
+export async function handleLogout(setError, logout) {
+    setError("")
+
+    try {
+        await logout()
+    } catch {
+        setError("Failed to log out")
+    }
+}
