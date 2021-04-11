@@ -1,6 +1,6 @@
 import firebase from 'firebase/app';
 import { useAuth } from '../contexts/AuthContext'
-import { auth, firestore } from  '../apis/firebase'
+import { auth, firestore } from '../apis/firebase'
 
 
 //import firebase from '../apis/firebase';
@@ -77,29 +77,17 @@ export function updateResponseInDB(meetingID, id, name, responses) {
 }
 
 export function addMeetingToUser(meetingID) {
-    const uid = auth.currentUser.uid;
-    try {
-        userRef(uid).update({
-            meetings: firebase.firestore.FieldValue.arrayUnion(meetingID),
-        });
+    //const uid = auth.currentUser.uid;
+    if (auth.currentUser != null) {
+        try {
+            userRef(auth.currentUser.uid).update({
+                meetings: firebase.firestore.FieldValue.arrayUnion(meetingID),
+            });
+        }
+        catch {
+            console.log("User does not exist")
+        }
     }
-    catch {
-        console.log("User does not exist")
-    }
-    
-    
-    /*
-    const doc = await userRef(userID).get();
-    if (doc.exists) {
-        userRef(userID).update({
-            meetings: firebase.firestore.FieldValue.arrayUnion(meetingID),
-        });
-    }
-    else {
-        console.log("User does not exist")
-    }
-    */
-
 }
 
 export async function getUserMeetings(userID) {
