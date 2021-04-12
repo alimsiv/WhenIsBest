@@ -1,7 +1,6 @@
 import '../styling/TimeSlotTable.css';
 import { Component } from "react";
-
-import { ToggleButton, ToggleButtonGroup, ButtonGroup } from 'react-bootstrap';
+import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 
 
 /** Creates the TimeSlotTable
@@ -27,6 +26,10 @@ class TimeSlotTable extends Component {
             multiType: true, //true == add, false == remove highlight
             availabilityType: "A",
         }
+    }
+
+    GetResponse() {
+        return this.response;
     }
 
     handleMulti(isOn, id) {
@@ -71,6 +74,7 @@ class TimeSlotTable extends Component {
         return response;
     }
 
+    // Returns matrix location from cell id
     getMatrixLocation(id) {
         const parsedID = id.split(':'); //example: timeslot:0:540
         const row = (parsedID[2] - this.props.minStartTime) / 15;
@@ -138,23 +142,17 @@ class TimeSlotTable extends Component {
     }
 
     AddSideHeaderHour(timestamp, rows) {
-        let title = "";
         if (timestamp % 60 === 0) {
+            let title = "";
             const hour = timestamp / 60;
             title = (hour < 13) ? hour : (hour - 12);
             title += (hour < 12) ? ' AM' : ' PM';
+            return (
+                <td className="timeslotHourTitleCell" rowSpan={4}>
+                    {title}
+                </td>);
         }
-        return (
-            <td className="timeslotHourTitleCell">
-                {title}
-            </td>);
     }
-
-    GetResponse() {
-        return this.response;
-    }
-
-
 
     /**
      * Creates a tr (a table row) of the TimeSlotTable
@@ -185,7 +183,6 @@ class TimeSlotTable extends Component {
         let dayCount = 0;
 
         return (
-            <>
                 <tr className="timeslotRow">
                     {this.AddSideHeaderHour(timestamp, 4)}
                     {showTimeSlot.map(show => {
@@ -196,21 +193,18 @@ class TimeSlotTable extends Component {
                             //if the admin choose for this time to be available to be selected, make it clickable,
                             // otherwise mark as unavailable slot and do not attach any event handlers
                             if (this.props.isInputTable) {
-                                // If this table need to accept input
+                                // If this table should accept user input
                                 return <td
                                     key={keyName}
                                     id={keyName}
                                     className={rowClassName}
-                                    //onClick={() => this.handleTimeSlotClicked(keyName)}
-
-
                                     onMouseDown={() => { this.handleMulti(true, keyName); this.handleTimeSlotClicked(keyName) }}
                                     onMouseUp={() => { this.handleMulti(false, keyName) }}
                                     onMouseEnter={() => { this.maybeMulti(keyName) }}
                                 />
                             }
                             else {
-                                // If this table is used for the colormap
+                                // If this table is used for the heatmap display
                                 return <td
                                     key={keyName}
                                     id={keyName}
@@ -218,14 +212,15 @@ class TimeSlotTable extends Component {
                                 />
                             }
                         } else {
+                            const unavailableClassName = (rowClassName == 'timeslotClickableHour') ? 'timeslotUnavailableHour' : 'timeslotUnavailable';
+
                             return <td
                                 key={keyName}
                                 id={keyName}
-                                className="timeslotUnavailable" />
+                                className={unavailableClassName} />
                         }
                     })}
                 </tr>
-            </>
         );
     }
 
@@ -274,7 +269,6 @@ class TimeSlotTable extends Component {
 
         return (
             <div className="TimeSlotTable">
-                {this.props.perferred ? (this.PreferredButton()) : null}
                 <table className="styled-table" onMouseLeave={() => { this.handleMulti(false) }}>
                     <thead>
                         <tr>
@@ -285,6 +279,8 @@ class TimeSlotTable extends Component {
                     </thead>
                     {this.TimeSlotCreateRows()}
                 </table>
+                <br/>
+                {this.props.perferred ? (this.PreferredButton()) : null}
             </div>
 
         );

@@ -19,6 +19,7 @@ class ViewPage extends Component {
 
         this.handleUpdateDB = this.handleUpdateDB.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
+        this.handleUpdateMinRequired = this.handleUpdateMinRequired.bind(this);
         this.inputTable = React.createRef();
 
         this.state = {
@@ -36,22 +37,11 @@ class ViewPage extends Component {
             userID: "",
             userName: "",
             inputChoice: this.inputOptions.OPTIONS,
+            showAdvancedSettings: false,
 
             //TODO set to authenticated user id if logged in
-
-            /*
-            dates: [new Date(2021, 1, 22),new Date(2021, 1, 25),new Date(2021, 1, 28)],
-            weekdays: ["Monday","Tuesday","Wednesday"],
-            showTimeSlot: [[true, true, true], [false, false, false], [false, true, true], [false, true, true], [true, true, false], [true, true, true], [true, true, true], [true, true, true], [true, true, true], [true, true, true], [true, true, true]],
-            minStartTime: 540, //The earliest time slot for the range of dates/days chosen (minutes since midnight)
-            timezoneOffset: 0,
-            responses: ["Marlee", "Ali", "Levi"],
-            */
-
         }
     }
-
-
 
 
     async componentDidMount() {
@@ -94,6 +84,11 @@ class ViewPage extends Component {
     handleUpdatePriority(person, priority) {
         //TODO: update priority of name
         console.log(person.name + "'s priority is: " + priority);
+    }
+    
+    handleUpdateMinRequired(group, minRequired) {
+        //TODO: update min required of group
+        console.log(group + " requires at least: " + minRequired);
     }
 
     handleUpdateCheckBox(person, status) {
@@ -143,24 +138,23 @@ class ViewPage extends Component {
 
     PeopleResponses(response) {
         return (
-            <tr>
-                <td className="responses_name">
-                    <Form.Group controlId={response.id + '_checkbox'} className='response'>
-                        <Form.Check type="checkbox" label={response.name} onChange={(e) => this.handleUpdateCheckBox(response, e.target.value)} />
-                    </Form.Group>
-                </td>
-                <td className="responses_range">
-                    <input type="range" id={response.id + "_range"} min="1" max="5" step="1" onChange={(e) => this.handleUpdatePriority(response, e.target.value)} />
-
-                </td>
-
+            <tr className="responses_row">
+                {this.state.showAdvancedSettings && <td className="responses_checkbox">
+                        <Form.Group controlId={response.id + '_checkbox'} className='response'>
+                            <Form.Check type="checkbox" onChange={(e) => this.handleUpdateCheckBox(response, e.target.value)} />
+                        </Form.Group>
+                </td>}
+                <td className="responses_name">{response.name}</td>
+                {this.state.showAdvancedSettings && <td className="responses_range">
+                        <input type="range" id={response.id + "_range"} min="1" max="5" step="1" onChange={(e) => this.handleUpdatePriority(response, e.target.value)} />
+                </td>}
             </tr>
         );
     }
 
     GroupResponses(group) {
         return (
-            <tr>
+            <tr className="responses_row">
                 <td className="responses_name">
                     <Form.Group controlId={group + '_checkbox'} className='response'>
                         <Form.Check type="checkbox" label={group} onChange={(e) => this.handleUpdateCheckBox(group, e.target.value)} />
@@ -168,7 +162,9 @@ class ViewPage extends Component {
                 </td>
                 <td className="responses_range">
                     <input type="range" id={group + "_range"} min="1" max="5" step="1" onChange={(e) => this.handleUpdatePriority(group, e.target.value)} />
-
+                </td>
+                <td className="responses_required">
+                    <input type="form" id={group + "_required"} onChange={(e) => this.handleUpdateMinRequired(group, e.target.value)} />
                 </td>
 
             </tr>
@@ -176,6 +172,7 @@ class ViewPage extends Component {
     }
 
     GroupOrPeopleResponses() {
+        let responses;
         if (this.state.priorityType === "P") {
             console.log("People Responses");
             if (this.state.responses.length === 0) {
@@ -185,9 +182,12 @@ class ViewPage extends Component {
                     </div>
                 );
             }
+            responses = this.state.responses.map((response) => this.PeopleResponses(response));
+            /*
             return (
                 <>
                     <tr>
+                        <td />
                         <td />
                         <td className="flex">
                             <h7>low</h7>
@@ -197,22 +197,25 @@ class ViewPage extends Component {
                     {this.state.responses.map((response) => this.PeopleResponses(response))}
                 </>
             );
+            */
         }
         else {
             console.log("Group Responses");
+            responses = this.state.groupList.map((group) => this.GroupResponses(group));
+        }
             return (
                 <>
-                    <tr>
+                    {this.state.showAdvancedSettings && <tr>
+                        <td />
                         <td />
                         <td className="flex">
                             <h7>low</h7>
                             <h7>high</h7>
                         </td>
-                    </tr>
-                    {this.state.groupList.map((group) => this.GroupResponses(group))}
+                    </tr>}
+                    {responses}
                 </>
             );
-        }
     }
 
     NameAndSubmit() {
@@ -263,7 +266,6 @@ class ViewPage extends Component {
     }
 
     GoogleCalendarInput() {
-
         return (
             <p>
                 google calendar integration
@@ -272,7 +274,6 @@ class ViewPage extends Component {
     }
 
     InputTable() {
-
         return (
             <div className="flex-child">
                 <TimeSlotTable ref={this.inputTable}
@@ -293,8 +294,6 @@ class ViewPage extends Component {
             case this.inputOptions.OPTIONS:
                 return (
                     <div>
-                        <br />
-                        <br />
                         <br />
                         <br />
                         <br />
@@ -334,12 +333,36 @@ class ViewPage extends Component {
 
     }
 
+    Responses() {
+        return (
+            <div className="flex-child">
+                <div className="flex">
+                    <div className="flex-child">
+                        <h4>{(this.state.priorityType === "G" ? "Group Responses" : "Responses")}</h4>
+                    </div>
+                    <div className="flex-child">
+                        <button id="advanced-settings-button" onClick={() => {
+                            this.setState({
+                                showAdvancedSettings: !this.state.showAdvancedSettings
+                            });
+                        }}>
+                            {this.state.showAdvancedSettings ? "Hide advanced settings" : "Show advanced settings"}
+                        </button>
+                    </div>
+                </div>
+                <br />
+                {this.GroupOrPeopleResponses()}
+            </div>
+
+        );
+    }
+
     render() {
         if (this.state.days.length === 0) {
             console.log("Loading database still")
             return (
                 <div>
-                    <p>This is a loading page.</p>
+                    <p>Loading....</p>
                 </div>
             );
         }
@@ -348,17 +371,15 @@ class ViewPage extends Component {
             //var responses = this.getResponses(this.state.priorityType, this.state.groupList);
             return (
                 <div className="ViewPage">
-                    <h1>View Page</h1>
+                    <br />
+                    <h1>{this.state.name}</h1>
                     <br />
                     <br />
 
 
                     <div className="flex">
-                        <div className="flex-child">
-                            <h4>{(this.state.priorityType === "G" ? "Groups" : "Responses")}</h4>
-                            <br />
-                            {this.GroupOrPeopleResponses()}
-                        </div>
+
+                        {this.Responses()}
 
                         {this.InputOptions()}
 
@@ -376,7 +397,7 @@ class ViewPage extends Component {
                         </div>
                     </div>
                     <br />
-                    {this.NameAndSubmit()}
+                    {(this.state.inputChoice != this.inputOptions.OPTIONS) && this.NameAndSubmit()}
                     <br />
                     <br />
                     <br />

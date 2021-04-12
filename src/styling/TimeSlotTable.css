@@ -5,9 +5,12 @@
     font-family: sans-serif;
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-    //table-layout:fixed;
-    //word-wrap: break-word;
 }
+/*
+table-layout:fixed;
+word-wrap: break-word;
+*/
+
 .styled-table thead tr {
     background-color: #101043;
     color: #ffffff;
@@ -23,11 +26,10 @@
     border-right: 1px solid #dddddd;
     padding: 2px 1px;
 }
-/*
+
 .styled-table tbody tr {
-    border-bottom: 1px solid #dddddd;
+    height: 9px;
 }
- */
 
 .styled-table tbody tr:last-of-type {
     border-bottom: 2px solid #101043;
@@ -54,7 +56,7 @@ th {
     height: 15px;
 }
 
-.timeslotClickableHour{
+.timeslotClickableHour, .timeslotUnavailableHour{
     border-top: 2px solid #282c34;
 }
 
@@ -62,25 +64,28 @@ th {
     border-top: 1px dotted #51535a;
 }
 
-.timeslotUnavailable{
+.timeslotUnavailable, .timeslotUnavailableHour{
     background-color: #282c34;
 }
 
 .timeslotHourTitleCell {
     vertical-align:top;
     width:70px;
-    font-size:10px;
+    font-size:12px;
     background-color: #282c34;
     color: white;
     border: 1px solid #282c34;
+    user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
 }
 
+/*
 .styled-table tbody tr td:first-of-type {
     //background-color: #282c34;
     //border: #282c34;
 }
+*/
 
 /*
 .styled-table tbody tr:nth-of-type(even) {
