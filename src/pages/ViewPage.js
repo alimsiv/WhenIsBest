@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
-import { Form, Toast } from 'react-bootstrap';
+import { Form, Toast, Modal, Button } from 'react-bootstrap';
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
 import TimeSlotTable from "../shared/TimeSlotTable";
 import { getMeetingInfo, fixTable, fixDays, getResponses, addResponseToDB, updateResponseInDB } from "../database/database";
 import '../styling/styles.css';
 import { outputColorMap } from '../shared/temp_alg';
+import { mod } from 'mathjs';
 
 
 class ViewPage extends Component {
@@ -20,6 +24,8 @@ class ViewPage extends Component {
         this.handleUpdateDB = this.handleUpdateDB.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleUpdateMinRequired = this.handleUpdateMinRequired.bind(this);
+        this.handleUserGroup = this.handleUserGroup.bind(this);
+        this.handleCloseModal = this.handleCloseModal.bind(this);
         this.inputTable = React.createRef();
 
         this.state = {
@@ -38,9 +44,23 @@ class ViewPage extends Component {
             userName: "",
             inputChoice: this.inputOptions.OPTIONS,
             showAdvancedSettings: false,
+            showModal: false,
 
             //TODO set to authenticated user id if logged in
         }
+    }
+
+    handleUserGroup(e) {
+        console.log(e.target.value);
+        this.setState({
+            userGroup: e.target.value
+        });
+    }
+
+    handleCloseModal(){
+        this.setState({
+            showModal: false
+        });
     }
 
 
@@ -50,6 +70,7 @@ class ViewPage extends Component {
         const twoDTable = fixTable(info.showTimeSlot, info.tableCol);
         const days = (info.daytype === 1) ? info.days : fixDays(info.days);
         const responseList = await getResponses(meetingID);
+        const modal = (this.state.priorityType === "G" && this.state.userGroup ==="");
 
         this.setState({
             meetingID: meetingID,
@@ -61,7 +82,8 @@ class ViewPage extends Component {
             hostID: info.hostID,
             priorityType: info.priorityType,
             groupList: info.groupList,
-            responses: responseList
+            responses: responseList,
+            showModal: modal,
         });
     }
 
@@ -81,19 +103,19 @@ class ViewPage extends Component {
         console.log(Date.formatDate(ny));     // 2017/3/10 21:30
     }
 
-    handleUpdatePriority(person, priority) {
+    handleUpdatePriority(name, id, priority) {
         //TODO: update priority of name
-        console.log(person.name + "'s priority is: " + priority);
+        console.log(name + "'s priority is: " + priority);
     }
-    
+
     handleUpdateMinRequired(group, minRequired) {
         //TODO: update min required of group
         console.log(group + " requires at least: " + minRequired);
     }
 
-    handleUpdateCheckBox(person, status) {
+    handleUpdateCheckBox(name, id, status) {
         //TODO: update checkbox of name
-        console.log(person.name + " has been selected: " + status);
+        console.log(name + " has been selected: " + status);
     }
 
     handleUpdateDB(response) {
@@ -136,37 +158,21 @@ class ViewPage extends Component {
         }
     }
 
-    PeopleResponses(response) {
+    ResponseRow(name, id) {
         return (
-            <tr className="responses_row">
-                {this.state.showAdvancedSettings && <td className="responses_checkbox">
-                        <Form.Group controlId={response.id + '_checkbox'} className='response'>
-                            <Form.Check type="checkbox" onChange={(e) => this.handleUpdateCheckBox(response, e.target.value)} />
-                        </Form.Group>
-                </td>}
-                <td className="responses_name">{response.name}</td>
-                {this.state.showAdvancedSettings && <td className="responses_range">
-                        <input type="range" id={response.id + "_range"} min="1" max="5" step="1" onChange={(e) => this.handleUpdatePriority(response, e.target.value)} />
-                </td>}
-            </tr>
-        );
-    }
-
-    GroupResponses(group) {
-        return (
-            <tr className="responses_row">
-                <td className="responses_name">
-                    <Form.Group controlId={group + '_checkbox'} className='response'>
-                        <Form.Check type="checkbox" label={group} onChange={(e) => this.handleUpdateCheckBox(group, e.target.value)} />
+            <tr className="responses-row">
+                {this.state.showAdvancedSettings && <td>
+                    <Form.Group controlId={id + '_checkbox'} className="responses-checkbox">
+                        <Form.Check type="checkbox" onChange={(e) => this.handleUpdateCheckBox(name, id, e.target.value)} />
                     </Form.Group>
-                </td>
-                <td className="responses_range">
-                    <input type="range" id={group + "_range"} min="1" max="5" step="1" onChange={(e) => this.handleUpdatePriority(group, e.target.value)} />
-                </td>
-                <td className="responses_required">
-                    <input type="form" id={group + "_required"} onChange={(e) => this.handleUpdateMinRequired(group, e.target.value)} />
-                </td>
-
+                </td>}
+                <td className="responses-name">{name}</td>
+                {this.state.showAdvancedSettings && <td>
+                    <input className="responses-range" type="range" id={id + "_range"} min="1" max="5" step="1" onChange={(e) => this.handleUpdatePriority(name, id, e.target.value)} />
+                </td>}
+                {this.state.priorityType === "G" && this.state.showAdvancedSettings && <td>
+                    <input className="responses-required" type="number" min="0" id={name + "_required"} onChange={(e) => this.handleUpdateMinRequired(name, e.target.value)} />
+                </td>}
             </tr>
         );
     }
@@ -182,29 +188,15 @@ class ViewPage extends Component {
                     </div>
                 );
             }
-            responses = this.state.responses.map((response) => this.PeopleResponses(response));
-            /*
-            return (
-                <>
-                    <tr>
-                        <td />
-                        <td />
-                        <td className="flex">
-                            <h7>low</h7>
-                            <h7>high</h7>
-                        </td>
-                    </tr>
-                    {this.state.responses.map((response) => this.PeopleResponses(response))}
-                </>
-            );
-            */
+            responses = this.state.responses.map((response) => this.ResponseRow(response.name, response.id));
         }
         else {
             console.log("Group Responses");
-            responses = this.state.groupList.map((group) => this.GroupResponses(group));
+            responses = this.state.groupList.map((group) => this.ResponseRow(group, group));
         }
-            return (
-                <>
+        return (
+            <>
+                <table className="responses_table">
                     {this.state.showAdvancedSettings && <tr>
                         <td />
                         <td />
@@ -214,8 +206,9 @@ class ViewPage extends Component {
                         </td>
                     </tr>}
                     {responses}
-                </>
-            );
+                </table>
+            </>
+        );
     }
 
     NameAndSubmit() {
@@ -277,13 +270,13 @@ class ViewPage extends Component {
         return (
             <div className="flex-child">
                 <TimeSlotTable ref={this.inputTable}
-                    isInputTable={true}
+                    isInputTable={true} //whether or not the user will be able to select cells on this table
                     type={this.state.daytype}
                     dates={this.state.days}
                     showTimeSlot={this.state.showTimeSlotTable}
                     minStartTime={this.state.minStart}
                     handleUpdateDB={this.handleUpdateDB}
-                    perferred={true}
+                    showPreferredButton={true}
                 />
             </div>
         );
@@ -390,7 +383,7 @@ class ViewPage extends Component {
                                 dates={this.state.days}
                                 showTimeSlot={this.state.showTimeSlotTable}
                                 minStartTime={this.state.minStart}
-                                perferred={false}
+                                showPreferredButton={true}
                             />
                             {/*colorMap={outputColorMap(this.state.responses, null, false)}*/}
                             {/*TODO make it work with groups too*/}
@@ -401,6 +394,22 @@ class ViewPage extends Component {
                     <br />
                     <br />
                     <br />
+                    {/*TODO: and userGroup==="" */}
+                    <Modal show={this.showModal} hide={this.handleCloseModal}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Please select your group</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <RadioGroup aria-label="gender" name="gender1" value={this.state.userGroup} onChange={this.handleUserGroup}>
+                                {this.state.groupList.map((group) =>
+                                    <FormControlLabel value={group} control={<Radio />} label={group} />
+                                )}
+                            </RadioGroup>
+                            <Button variant="primary" onClick={this.handleCloseModal}>
+                                Confirm
+                            </Button>
+                        </Modal.Body>
+                    </Modal>
 
                 </div>
             );

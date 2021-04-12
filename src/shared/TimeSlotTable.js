@@ -183,44 +183,44 @@ class TimeSlotTable extends Component {
         let dayCount = 0;
 
         return (
-                <tr className="timeslotRow">
-                    {this.AddSideHeaderHour(timestamp, 4)}
-                    {showTimeSlot.map(show => {
-                        const keyName = 'timeslot:' + dayCount + ':' + timestamp;
-                        dayCount++;
+            <tr className="timeslotRow">
+                {this.AddSideHeaderHour(timestamp, 4)}
+                {showTimeSlot.map(show => {
+                    const keyName = 'timeslot:' + dayCount + ':' + timestamp;
+                    dayCount++;
 
-                        if (show) {
-                            //if the admin choose for this time to be available to be selected, make it clickable,
-                            // otherwise mark as unavailable slot and do not attach any event handlers
-                            if (this.props.isInputTable) {
-                                // If this table should accept user input
-                                return <td
-                                    key={keyName}
-                                    id={keyName}
-                                    className={rowClassName}
-                                    onMouseDown={() => { this.handleMulti(true, keyName); this.handleTimeSlotClicked(keyName) }}
-                                    onMouseUp={() => { this.handleMulti(false, keyName) }}
-                                    onMouseEnter={() => { this.maybeMulti(keyName) }}
-                                />
-                            }
-                            else {
-                                // If this table is used for the heatmap display
-                                return <td
-                                    key={keyName}
-                                    id={keyName}
-                                    className={rowClassName}
-                                />
-                            }
-                        } else {
-                            const unavailableClassName = (rowClassName == 'timeslotClickableHour') ? 'timeslotUnavailableHour' : 'timeslotUnavailable';
-
+                    if (show) {
+                        //if the admin choose for this time to be available to be selected, make it clickable,
+                        // otherwise mark as unavailable slot and do not attach any event handlers
+                        if (this.props.isInputTable) {
+                            // If this table should accept user input
                             return <td
                                 key={keyName}
                                 id={keyName}
-                                className={unavailableClassName} />
+                                className={rowClassName}
+                                onMouseDown={() => { this.handleMulti(true, keyName); this.handleTimeSlotClicked(keyName) }}
+                                onMouseUp={() => { this.handleMulti(false, keyName) }}
+                                onMouseEnter={() => { this.maybeMulti(keyName) }}
+                            />
                         }
-                    })}
-                </tr>
+                        else {
+                            // If this table is used for the heatmap display
+                            return <td
+                                key={keyName}
+                                id={keyName}
+                                className={rowClassName}
+                            />
+                        }
+                    } else {
+                        const unavailableClassName = (rowClassName == 'timeslotClickableHour') ? 'timeslotUnavailableHour' : 'timeslotUnavailable';
+
+                        return <td
+                            key={keyName}
+                            id={keyName}
+                            className={unavailableClassName} />
+                    }
+                })}
+            </tr>
         );
     }
 
@@ -247,6 +247,9 @@ class TimeSlotTable extends Component {
         if (this.state.availabilityType != newType) {
             this.setState({ availabilityType: newType });
         }
+        if (!this.props.isInputTable){
+            //TODO: Update heatmap algorithm to only show preferred timeslots
+        }
     }
 
     PreferredButton() {
@@ -254,21 +257,21 @@ class TimeSlotTable extends Component {
             <ToggleButtonGroup id="preferredToggle" type="radio" name="preferredTypeButton" value={this.state.availabilityType} onChange={this.handleAvailabilityType}>
                 <ToggleButton defaultChecked value="A">
                     Available
-                        </ToggleButton>
+                </ToggleButton>
                 <ToggleButton value="P">
                     Preferred
-                        </ToggleButton>
+                </ToggleButton>
 
             </ToggleButtonGroup>
         )
     }
 
 
-
     render() {
 
         return (
             <div className="TimeSlotTable">
+                {this.props.showPreferredButton && this.PreferredButton()}
                 <table className="styled-table" onMouseLeave={() => { this.handleMulti(false) }}>
                     <thead>
                         <tr>
@@ -279,22 +282,10 @@ class TimeSlotTable extends Component {
                     </thead>
                     {this.TimeSlotCreateRows()}
                 </table>
-                <br/>
-                {this.props.perferred ? (this.PreferredButton()) : null}
+                <br />
             </div>
 
         );
     }
 }
 export default TimeSlotTable;
-
-/*
-<div id="GroupTime1603281600" data-col="1" data-row="0" data-time="1603281600"
-        onmouseover="ShowSlot(1603281600);"
-        onmouseout="RestoreLeftSide(event);"
-        ontouchstart="ShowSlotByTouch(event);"
-        ontouchmove="ShowSlotByTouchMove(event);"
-        ontouchend="RestoreLeftSide(event);"
-        class="time-slot">
-      </div>
- */
