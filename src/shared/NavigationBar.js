@@ -25,6 +25,7 @@ const NavigationBar = () => {
                         <Nav className = "ml-auto">
                             { !currentUser && <Nav.Link href="/signup">Sign Up</Nav.Link> }
                             { !currentUser && <Nav.Link href="/login">Login</Nav.Link> }
+                            { currentUser && <Nav.Link href="/profile">Hello, {currentUser.email} </Nav.Link> }
                             { currentUser && <Nav.Link href="/login" onSelect={() => handleLogout(setError, logout)}>Logout</Nav.Link> }
                         </Nav>
                     </Nav>
