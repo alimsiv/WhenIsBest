@@ -5,6 +5,7 @@ import {getMeetingInfo, fixTable, fixDays, getResponses, addResponseToDB, update
 import '../styling/styles.css';
 import {outputColorMap} from '../shared/temp_alg';
 import ApiCalendar from 'react-google-calendar-api';
+import { DateUtils } from 'react-day-picker';
 
 
 class ViewPage extends Component{
@@ -39,6 +40,7 @@ class ViewPage extends Component{
             userName: "",
             inputChoice: this.inputOptions.OPTIONS,
             signedIn: false,
+            events:[],
 
             //TODO set to authenticated user id if logged in
 
@@ -135,10 +137,37 @@ class ViewPage extends Component{
         return response;
     }
 
+    //returns only the events that matter
+    importantEvents(events){
+        var importantEvents = [];
+        events.forEach(element => {
+            if(element.status != "cancelled" && this.validTime(element.start.dateTime)){
+                console.log("added Event:" + element.summary + " to list of calander events")
+                importantEvents.push(element);
+            }
+        });
+        return importantEvents;
+    }
+
+    validTime(time){
+        // console.log("Start" + Date.parse(this.state.days[0])); how to get javascript date into unixt time
+        var dayOfEvent = new Date(Date.parse(time)); //Date.parse converts to unix time (1600000000 thing), new Date converts to javascript time
+        for(var i = 0; i < this.state.days.length;i++){ //checks if event is say day as any day in calander
+            if(DateUtils.isSameDay(this.state.days[i],dayOfEvent)){ return true};
+        }
+        return false;
+    }
+
     handleCalenderClick(name){
         if (name === 'sign-in') {
           ApiCalendar.handleAuthClick();
           if (ApiCalendar.sign && !this.state.signedIn){
+            //ApiCalendar.listUpcomingEvents(5).then(({ result }) => {   //gets 5 upcoming events //unsure what upcoming is defined at
+            ApiCalendar.listEvents().then(({ result }) => { //gets all event in calander
+                //console.log(result.items)
+                //return(
+                this.setState({events:this.importantEvents(result.items)})
+            })
             this.setState({signedIn:true})
             console.log("successfully signed in");
           }
@@ -269,27 +298,37 @@ class ViewPage extends Component{
     }
 
     GetEvents(){
-        if (ApiCalendar.sign){
+        if (this.state.signedIn){
+            return(
+            this.state.events.map((x) => {
+                return (
+                    <div>{x.summary}</div>
+                )
+            })
+            )
             //ApiCalendar.listEvents().then(({ result }) => {       //gets all events in calander
-            ApiCalendar.listUpcomingEvents(5).then(({ result }) => {   //gets 5 upcoming events //unsure what upcoming is defined at
-                console.log(result.items)
-                return(
-                    result.items.map((x) => {
+            // ApiCalendar.listUpcomingEvents(5).then(({ result }) => {   //gets 5 upcoming events //unsure what upcoming is defined at
+            //     //console.log(result.items)
+            //     //return(
+            //     this.setState({events:result.items})
+                    //result.items.map((x) => {
+
                         //console.log(x.summary)
-                        return(
-                        <>
-                            <div>
-                            {x.summary} 
-                            </div>
-                            <div>
-                                {x.start} 
-                                {x.end}
-                            </div>
-                        </>
-                        )
-                    })
-                );
-            });
+                        // return(
+                        // <>
+                        //     <div>
+                        //     {x.summary} 
+                        //     </div>
+                        //     <div>
+                        //         {x.start} 
+                        //         {x.end}
+                        //     </div>
+                        // </>
+                        // )
+                        //this.setState({events:this.state.events.push(x.summary)})
+                   // })
+                //);
+            //});
         }
     }
 
@@ -298,10 +337,10 @@ class ViewPage extends Component{
 
         if(this.state.signedIn){
             return(
-                <p>
+                <>
                    Your Events
-                    {this.GetEvents()}
-                </p>
+                   {this.GetEvents()} 
+                </>
 
             );
         }
