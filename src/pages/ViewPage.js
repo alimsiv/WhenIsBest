@@ -18,7 +18,6 @@ class ViewPage extends Component{
     constructor(props) {
         super(props);
         //0 for Specific Dates, 1 for Days of the Week
-
         this.handleUpdateDB = this.handleUpdateDB.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
         this.inputTable = React.createRef();
@@ -41,6 +40,7 @@ class ViewPage extends Component{
             inputChoice: this.inputOptions.OPTIONS,
             signedIn: false,
             events:[],
+            eventAdded: false,
 
             //TODO set to authenticated user id if logged in
 
@@ -76,7 +76,7 @@ class ViewPage extends Component{
             hostID: info.hostID,
             priorityType:info.priorityType,
             groupList:info.groupList,
-            responses: responseList
+            responses: responseList,
         });
     }
 
@@ -160,7 +160,11 @@ class ViewPage extends Component{
 
     handleCalenderClick(name){
         if (name === 'sign-in') {
-          ApiCalendar.handleAuthClick();
+            ApiCalendar.handleSignoutClick();
+            this.setState({signedIn:false})
+            if(!ApiCalendar.sign){
+                ApiCalendar.handleAuthClick();
+            }
           if (ApiCalendar.sign && !this.state.signedIn){
             //ApiCalendar.listUpcomingEvents(5).then(({ result }) => {   //gets 5 upcoming events //unsure what upcoming is defined at
             ApiCalendar.listEvents().then(({ result }) => { //gets all event in calander
@@ -332,14 +336,70 @@ class ViewPage extends Component{
         }
     }
 
+    addEvents(){
+        this.state.events.forEach()
+        //table.rows[3].cells[2].innerHTML = "testEvent";
+    }
+
+    getRowfromTime(time){
+        var timeInMins = time.getHours() *60 + time.getMinutes();
+        return(Math.floor((timeInMins - this.state.minStart)/15) +1)
+    }
+
+    getCol(time){
+        var dayOfEvent = new Date(Date.parse(time));
+        for(var i = 0; i < this.state.days.length;i++){ //checks if event is say day as any day in calander
+            if(DateUtils.isSameDay(this.state.days[i],dayOfEvent)){ return i+1};
+        }
+    }
+
+    getLocation(e){
+        console.log(e.summary);
+        var startTime  = new Date(Date.parse(e.start.dateTime));
+        var endTime = new Date(Date.parse(e.end.dateTime));
+        var startRow = this.getRowfromTime(startTime);
+        var endRow = this.getRowfromTime(endTime);
+        var col = this.getCol(startTime)
+        return [startRow,endRow,col]
+    }
+
+    addEvent(event){
+        var location;
+        if(this.inputTable != null){
+            //console.log("table" + table)
+            //this.setState({eventAdded:true})
+            var table = document.getElementById("userInputTable");
+            console.log("table" + table)
+            if(table != null){
+                this.state.events.forEach((e) => {
+                    location = this.getLocation(e);
+                    table.rows[location[0]].cells[location[2]].innerHTML = e.summary;
+                })
+            }
+
+        }
+        //table.rows[3].cells[2].innerHTML = "testEvent";
+    }
+
     GoogleCalendarInput(){
 
 
         if(this.state.signedIn){
             return(
                 <>
-                   Your Events
-                   {this.GetEvents()} 
+                   <div className="flex-child">
+                        <TimeSlotTable ref = {this.inputTable} 
+                        isInputTable = {true}
+                        type={this.state.daytype} 
+                        dates={this.state.days}
+                        showTimeSlot={this.state.showTimeSlotTable}
+                        minStartTime={this.state.minStart}
+                        handleUpdateDB={this.handleUpdateDB}
+                        perferred= {true}
+                        events = {this.state.events}
+                        tableID = "userInputTable"
+                        />
+                </div>
                 </>
 
             );
@@ -369,6 +429,8 @@ class ViewPage extends Component{
                     minStartTime={this.state.minStart}
                     handleUpdateDB={this.handleUpdateDB}
                     perferred= {true}
+                    events = {[]}
+                    tableID="userInputTable"
                     />
             </div>
         );
@@ -420,6 +482,7 @@ class ViewPage extends Component{
         
     }
 
+
     render() {
         if (this.state.days.length === 0){
             console.log("Loading database still")
@@ -447,7 +510,7 @@ class ViewPage extends Component{
                         </div>
                         
                         {this.InputOptions()}
-
+                        {this.addEvent()}
                         <div className="flex-child">
                             <TimeSlotTable ref = {this.responsesTable}
                                            isInputTable = {false}
@@ -456,6 +519,8 @@ class ViewPage extends Component{
                                            showTimeSlot={this.state.showTimeSlotTable}
                                            minStartTime={this.state.minStart}
                                            perferred = {false}
+                                           events = {[]}
+                                            tableID="meetingTable"
                                            />
                                            {/*colorMap={outputColorMap(this.state.responses, null, false)}*/}
                                            {/*TODO make it work with groups too*/}
@@ -466,7 +531,6 @@ class ViewPage extends Component{
                     <br/>
                     <br/>
                     <br/>
-
                 </div>
             );
         }

@@ -253,6 +253,15 @@ class TimeSlotTable extends Component {
         }
     }
 
+    addEvent(event){
+        var table = document.getElementById("userInputTable");
+        console.log("table" + table)
+        if(table != null){
+            table.rows[3].cells[2].innerHTML = "testEvent";
+        }
+        //table.rows[3].cells[2].innerHTML = "testEvent";
+    }
+
     PerfferedButton(){
         return (
             <form>
@@ -268,11 +277,11 @@ class TimeSlotTable extends Component {
 
 
     render() {
-
+        console.log(this.props.tableID + "created")
         return (
                 <div className="TimeSlotTable">
                     {this.props.perferred ? (this.PerfferedButton()) : null}
-                    <table className="styled-table" onMouseLeave = {() => {this.handleMulti(false)}}>
+                    <table className="styled-table" id={this.props.tableID} onMouseLeave = {() => {this.handleMulti(false)}}>
                         <thead>
                         <tr>
                             <th/>
@@ -282,8 +291,10 @@ class TimeSlotTable extends Component {
                         </thead>
                         {this.TimeSlotCreateRows()}
                     </table>
+                    {//this.addEvent("a")}
+                    }
                 </div>
-            
+
         );
     }
 }

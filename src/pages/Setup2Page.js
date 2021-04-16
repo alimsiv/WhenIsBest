@@ -251,7 +251,8 @@ class Setup2Page extends Component{
         var showTimeSlot = this.makeTimeSlots(timeslots,days.length);
         return(
             <>
-            <TimeSlotTable ref = {this.currentTable} type = {state.type} dates={days} showTimeSlot={showTimeSlot} minStartTime={minStart} perferred = {false} isInputTable = {true}
+            <TimeSlotTable ref = {this.currentTable} type = {state.type} dates={days} showTimeSlot={showTimeSlot} minStartTime={minStart} perferred = {false} isInputTable = {true} events = {[]}
+                    tableID="meetingInputTable"
                 />
             </>
         );
