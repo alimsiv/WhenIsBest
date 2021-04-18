@@ -372,6 +372,82 @@ class ViewPage extends Component {
 
     addEvent(event){
         var location;
+        if(this.inputTable != null){
+            //console.log("table" + table)
+            //this.setState({eventAdded:true})
+            var table = document.getElementById("userInputTable");
+            console.log("table" + table)
+            if(table != null){
+                this.state.events.forEach((e) => {
+                    location = this.getLocation(e);
+                    table.rows[location[0]].cells[location[2]].innerHTML = e.summary;
+                })
+            }
+
+        }
+        //table.rows[3].cells[2].innerHTML = "testEvent";
+    }
+
+    GoogleCalendarInput(){
+
+
+        if(this.state.signedIn){
+            return(
+                <>
+                   <div className="flex-child">
+                        <TimeSlotTable ref = {this.inputTable} 
+                        isInputTable = {true}
+                        type={this.state.daytype} 
+                        dates={this.state.days}
+                        showTimeSlot={this.state.showTimeSlotTable}
+                        minStartTime={this.state.minStart}
+                        handleUpdateDB={this.handleUpdateDB}
+                        perferred= {true}
+                        events = {this.state.events}
+                        tableID = "userInputTable"
+                        />
+                </div>
+                </>
+
+            );
+        }
+        else{
+            return (
+                <p>
+                    <button
+                    onClick={(e) => this.handleCalenderClick('sign-in')}
+                >
+                    sign-in
+                </button>
+                </p>
+            );
+        }
+    }
+
+    getRowfromTime(time){
+        var timeInMins = time.getHours() *60 + time.getMinutes();
+        return(Math.floor((timeInMins - this.state.minStart)/15) +1)
+    }
+
+    getCol(time){
+        var dayOfEvent = new Date(Date.parse(time));
+        for(var i = 0; i < this.state.days.length;i++){ //checks if event is say day as any day in calander
+            if(DateUtils.isSameDay(this.state.days[i],dayOfEvent)){ return i+1};
+        }
+    }
+
+    getLocation(e){
+        console.log(e.summary);
+        var startTime  = new Date(Date.parse(e.start.dateTime));
+        var endTime = new Date(Date.parse(e.end.dateTime));
+        var startRow = this.getRowfromTime(startTime);
+        var endRow = this.getRowfromTime(endTime);
+        var col = this.getCol(startTime)
+        return [startRow,endRow,col]
+    }
+
+    addEvent(event){
+        var location;
         var border = "2px solid #0000FF";
         if(this.inputTable != null){
             //console.log("table" + table)
