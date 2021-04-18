@@ -1,13 +1,10 @@
 import React, { Component } from 'react'
-import {Table} from 'react-bootstrap'
-import NavigationBar from '../shared/NavigationBar'
 import history from './../history'
 import TimeSlotTable from "../shared/TimeSlotTable";
-import {AiFillInfoCircle} from "react-icons/ai";
-import { Button } from '@material-ui/core';
 import {IconButton} from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
 import Popup from 'reactjs-popup';
+import {addMeetingToUser} from '../database/database';
 
 
 //import app from "../apis/firebase"
@@ -32,8 +29,10 @@ class Setup2Page extends Component{
         this.state = {
             groupList: ["",""],
             mode: "P",
-            showPop: false
+            showPop: false,
+            userID: "testUserID",
         }
+        //TODO: set userID to current user uid
 
     }
 
@@ -108,12 +107,12 @@ class Setup2Page extends Component{
         //const firestore = firebase.firestore();
         const state = this.props.location.state;
         var oneDTable = table.flat();
-        var uid = "testUserID";
+        var userID = "testUserID";
         console.log("here");
         const db = firebase.firestore();
             let docRef = db.collection("meetings").doc();
             let setAda = docRef.set({
-              hostID: uid,
+              hostID: userID,
               days: days,
               name: state.name,
               daytype:type,
@@ -251,7 +250,13 @@ class Setup2Page extends Component{
         var showTimeSlot = this.makeTimeSlots(timeslots,days.length);
         return(
             <>
-            <TimeSlotTable ref = {this.currentTable} type = {state.type} dates={days} showTimeSlot={showTimeSlot} minStartTime={minStart} perferred = {false} isInputTable = {true}
+            <TimeSlotTable ref = {this.currentTable} 
+                           type = {state.type} 
+                           dates={days} 
+                           showTimeSlot={showTimeSlot} 
+                           minStartTime={minStart} 
+                           showPreferredButton = {false} 
+                           isInputTable = {true}
                 />
             </>
         );
@@ -259,7 +264,8 @@ class Setup2Page extends Component{
     
     render() {
         //get things passed from the previous page
-        const state = this.props.location.state 
+        const state = this.props.location.state;
+
         return (
             <div className="Setup2Page">
                 <h1>{state.name}</h1>
@@ -347,6 +353,7 @@ class Setup2Page extends Component{
                                             }
                                             //push to DB
                                             var mID = this.addtoDB(days,minStart,table,state.type, modifiedGroupList);
+                                            addMeetingToUser(mID, this.state.userID);
 
 
                                             //console.log(days);
