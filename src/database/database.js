@@ -42,6 +42,7 @@ export async function getMeetingInfo(code) {
     }
 }
 
+
 /***
  * Returns a list of people responses for a given meeting
  * Each entry has the fields: name, availability, group, id, priority

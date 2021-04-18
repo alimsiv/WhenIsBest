@@ -1,33 +1,51 @@
-import React, { useState } from 'react' 
-import { Card, Button, Alert, Container } from 'react-bootstrap'
-import { useAuth, handleLogout} from '../contexts/AuthContext'
+import React, { useState, useAsync } from 'react'
+import { Card, Button, Alert, Container, Nav } from 'react-bootstrap'
+import { useAuth, handleLogout } from '../contexts/AuthContext'
 import { Link } from 'react-router-dom'
 import { useDocument, useCollectionData } from 'react-firebase-hooks/firestore'
 import { firestore } from '../apis/firebase'
 import firebase from 'firebase/app';
-import { userRef } from '../database/database'
+import { getMeetingInfo } from '../database/database'
 
 export default function Profile() {
-    const [error, setError] = useState("")
-    const { currentUser, logout } = useAuth()
+    const [error, setError] = useState("");
+    const { currentUser, logout } = useAuth();
 
     const FirestoreDocument = () => {
+        let meetings = [];
         const [value, loading, error] = useDocument(
-          firebase.firestore().doc(`users/${currentUser.uid}`),
-          {
-            snapshotListenOptions: { includeMetadataChanges: true },
-          }
+            firebase.firestore().doc(`users/${currentUser.uid}`),
+            {
+                snapshotListenOptions: { includeMetadataChanges: true },
+            }
         );
+        if (value != null) {
+            const meetingsList = value.data().meetings;
+            for (let i = 0; i < meetingsList.length; i++) {
+
+                meetings.push(
+                    <Nav.Link href={"/view/" + meetingsList[i].toString()}>{meetingsList[i].toString()}</Nav.Link>
+                    );
+            }
+            console.log(meetings);
+        }
         return (
-          <div>
-            <p>
-              {error && <strong>Error: {JSON.stringify(error)}</strong>}
-              {loading && <span>Document: Loading...</span>}
-              {value && <span>Meetings: {JSON.stringify(value.data().meetings)}</span>}
-            </p>
-          </div>
+            <div>
+                <p>
+                    {error && <strong>Error: {JSON.stringify(error)}</strong>}
+                    {loading && <span>Document: Loading...</span>}
+                    
+                    {meetings &&
+                    <Nav className="flex-column">
+                        {meetings}
+                    </Nav>}
+                    
+                </p>
+            </div>
         );
-      };
+    };
+
+    
 
     return (
         <>
@@ -47,16 +65,17 @@ export default function Profile() {
                         <Card.Body>
                             <h2 className="text-center mb-4">Upcoming Meetings</h2>
                             {error && <Alert variant="danger">{error}</Alert>}
-                            <FirestoreDocument/>
+                            <FirestoreDocument />
+
                         </Card.Body>
                     </Card>
-                        <div className="w-100 text-center mt-2">
+                    <div className="w-100 text-center mt-2">
                         <Button variant="link" onClick={() => handleLogout(setError, logout)}>
                             Log Out
                         </Button>
-                    </div>  
+                    </div>
                 </div>
-            </Container>  
+            </Container>
         </>
     )
 }

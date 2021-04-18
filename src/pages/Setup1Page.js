@@ -335,7 +335,7 @@ class Setup1Page extends Component{
     render() {
         return (
             <div className="Setup1Page">
-                <h1>Setup1 Page</h1>
+                <h1>Create Your Meeting</h1>
 
                 <br/>
                 <br/>

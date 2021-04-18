@@ -70,7 +70,8 @@ class ViewPage extends Component {
         const twoDTable = fixTable(info.showTimeSlot, info.tableCol);
         const days = (info.daytype === 1) ? info.days : fixDays(info.days);
         const responseList = await getResponses(meetingID);
-        const modal = (this.state.priorityType === "G" && this.state.userGroup ==="");
+        const modal = (info.priorityType === "G");
+        //const modal = (this.state.priorityType === "G");
 
         this.setState({
             meetingID: meetingID,
@@ -395,7 +396,7 @@ class ViewPage extends Component {
                     <br />
                     <br />
                     {/*TODO: and userGroup==="" */}
-                    <Modal show={this.showModal} hide={this.handleCloseModal}>
+                    <Modal show={this.state.showModal && ((this.state.inputChoice === this.inputOptions.GOOGLE_CALENDAR) || (this.state.inputChoice === this.inputOptions.MANUAL))} hide={this.handleCloseModal}>
                         <Modal.Header closeButton>
                             <Modal.Title>Please select your group</Modal.Title>
                         </Modal.Header>
