@@ -6,13 +6,9 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import TimeSlotTable from "../shared/TimeSlotTable";
 import { getMeetingInfo, fixTable, fixDays, getResponses, addResponseToDB, updateResponseInDB } from "../database/database";
 import '../styling/styles.css';
-<<<<<<< HEAD
 import {outputColorMap} from '../shared/temp_alg';
 import ApiCalendar from 'react-google-calendar-api';
-=======
-import { outputColorMap } from '../shared/temp_alg';
 import { mod } from 'mathjs';
->>>>>>> 61d98998f490c4c11057910b9c8c6176a1024515
 
 
 class ViewPage extends Component {
@@ -49,12 +45,9 @@ class ViewPage extends Component {
             userID: "",
             userName: "",
             inputChoice: this.inputOptions.OPTIONS,
-<<<<<<< HEAD
             signedIn: false,
-=======
             showAdvancedSettings: false,
             showModal: false,
->>>>>>> 61d98998f490c4c11057910b9c8c6176a1024515
 
             //TODO set to authenticated user id if logged in
         }
@@ -159,7 +152,6 @@ class ViewPage extends Component {
         return response;
     }
 
-<<<<<<< HEAD
     handleCalenderClick(name){
         if (name === 'sign-in') {
           ApiCalendar.handleAuthClick();
@@ -175,10 +167,6 @@ class ViewPage extends Component {
 
     getResponses(mode,groupList){
         if(mode == "G"){
-=======
-    getResponses(mode, groupList) {
-        if (mode == "G") {
->>>>>>> 61d98998f490c4c11057910b9c8c6176a1024515
             return groupList
         }
         else {
@@ -286,7 +274,6 @@ class ViewPage extends Component {
         );
     }
 
-<<<<<<< HEAD
     GetEvents(){
         if (ApiCalendar.sign){
             //ApiCalendar.listEvents().then(({ result }) => {       //gets all events in calander
@@ -335,14 +322,6 @@ class ViewPage extends Component {
                 </p>
             );
         }
-=======
-    GoogleCalendarInput() {
-        return (
-            <p>
-                google calendar integration
-            </p>
-        );
->>>>>>> 61d98998f490c4c11057910b9c8c6176a1024515
     }
 
     InputTable() {
