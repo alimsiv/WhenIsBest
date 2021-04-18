@@ -257,6 +257,8 @@ class Setup2Page extends Component{
                            minStartTime={minStart} 
                            showPreferredButton = {false} 
                            isInputTable = {true}
+                           events = {[]}
+                           tableID="meetingInputTable"
                 />
             </>
         );
