@@ -1,15 +1,15 @@
 const math = require('mathjs')
-const rownum = 2, colnum = 3;
+const arrlength = 108;
 
 //const dimensions = [ arr.length, arr[0].length ];
 
 // notation for creating person
-// var person = {Name: "John", priority:3, avail_map: avail, group = '', pref_map: pref, all_avail: avail};
+// var person = {Name: "John", priority:3, avail_map: avail, group = '', pref_map: pref, availability: avail};
 // people = list of persons
 // var group = {people: {list of people}, req: 0; priority: 3, avail_map: avail, pref_map: pref, all_avail = avail}
 // var groups = list of groups
 
-function outputColorMap(people = null, groups = null, reqs = false, pref = false) {
+export function outputColorMap(people = null, groups = null, reqs = false, pref = false) {
     // get availability map
     let avail = updateAvailability(people, groups, reqs, pref);
     return createColorMap(avail)
@@ -23,6 +23,10 @@ function updateAvailability(people = null, groups = null, reqs = false, pref = f
             for (i = 0; i < math.size(pg); i++)
                 pg[i].avail_map = pg[i].pref_map
         }
+        else {
+            for (i = 0; i < math.size(pg); i++)
+                pg[i].avail_map = pg[i].availability
+        }
         reqMap = getReqMap(pg);
         numPeople = getTotalNumPeople(pg);
     } else {
@@ -30,6 +34,10 @@ function updateAvailability(people = null, groups = null, reqs = false, pref = f
         if (pref){
             for (i = 0; i < math.size(pg); i++)
                 pg[i].avail_map = pg[i].pref_map
+        }
+        else {
+            for (i = 0; i < math.size(pg); i++)
+                pg[i].avail_map = pg[i].availability
         }
         reqMap = getPriority5Map(people);
         numPeople = people.length;
@@ -52,7 +60,7 @@ function updateAvail(pg, reqMap, numPeople, reqs = false) {
     // Called when someone changes or adds availability
     // returns updated availability map
     // for person/groups w/o reqs
-    let updated = math.zeros(rownum, colnum);
+    let updated = math.zeros(arrlength);
     const weights = getWeights(numPeople);
     for (let i = 0; i < pg.length; i++) {
         let weightedMap = math.multiply(weights[pg[i].priority - 1], pg[i].avail_map)
@@ -66,7 +74,7 @@ function updateAvail(pg, reqMap, numPeople, reqs = false) {
 function getPriority5Map(people) {
     // avail is availability matrix
     // num is the number of priority 5 people
-    let p5Map = math.ones(rownum, colnum)
+    let p5Map = math.ones(arrlength)
     for (let i = 0; i < people.length; i++) {
         if (people[i].priority == 5)
             p5Map = math.dotMultiply(p5Map, people[i].avail_map)
@@ -79,7 +87,7 @@ function getWeights(numPeople) {
     let weights = []
     let i
     for (i = 0; i < 4; i++) {
-        weights[i] = numPeople / (4 ^ i);
+        weights[i] = numPeople / (4 ** (3-i));
     }
     return weights
 }
