@@ -55,7 +55,6 @@ class Setup1Page extends Component {
             if (!isAdded) {
                 selectedDays.push(day);
             }
-            //selectedDays.push(day);
         }
         else {
             console.log("day is in past, day ignored");

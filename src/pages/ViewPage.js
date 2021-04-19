@@ -29,7 +29,7 @@ class ViewPage extends Component {
         this.handleUserGroup = this.handleUserGroup.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
         this.inputTable = React.createRef();
-        this.handleCalenderClick = this.handleCalenderClick.bind(this);
+        //this.handleCalenderClick = this.handleCalenderClick.bind(this);
 
         this.state = {
             meetingID: [],
@@ -76,7 +76,7 @@ class ViewPage extends Component {
         const twoDTable = fixTable(info.showTimeSlot, info.tableCol);
         const days = (info.daytype === 1) ? info.days : fixDays(info.days);
         const responseList = await getResponses(meetingID);
-        const modal = (this.state.priorityType === "G" && this.state.userGroup ==="");
+        const modal = info.priorityType === "G";
 
         this.setState({
             meetingID: meetingID,
@@ -646,12 +646,13 @@ class ViewPage extends Component {
                         </div>
                     </div>
                     <br />
+                    {(this.state.userGroup !== "") && <p>Your group is {this.state.userGroup}. Reload to change groups.</p>}
                     {(this.state.inputChoice != this.inputOptions.OPTIONS) && this.NameAndSubmit()}
                     <br />
                     <br />
                     <br />
                     {/*TODO: and userGroup==="" */}
-                    <Modal show={this.showModal} hide={this.handleCloseModal}>
+                    <Modal show={this.state.showModal && (this.state.inputChoice !== this.inputOptions.OPTIONS)} hide={this.handleCloseModal}>
                         <Modal.Header closeButton>
                             <Modal.Title>Please select your group</Modal.Title>
                         </Modal.Header>
