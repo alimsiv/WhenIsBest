@@ -1,6 +1,6 @@
 import { Component, Text, View } from 'react'
 import { Button } from '@material-ui/core';
-import {Dropdown, Nav, Navbar} from 'react-bootstrap'
+import { Dropdown, Nav, Navbar } from 'react-bootstrap'
 import NavigationBar from '../shared/NavigationBar'
 import TimezoneDropdown from "../shared/TimezoneDropdown";
 import TimeSlotTable from "../shared/TimeSlotTable";
@@ -13,7 +13,7 @@ import 'react-day-picker/lib/style.css';
 import TimePicker from 'react-time-picker';
 import TableDragSelect from "react-table-drag-select";
 
-class Setup1Page extends Component{
+class Setup1Page extends Component {
     dateTypes = ["Specific Dates", "Days of the Week"];
 
     constructor(props) {
@@ -29,61 +29,71 @@ class Setup1Page extends Component{
         this.state = {
             //0 for Specific Dates, 1 for Days of the Week
             dateType: 0,
-            start: '8:00', end: '17:00', 
+            start: '8:00', end: '17:00',
             mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false,
             selectedDays: [],
             timezoneOffset: 0 //getTimeZoneOffset, opposite sign, time in minutes (NY=-540)
         }
     }
 
-    handleMonthViewDaySelected(day, {selected}) {
-        const {selectedDays} = this.state;
+    handleMonthViewDaySelected(day, { selected }) {
+        const { selectedDays } = this.state;
         if (selected) {
             const selectedIndex = selectedDays.findIndex(selectedDay =>
                 DateUtils.isSameDay(selectedDay, day)
             );
             selectedDays.splice(selectedIndex, 1);
-        } else if(!DateUtils.isPastDay(day)) {
-            selectedDays.push(day);
+        } else if (!DateUtils.isPastDay(day)) {
+            let isAdded = false;
+            for (let i = 0; i < selectedDays.length; i++) {
+                if (DateUtils.isDayAfter(selectedDays[i], day)) {
+                    isAdded = true;
+                    selectedDays.splice(i, 0, day);
+                    break;
+                }
+            }
+            if (!isAdded) {
+                selectedDays.push(day);
+            }
+            //selectedDays.push(day);
         }
-        else{
+        else {
             console.log("day is in past, day ignored");
         }
-        this.setState({selectedDays});
+        this.setState({ selectedDays });
         console.log(this.state.selectedDays)
-        console.log(selectedDays.to)
     }
 
     handleDateTypesChanged(newType) {
         console.log('Date type changed')
         console.log('current: ' + this.state.dateType)
         console.log('new: ' + newType)
-        if (this.state.dateType !== newType){
-            this.setState({dateType:newType});
+        if (this.state.dateType !== newType) {
+            this.setState({ dateType: newType });
         }
     }
 
-    handleTimeRangeChanged(newStart,newEnd) {
+    handleTimeRangeChanged(newStart, newEnd) {
         console.log('Time range changed')
-        if (this.state.start !== newStart){
-            this.setState({start:newStart});
+        if (this.state.start !== newStart) {
+            this.setState({ start: newStart });
         }
-        if (this.state.end !== newEnd){
-            this.setState({end:newEnd});
+        if (this.state.end !== newEnd) {
+            this.setState({ end: newEnd });
         }
     }
 
     handleTimeRangeStartChanged(newStart) {
         console.log('Time range changed')
-        if (this.state.start !== newStart){
-            this.setState({start:newStart});
+        if (this.state.start !== newStart) {
+            this.setState({ start: newStart });
         }
     }
 
     handleTimeRangeEndChanged(newEnd) {
         console.log('Time range changed')
-        if (this.state.end !== newEnd){
-            this.setState({end:newEnd});
+        if (this.state.end !== newEnd) {
+            this.setState({ end: newEnd });
         }
     }
 
@@ -96,51 +106,52 @@ class Setup1Page extends Component{
         return (
             <div className="flex">
                 <form>
-                    <input id="event-name-input" type="text" className="form-control" placeholder="Event Name" onSubmit/>
+                    <input id="event-name-input" type="text" className="form-control" placeholder="Event Name" onSubmit />
                 </form>
 
                 <button id="create-event-button" onClick={() => {
-                                                        var cango = false;
-                                                        var name = document.getElementById("event-name-input").value;
-                                                        if(name == ""){
-                                                            alert("you have not picked an event name");
-                                                        }
-                                                        else if(!this.validTime(this.state.start,this.state.end)){
-                                                            alert("Your time selection is invalid, make sure your start time is atleast 15 mins before you endtime");
-                                                        }
-                                                        else if(this.state.dateType){
-                                                            
-                                                            var days = [this.state.mon,this.state.tue,this.state.wed,this.state.thu,this.state.fri,this.state.sat,this.state.sun]
-                                                            if(!days.includes(true)){
-                                                                alert("you have not selected any days");
-                                                            }
-                                                            else{
-                                                                cango = true;
-                                                            }
-                                                        }
-                                                        else{
-                                                            //make days the calander feild
-                                                            var days = this.state.selectedDays;
-                                                            if(days.length == 0){
-                                                                alert("you have not selected any days");
-                                                            }
-                                                            else{
-                                                                cango = true;
-                                                            }
-                                                        }
-                                                        if(cango){
-                                                            history.push({ 
-                                                                pathname: '/Setup2',
-                                                                //pass things through state
-                                                                state: {days: days,
-                                                                        name: name,
-                                                                        type: this.state.dateType, 
-                                                                        start: this.state.start,
-                                                                        end: this.state.end
-                                                                }
-                                                                })
-                                                        }
-                                                    }}>Continue</button>
+                    var cango = false;
+                    var name = document.getElementById("event-name-input").value;
+                    if (name == "") {
+                        alert("you have not picked an event name");
+                    }
+                    else if (!this.validTime(this.state.start, this.state.end)) {
+                        alert("Your time selection is invalid, make sure your start time is atleast 15 mins before you endtime");
+                    }
+                    else if (this.state.dateType) {
+
+                        var days = [this.state.mon, this.state.tue, this.state.wed, this.state.thu, this.state.fri, this.state.sat, this.state.sun]
+                        if (!days.includes(true)) {
+                            alert("you have not selected any days");
+                        }
+                        else {
+                            cango = true;
+                        }
+                    }
+                    else {
+                        //make days the calander feild
+                        var days = this.state.selectedDays;
+                        if (days.length == 0) {
+                            alert("you have not selected any days");
+                        }
+                        else {
+                            cango = true;
+                        }
+                    }
+                    if (cango) {
+                        history.push({
+                            pathname: '/Setup2',
+                            //pass things through state
+                            state: {
+                                days: days,
+                                name: name,
+                                type: this.state.dateType,
+                                start: this.state.start,
+                                end: this.state.end
+                            }
+                        })
+                    }
+                }}>Continue</button>
             </div>
         );
     }
@@ -172,7 +183,7 @@ class Setup1Page extends Component{
     }
 
     //figures out if the time selection is valid
-    validTime = (start,end) => {
+    validTime = (start, end) => {
         var s = start.split(":");
         var sH = parseInt(s[0]);
         var sM = parseInt(s[1]);
@@ -189,36 +200,36 @@ class Setup1Page extends Component{
             Hour difference  = 1 and min difference > 14    ie 7:59 and 8:14 is valid
             Hour difference = 0 and mind difference > 15    ie 8:00 and 8:15 is valid
         */
-        return ((hD >= 2) || (hD == 1 && mD > 14) || (hD == 0 && mD >=15));
+        return ((hD >= 2) || (hD == 1 && mD > 14) || (hD == 0 && mD >= 15));
 
     }
 
 
     changeMon = () => {
-        this.setState({mon: (!this.state.mon)});
+        this.setState({ mon: (!this.state.mon) });
     }
     changeTue = () => {
-        this.setState({tue: (!this.state.tue)});
+        this.setState({ tue: (!this.state.tue) });
     }
     changeWed = () => {
-        this.setState({wed: (!this.state.wed)});
+        this.setState({ wed: (!this.state.wed) });
     }
     changeThu = () => {
-        this.setState({thu: (!this.state.thu)});
+        this.setState({ thu: (!this.state.thu) });
     }
     changeFri = () => {
-        this.setState({fri: (!this.state.fri)});
+        this.setState({ fri: (!this.state.fri) });
     }
     changeSat = () => {
-        this.setState({sat: (!this.state.sat)});
+        this.setState({ sat: (!this.state.sat) });
     }
     changeSun = () => {
-        this.setState({sun: (!this.state.sun)});
+        this.setState({ sun: (!this.state.sun) });
     }
 
     // Left side: Week or Month view
     DateView() {
-        if (!this.state.dateType){
+        if (!this.state.dateType) {
             // Month View
             console.log('DateView: month view')
             return (
@@ -239,34 +250,34 @@ class Setup1Page extends Component{
         else {
             //Week View
             console.log('DateView: week view')
-            return(
+            return (
                 <>
-                <Button variant="contained" color={this.state.mon
-                            ? "Primary"
-                            : "Secondary"} onClick={this.changeMon}>Mon </Button>
-                <Button variant="contained" color={this.state.tue
-                            ? "Primary"
-                            : "Secondary"} onClick={this.changeTue}>Tue </Button>
-                <Button variant="contained" color={this.state.wed
-                            ? "Primary"
-                            : "Secondary"} onClick={this.changeWed}>Wed </Button>
-                <Button variant="contained" color={this.state.thu
-                            ? "Primary"
-                            : "Secondary"} onClick={this.changeThu}>Thu </Button>
-                <Button variant="contained" color={this.state.fri
-                            ? "Primary"
-                            : "Secondary"} onClick={this.changeFri}>Fri </Button>
-                <Button variant="contained" color={this.state.sat
-                            ? "Primary"
-                            : "Secondary"} onClick={this.changeSat}>Sat </Button>
-                <Button variant="contained" color={this.state.sun
-                            ? "Primary"
-                            : "Secondary"} onClick={this.changeSun}>Sun </Button>
-                
- 
+                    <Button variant="contained" color={this.state.mon
+                        ? "Primary"
+                        : "Secondary"} onClick={this.changeMon}>Mon </Button>
+                    <Button variant="contained" color={this.state.tue
+                        ? "Primary"
+                        : "Secondary"} onClick={this.changeTue}>Tue </Button>
+                    <Button variant="contained" color={this.state.wed
+                        ? "Primary"
+                        : "Secondary"} onClick={this.changeWed}>Wed </Button>
+                    <Button variant="contained" color={this.state.thu
+                        ? "Primary"
+                        : "Secondary"} onClick={this.changeThu}>Thu </Button>
+                    <Button variant="contained" color={this.state.fri
+                        ? "Primary"
+                        : "Secondary"} onClick={this.changeFri}>Fri </Button>
+                    <Button variant="contained" color={this.state.sat
+                        ? "Primary"
+                        : "Secondary"} onClick={this.changeSat}>Sat </Button>
+                    <Button variant="contained" color={this.state.sun
+                        ? "Primary"
+                        : "Secondary"} onClick={this.changeSun}>Sun </Button>
+
+
                 </>
                 //<TimeSlotTable dates={["Sun","Mon","Tues","Wed","Thurs","Fri","Sun"]} times={[""]}/>
-                  );
+            );
 
         }
     }
@@ -290,8 +301,8 @@ class Setup1Page extends Component{
                     <option value="SpecificDates">{this.dateTypes[0]}</option>
                     <option value="DaysOfTheWeek">{this.dateTypes[1]}</option>
                 </select>*/}
-                <br/>
-                <br/>
+                <br />
+                <br />
 
                 {this.DateView()}
             </div>
@@ -308,8 +319,8 @@ class Setup1Page extends Component{
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                        <Dropdown.Item  onSelect={() => this.handleTimeRangeChanged('8:00','17:00')}>Work-day hours (8-5)</Dropdown.Item>
-                        <Dropdown.Item  onSelect={() => this.handleTimeRangeChanged('7:00','23:00')}>All-day (7-11)</Dropdown.Item>
+                        <Dropdown.Item onSelect={() => this.handleTimeRangeChanged('8:00', '17:00')}>Work-day hours (8-5)</Dropdown.Item>
+                        <Dropdown.Item onSelect={() => this.handleTimeRangeChanged('7:00', '23:00')}>All-day (7-11)</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
 
@@ -318,15 +329,15 @@ class Setup1Page extends Component{
                     <option value="AllDay">All-day (7-11)</option>
                 </select> */}
 
-                <br/>
-                <br/>
+                <br />
+                <br />
 
                 {this.TimeRangeInput()}
 
-                <br/>
-                <br/>
+                <br />
+                <br />
 
-                <TimezoneDropdown/>
+                <TimezoneDropdown />
 
             </div>
         );
@@ -335,16 +346,16 @@ class Setup1Page extends Component{
     render() {
         return (
             <div className="Setup1Page">
-                <h1>Setup1 Page</h1>
+                <h1>Create Your Meeting</h1>
 
-                <br/>
-                <br/>
+                <br />
+                <br />
 
                 {this.EventNameAndCreate()}
 
-                <br/>
-                <br/>
-                <br/>
+                <br />
+                <br />
+                <br />
 
                 <div className="flex">
                     {this.DateSelection()}

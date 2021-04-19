@@ -8,7 +8,7 @@ import { getMeetingInfo, fixTable, fixDays, getResponses, addResponseToDB, updat
 import '../styling/styles.css';
 import { outputColorMap } from '../shared/temp_alg';
 import { mod } from 'mathjs';
-import ApiCalendar from 'react-google-calendar-api';
+//import ApiCalendar from 'react-google-calendar-api';
 import { DateUtils } from 'react-day-picker';
 import { ContactsOutlined } from '@material-ui/icons';
 
@@ -176,6 +176,7 @@ class ViewPage extends Component {
         return false;
     }
 
+    /*
     handleCalenderClick(name){
         if (name === 'sign-in') {
             ApiCalendar.handleSignoutClick();
@@ -197,7 +198,7 @@ class ViewPage extends Component {
         // } else if (name === 'sign-out') {
         //   ApiCalendar.handleSignoutClick();
         // }
-      }
+      }*/
 
     getResponses(mode,groupList){
         if(mode == "G"){
