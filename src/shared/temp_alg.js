@@ -48,7 +48,7 @@ function updateAvailability(people = null, groups = null, reqs = false, pref = f
 
 
 function getReqMap(groups) {
-    let reqMap = math.ones(rownum, colnum)
+    let reqMap = math.ones(arrlength)
     for (let i = 0; i < math.size(groups); i++) {
         reqMap = math.dotMultiply(reqMap, groups[i].avail_map >= groups[i].req);
     }
@@ -106,16 +106,15 @@ function matSum(mat) {
     let sum = 0;
     // let rownum = mat.length;
     // let colnum = mat[0].length;
-    for (let i = 0; i < rownum; i++)
-        for (let j = 0; j < colnum; j++)
-            sum += mat[i][j]
+    for (let i = 0; i < arrlength; i++)
+            sum += mat[i]
     return sum
 }
 
 function getGroupMap(people) {
     // Get availability map for each group
     // Only need when more people are added to a group
-    let map = math.zeros(rownum, colnum)
+    let map = math.zeros(arrlength)
     for (let i = 0; i < people.length; i++) {
         map = map + people[i].avail_map;
     }
@@ -154,14 +153,13 @@ function initializeGroups(GroupList) {
 }
 
 function getPrefMap(avail_map) {
-    let i, j
+    let i
     let prefMap =  avail_map
-    for (i = 0; i < rownum; i++){
-        for (j = 0; j < colnum; j++){
-            if (prefMap[i][j] == 2)
-                prefMap[i][j] = 1
+    for (i = 0; i < arrlength; i++){
+            if (prefMap[i] == 2)
+                prefMap[i] = 1
             else
-                prefMap[i][j] = 0
+                prefMap[i] = 0
         }
     }
-}
+
