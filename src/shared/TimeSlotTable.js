@@ -252,7 +252,16 @@ class TimeSlotTable extends Component {
         }
     }
 
-    PreferredButton() {
+    addEvent(event){
+        var table = document.getElementById("userInputTable");
+        console.log("table" + table)
+        if(table != null){
+            table.rows[3].cells[2].innerHTML = "testEvent";
+        }
+        //table.rows[3].cells[2].innerHTML = "testEvent";
+    }
+
+    PreferredButton(){
         return (
             <ToggleButtonGroup id="preferredToggle" type="radio" name="preferredTypeButton" value={this.state.availabilityType} onChange={this.handleAvailabilityType}>
                 <ToggleButton defaultChecked value="A">
@@ -268,11 +277,11 @@ class TimeSlotTable extends Component {
 
 
     render() {
-
+        console.log(this.props.tableID + "created")
         return (
             <div className="TimeSlotTable">
                 {this.props.showPreferredButton && this.PreferredButton()}
-                <table className="styled-table" onMouseLeave={() => { this.handleMulti(false) }}>
+                <table className="styled-table" id={this.props.tableID} onMouseLeave={() => { this.handleMulti(false) }}>
                     <thead>
                         <tr>
                             <th />
