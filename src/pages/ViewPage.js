@@ -7,10 +7,8 @@ import TimeSlotTable from "../shared/TimeSlotTable";
 import { getMeetingInfo, fixTable, fixDays, getResponses, addResponseToDB, updateResponseInDB } from "../database/database";
 import '../styling/styles.css';
 import { outputColorMap } from '../shared/temp_alg';
-import { mod } from 'mathjs';
-//import ApiCalendar from 'react-google-calendar-api';
+import ApiCalendar from 'react-google-calendar-api';
 import { DateUtils } from 'react-day-picker';
-import { ContactsOutlined } from '@material-ui/icons';
 
 
 class ViewPage extends Component {
@@ -29,7 +27,7 @@ class ViewPage extends Component {
         this.handleUserGroup = this.handleUserGroup.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
         this.inputTable = React.createRef();
-        //this.handleCalenderClick = this.handleCalenderClick.bind(this);
+        this.handleCalenderClick = this.handleCalenderClick.bind(this);
 
         this.state = {
             meetingID: [],
@@ -176,7 +174,7 @@ class ViewPage extends Component {
         return false;
     }
 
-    /*
+    
     handleCalenderClick(name){
         if (name === 'sign-in') {
             ApiCalendar.handleSignoutClick();
@@ -198,7 +196,7 @@ class ViewPage extends Component {
         // } else if (name === 'sign-out') {
         //   ApiCalendar.handleSignoutClick();
         // }
-      }*/
+      }
 
     getResponses(mode,groupList){
         if(mode == "G"){

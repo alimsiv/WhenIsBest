@@ -89,14 +89,17 @@ class TimeSlotTable extends Component {
         console.log("Clicked: " + id);
         const location = this.getMatrixLocation(id);
         if (this.response[location[0]][location[1]] === 0) {
+            //Timeslot is not selected
             this.response[location[0]][location[1]] = (this.state.availabilityType == "A" ? 1 : 2);
             document.getElementById(id).style.backgroundColor = (this.state.availabilityType == "A" ? availColor : perColor);
         }
         else if (this.response[location[0]][location[1]] === 1) {
+            //Timeslot is selected as available
             this.response[location[0]][location[1]] = (this.state.availabilityType == "A" ? 0 : 2);
             document.getElementById(id).style.backgroundColor = (this.state.availabilityType == "A" ? unselColor : perColor);
         }
         else {
+            //Timeslot is selected as preferred
             this.response[location[0]][location[1]] = (this.state.availabilityType == "A" ? 1 : 0);
             document.getElementById(id).style.backgroundColor = (this.state.availabilityType == "A" ? availColor : unselColor);
         }
@@ -258,7 +261,6 @@ class TimeSlotTable extends Component {
         if(table != null){
             table.rows[3].cells[2].innerHTML = "testEvent";
         }
-        //table.rows[3].cells[2].innerHTML = "testEvent";
     }
 
     PreferredButton(){
