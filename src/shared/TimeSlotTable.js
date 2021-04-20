@@ -146,6 +146,7 @@ class TimeSlotTable extends Component {
 
         const colorM = this.props.colorMap;
         const colorInt = this.props.colorMap[index];
+        if (colorInt != null){
 
         const colorHex = colorInt.toString(16);
         const colorPad = String(colorHex).padStart(2, '0');
@@ -153,6 +154,7 @@ class TimeSlotTable extends Component {
         return this.getRBG(colorInt);
         return "#ffff" + colorPad;
         return "#000000";
+        }
     }
 
 

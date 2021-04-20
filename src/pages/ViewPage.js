@@ -200,8 +200,8 @@ class ViewPage extends Component {
             }
             console.log(ApiCalendar.sign);
             if (ApiCalendar.sign && !this.state.signedIn) {
-                let eventList = [];
                 let allEvents = [];
+                //const startHour = 
                 for (let i = 0; i < this.state.days.length; i++) {
                     // gets events for each day
                     const day = this.state.days[i];
@@ -217,19 +217,20 @@ class ViewPage extends Component {
 
                     ApiCalendar.listEvents({ timeMax: max, timeMin: min }).then(({ result }) => { //gets all event in calander
 
-                        let oldEvents = this.state.events;
-                        oldEvents.push(...this.importantEvents(result.items));
-                        this.setState({ events: oldEvents });
+                        if (true){
+                            //Check if times are valid
+                            let oldEvents = this.state.events;
+                            oldEvents.push(...this.importantEvents(result.items));
+                            this.setState({ events: oldEvents });
+                        }
 
                         allEvents.push(...result.items);
-                        eventList.push(...this.importantEvents(result.items));
                     })
                     this.setState({ signedIn: true })
                     console.log("successfully signed in");
                 }
                 console.log(allEvents);
                 console.log(this.state.events);
-                console.log(eventList);
 
 
             }
@@ -473,7 +474,6 @@ class ViewPage extends Component {
     }
 
     addEvent() {
-        var location;
         var border = "2px solid #0000FF";
         if (this.inputTable != null) {
             //console.log("table" + table)
@@ -484,7 +484,8 @@ class ViewPage extends Component {
                 //console.log("Filtered Events" + this.state.events);
                 this.state.events.forEach((e) => {
                     console.log(e)
-                    location = this.getLocation(e);
+                    const location = this.getLocation(e);
+                    console.log(location)
                     var cols;
                     if (table.rows[location[0]] != null) {
                         (table.rows[location[0]].cells[0].classList.contains("timeslotHourTitleCell") ? cols = location[2] : cols = location[2] - 1);
