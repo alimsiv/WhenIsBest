@@ -33,6 +33,8 @@ class ViewPage extends Component {
             meetingID: [],
             days: [],
             minStart: [],
+            tableRow: [],
+            tableCol: [],
             showTimeSlotTable: [],
             daytype: [],
             name: [],
@@ -80,6 +82,8 @@ class ViewPage extends Component {
             meetingID: meetingID,
             days: days,
             minStart: info.minStart,
+            tableRow: info.tableRow,
+            tableCol: info.tableCol,
             showTimeSlotTable: twoDTable,
             daytype: info.daytype,
             name: info.name,
@@ -642,6 +646,8 @@ class ViewPage extends Component {
                                 events = {[]}
                                 tableID="meetingTable"
                                 colorMap={outputColorMap(this.state.responses, null, false)}
+                                tableRow={this.state.tableRow}
+                                tableCol={this.state.tableCol}
                             />
 
                             {/*TODO make it work with groups too*/}

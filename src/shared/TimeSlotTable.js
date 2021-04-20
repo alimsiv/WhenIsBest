@@ -1,6 +1,7 @@
 import '../styling/TimeSlotTable.css';
 import { Component } from "react";
 import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { hexToRgb, rgbToHex } from '@material-ui/core';
 
 
 /** Creates the TimeSlotTable
@@ -80,6 +81,24 @@ class TimeSlotTable extends Component {
         const row = (parsedID[2] - this.props.minStartTime) / 15;
         return [row, parsedID[1]];
     }
+
+    // Returns location from 2D array
+    getArrayLocation(dayCount, timestamp) {
+//        const parsedID = id.split(':'); //example: timeslot:0:540
+//        const row = (parsedID[2] - this.props.minStartTime) / 15;
+//        return [row, parsedID[1]];
+
+        let row = timestamp - this.props.minStartTime;
+        const index = (row * this.props.tableCol) + dayCount;
+
+        const colorInt = this.props.colorMap[index];
+
+        const colorHex = parseInt(colorInt, 16);
+        //return colorHex;
+        return "#000000";
+        return hexToRgb(colorHex);
+    }
+
 
 
     handleTimeSlotClicked(id) {
@@ -212,6 +231,7 @@ class TimeSlotTable extends Component {
                                 key={keyName}
                                 id={keyName}
                                 className={rowClassName}
+                                style={{ backgroundColor: this.getArrayLocation(dayCount, timestamp) }}
                             />
                         }
                     } else {
@@ -237,6 +257,11 @@ class TimeSlotTable extends Component {
         for (let i = 0; i < this.props.showTimeSlot.length; i++) {
             rows.push(this.TimeSlotRow(timestamp, this.props.showTimeSlot[i]));
             timestamp += 15; //Add 15 minutes for the next row
+        }
+
+        //Add color to heatmap
+        if (!this.props.isInputTable){
+            console.log(this.props.colorMap)
         }
 
         return (
