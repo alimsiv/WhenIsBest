@@ -91,12 +91,13 @@ class TimeSlotTable extends Component {
         let row = timestamp - this.props.minStartTime;
         const index = (row * this.props.tableCol) + dayCount;
 
+        const colorM = this.props.colorMap;
         const colorInt = this.props.colorMap[index];
 
         const colorHex = parseInt(colorInt, 16);
         //return colorHex;
+        return "#ffff" + colorHex;
         return "#000000";
-        return hexToRgb(colorHex);
     }
 
 
@@ -305,6 +306,7 @@ class TimeSlotTable extends Component {
 
     render() {
         console.log(this.props.tableID + "created")
+        console.log(this.props.colorMap)
         return (
             <div className="TimeSlotTable">
                 {this.props.showPreferredButton && this.PreferredButton()}
