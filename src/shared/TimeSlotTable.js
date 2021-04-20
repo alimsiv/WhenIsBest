@@ -314,12 +314,6 @@ class TimeSlotTable extends Component {
             rows.push(this.TimeSlotRow(timestamp, this.props.showTimeSlot[i]));
             timestamp += 15; //Add 15 minutes for the next row
         }
-
-        //Add color to heatmap
-        if (!this.props.isInputTable){
-            console.log(this.props.colorMap)
-        }
-
         return (
             <tbody>
                 {rows}
@@ -361,7 +355,6 @@ class TimeSlotTable extends Component {
 
     render() {
         console.log(this.props.tableID + "created")
-        console.log(this.props.colorMap)
         return (
             <div className="TimeSlotTable">
                 {this.props.showPreferredButton && this.PreferredButton()}
