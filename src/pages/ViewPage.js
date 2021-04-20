@@ -158,10 +158,21 @@ class ViewPage extends Component {
     //returns only the events that matter
     importantEvents(events){
         var importantEvents = [];
+        //console.log("unfiltered events" + events);
+        console.log("Meeting Filtering")
         events.forEach(element => {
             if(element.status != "cancelled" && this.validTime(element.start.dateTime)){
                 console.log("added Event:" + element.summary + " to list of calander events")
                 importantEvents.push(element);
+            }
+            else{
+                if(element.status != "cancelled"){
+                    console.log("ignored " + element.summary + ":cancelled");
+                }
+                else{
+                    console.log("ignored " + element.summary + ":invalid time");
+                }
+
             }
         });
         return importantEvents;
@@ -363,6 +374,7 @@ class ViewPage extends Component {
     getLocation(e){
         console.log(e.summary);
         var startTime  = new Date(Date.parse(e.start.dateTime));
+        console.log(startTime);
         var endTime = new Date(Date.parse(e.end.dateTime));
         var startRow = this.getRowfromTime(startTime);
         var endRow = this.getRowfromTime(endTime);
@@ -370,23 +382,6 @@ class ViewPage extends Component {
         return [startRow,endRow,col]
     }
 
-    addEvent(event){
-        var location;
-        if(this.inputTable != null){
-            //console.log("table" + table)
-            //this.setState({eventAdded:true})
-            var table = document.getElementById("userInputTable");
-            console.log("table" + table)
-            if(table != null){
-                this.state.events.forEach((e) => {
-                    location = this.getLocation(e);
-                    table.rows[location[0]].cells[location[2]].innerHTML = e.summary;
-                })
-            }
-
-        }
-        //table.rows[3].cells[2].innerHTML = "testEvent";
-    }
 
     GoogleCalendarInput(){
 
@@ -437,7 +432,6 @@ class ViewPage extends Component {
     }
 
     getLocation(e){
-        console.log(e.summary);
         var startTime  = new Date(Date.parse(e.start.dateTime));
         var endTime = new Date(Date.parse(e.end.dateTime));
         var startRow = this.getRowfromTime(startTime);
@@ -455,14 +449,15 @@ class ViewPage extends Component {
             var table = document.getElementById("userInputTable");
             console.log("table" + table)
             if(table != null){
+                //console.log("Filtered Events" + this.state.events);
                 this.state.events.forEach((e) => {
                     location = this.getLocation(e);
-                    console.log(location[0] + " " + location[2])
                     var cols;
-                    if(table.rows[location[0]] != null && table.rows[location[0]].cells[location[2]] != null){
-                        (table.rows[location[0]].cells[0].classList.contains("timeslotHourTitleCell")? cols = location[2] :cols = location[2] - 1)
-                        
+                    if(table.rows[location[0]] != null){
+                        (table.rows[location[0]].cells[0].classList.contains("timeslotHourTitleCell")? cols = location[2] :cols = location[2] - 1);
+
                         table.rows[location[0]].cells[cols].innerHTML = e.summary; 
+                        table.rows[location[0]].cells[cols].style.fontSize = "8px";
                         table.rows[location[0]].cells[cols].style.borderTop = border; 
                         for(var i = location[0];i<=location[1];i++){
                             (table.rows[i].cells[0].classList.contains("timeslotHourTitleCell")? cols = location[2] :cols = location[2] - 1)
@@ -472,7 +467,6 @@ class ViewPage extends Component {
                         table.rows[location[1]].cells[cols].style.borderBottom = border; 
                        // console.log(table.rows[17])
                     }
-                    //table.rows[location[0]].cells[location[2]].innerHTML = e.summary;
                 })
             }
 
