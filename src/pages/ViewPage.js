@@ -159,12 +159,12 @@ class ViewPage extends Component {
         //console.log("unfiltered events" + events);
         console.log("Meeting Filtering")
         events.forEach(element => {
-            if(element.status != "cancelled" && this.validTime(element.start.dateTime)){
+            if(element.status != "cancelled" && this.validDay(element.start.dateTime)){
                 console.log("added Event:" + element.summary + " to list of calander events")
                 importantEvents.push(element);
             }
             else{
-                if(element.status != "cancelled"){
+                if(element.status == "cancelled"){
                     console.log("ignored " + element.summary + ":cancelled");
                 }
                 else{
@@ -176,7 +176,7 @@ class ViewPage extends Component {
         return importantEvents;
     }
 
-    validTime(time){
+    validDay(time){
         // console.log("Start" + Date.parse(this.state.days[0])); how to get javascript date into unixt time
         var dayOfEvent = new Date(Date.parse(time)); //Date.parse converts to unix time (1600000000 thing), new Date converts to javascript time
         for(var i = 0; i < this.state.days.length;i++){ //checks if event is say day as any day in calander
@@ -370,7 +370,7 @@ class ViewPage extends Component {
 
     getRowfromTime(time){
         var timeInMins = time.getHours() *60 + time.getMinutes();
-        return(Math.floor((timeInMins - this.state.minStart)/15) +1)
+        return(Math.floor((timeInMins - this.state.minStart)/15) +1) //should accound for negative rows
     }
 
     getCol(time){
