@@ -383,43 +383,6 @@ class ViewPage extends Component {
         return [startRow,endRow,col]
     }
 
-
-    GoogleCalendarInput(){
-
-
-        if(this.state.signedIn){
-            return(
-                <>
-                   <div className="flex-child">
-                        <TimeSlotTable ref = {this.inputTable} 
-                        isInputTable = {true}
-                        type={this.state.daytype} 
-                        dates={this.state.days}
-                        showTimeSlot={this.state.showTimeSlotTable}
-                        minStartTime={this.state.minStart}
-                        handleUpdateDB={this.handleUpdateDB}
-                        perferred= {true}
-                        events = {this.state.events}
-                        tableID = "userInputTable"
-                        />
-                </div>
-                </>
-
-            );
-        }
-        else{
-            return (
-                <p>
-                    <button
-                    onClick={(e) => this.handleCalenderClick('sign-in')}
-                >
-                    sign-in
-                </button>
-                </p>
-            );
-        }
-    }
-
     getRowfromTime(time){
         var timeInMins = time.getHours() *60 + time.getMinutes();
         return(Math.floor((timeInMins - this.state.minStart)/15) +1)
@@ -489,7 +452,7 @@ class ViewPage extends Component {
                         showTimeSlot={this.state.showTimeSlotTable}
                         minStartTime={this.state.minStart}
                         handleUpdateDB={this.handleUpdateDB}
-                        perferred= {true}
+                        showPreferredButton= {true}
                         events = {this.state.events}
                         tableID = "userInputTable"
                         />
