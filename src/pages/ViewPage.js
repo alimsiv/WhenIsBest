@@ -219,6 +219,8 @@ class ViewPage extends Component {
                 {this.state.showAdvancedSettings && <td>
                     <input className="responses-range" type="range" id={id + "_range"} min="1" max="5" step="1" onChange={(e) => this.handleUpdatePriority(name, id, e.target.value)} />
                 </td>}
+                {/*TODO: cap max allowed */}
+                {/*TODO: add handle method */}
                 {this.state.priorityType === "G" && this.state.showAdvancedSettings && <td>
                     <input className="responses-required" type="number" min="0" id={name + "_required"} onChange={(e) => this.handleUpdateMinRequired(name, e.target.value)} />
                 </td>}
