@@ -9,6 +9,7 @@ import '../styling/styles.css';
 import { outputColorMap } from '../shared/temp_alg';
 import ApiCalendar from 'react-google-calendar-api';
 import { DateUtils } from 'react-day-picker';
+import { ContactSupportTwoTone } from '@material-ui/icons';
 
 
 class ViewPage extends Component {
@@ -215,14 +216,29 @@ class ViewPage extends Component {
                     console.log(min);
                     console.log(max);
 
-                    ApiCalendar.listEvents({ timeMax: max, timeMin: min }).then(({ result }) => { //gets all event in calander
 
-                        if (true){
+                    ApiCalendar.listEvents({ timeMax: max, timeMin: min }).then(({ result }) => { //gets all event in calander
+                        const oldEvents = this.state.events;
+                        const allItems = [];
+
+                        for (let i = 0; i < result.items.length; i++){
+                            const currentItem = result.items[i];
+                            if (currentItem.recurrence != null){
+                                const currentStartDate =  new Date(Date.parse(currentItem.start.dateTime));
+                                const currentEndDate =  new Date(Date.parse(currentItem.end.dateTime));
+                                const currentDate =  new Date(Date.parse(day));
+                                const tempStart = (new Date(currentDate.setHours(currentStartDate.getHours()))).setMinutes(currentStartDate.getMinutes());
+                                const tempEnd = (new Date(currentDate.setHours(currentEndDate.getHours()))).setMinutes(currentEndDate.getMinutes());
+                                currentItem.start.dateTime = (new Date(tempStart)).toISOString();
+                                currentItem.end.dateTime = (new Date(tempEnd)).toISOString();
+                            }
+                            console.log(currentItem);
+
                             //Check if times are valid
-                            let oldEvents = this.state.events;
-                            oldEvents.push(...this.importantEvents(result.items));
-                            this.setState({ events: oldEvents });
+                            allItems.push(currentItem);
                         }
+                        oldEvents.push(...this.importantEvents(allItems));
+                        this.setState({ events: oldEvents });
 
                         allEvents.push(...result.items);
                     })
