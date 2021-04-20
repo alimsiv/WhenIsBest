@@ -12,7 +12,7 @@ render() {
                 <h1>Confirmation Page</h1>
 
                     <div>
-                    <p>Give this Code to people to fill out form</p>
+                    <p>Give this code to people to fill out form</p>
                     {tableInfo.meetingID}
                     </div>
                     <div className="flex-child">
@@ -23,7 +23,7 @@ render() {
                         <br/>
                         <br/>
                         <br/>
-                        <p>press continue to fill out the form for yourself, or exit to go back home</p>
+                        <p>Press continue to fill out the form for yourself, or exit to go back home.</p>
                         <button onClick={() => {
                             history.push({ 
                                 pathname: '/'})

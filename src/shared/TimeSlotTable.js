@@ -1,6 +1,7 @@
 import '../styling/TimeSlotTable.css';
 import { Component } from "react";
 import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { hexToRgb, rgbToHex } from '@material-ui/core';
 
 
 /** Creates the TimeSlotTable
@@ -74,12 +75,88 @@ class TimeSlotTable extends Component {
         return response;
     }
 
+    getRBG(scale){
+        
+        //For red to green gradient
+        let r = 255;
+        let g = 255;
+        let b = 0;
+        if (scale < 127){
+            g = scale*2;
+        }
+        else {
+            r = 255 - (scale-127)*2;
+        }
+        r = Math.round(r).toString(16).padStart(2,'0');
+        g = Math.round(g).toString(16).padStart(2,'0');
+        b = Math.round(b).toString(16).padStart(2,'0');
+
+        return "#" + r + "" + g + "" + b;
+
+        
+
+        /* for white to green gradient
+        let rb = Math.round(scale).toString(16).padStart(2,'0');
+
+        const rgb = "#" + rb + "ff" + rb;
+
+        return "#" + rb + "ff" + rb;
+        */
+
+        /*For white to red to green gradient
+        let r = 255;
+        let g = 255;
+        let b = 255;
+        if (scale < 85){
+            g = 255 - scale*3;
+            b = 255 - scale*3;
+        }
+        else if (scale < 170){
+            g = (scale-85)*3;
+            b = 0;
+        }
+        else {
+            r = 255 - (scale-170)*3;
+            b = 0;
+        }
+        r = Math.round(r).toString(16).padStart(2,'0');
+        g = Math.round(g).toString(16).padStart(2,'0');
+        b = Math.round(b).toString(16).padStart(2,'0');
+
+        return "#" + r + "" + g + "" + b;*/
+
+
+    }
+
     // Returns matrix location from cell id
     getMatrixLocation(id) {
         const parsedID = id.split(':'); //example: timeslot:0:540
         const row = (parsedID[2] - this.props.minStartTime) / 15;
         return [row, parsedID[1]];
     }
+
+    // Returns location from 2D array
+    getArrayLocation(dayCount, timestamp) {
+//        const parsedID = id.split(':'); //example: timeslot:0:540
+//        const row = (parsedID[2] - this.props.minStartTime) / 15;
+//        return [row, parsedID[1]];
+
+        let row = (timestamp - this.props.minStartTime)/15;
+        const index = (row * this.props.tableCol) + dayCount;
+
+        const colorM = this.props.colorMap;
+        const colorInt = this.props.colorMap[index];
+        if (colorInt != null){
+
+        const colorHex = colorInt.toString(16);
+        const colorPad = String(colorHex).padStart(2, '0');
+        //return colorHex;
+        return this.getRBG(colorInt);
+        return "#ffff" + colorPad;
+        return "#000000";
+        }
+    }
+
 
 
     handleTimeSlotClicked(id) {
@@ -212,6 +289,7 @@ class TimeSlotTable extends Component {
                                 key={keyName}
                                 id={keyName}
                                 className={rowClassName}
+                                style={{ backgroundColor: this.getArrayLocation(dayCount, timestamp) }}
                             />
                         }
                     } else {
@@ -238,7 +316,6 @@ class TimeSlotTable extends Component {
             rows.push(this.TimeSlotRow(timestamp, this.props.showTimeSlot[i]));
             timestamp += 15; //Add 15 minutes for the next row
         }
-
         return (
             <tbody>
                 {rows}
@@ -294,6 +371,7 @@ class TimeSlotTable extends Component {
                     {this.TimeSlotCreateRows()}
                 </table>
                 <br />
+                {!this.props.isInputTable && <div className="gradient-box"></div>}
             </div>
 
         );

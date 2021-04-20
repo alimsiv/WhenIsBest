@@ -33,6 +33,8 @@ class ViewPage extends Component {
             meetingID: [],
             days: [],
             minStart: [],
+            tableRow: [],
+            tableCol: [],
             showTimeSlotTable: [],
             daytype: [],
             name: [],
@@ -47,7 +49,7 @@ class ViewPage extends Component {
             showAdvancedSettings: false,
             showModal: false,
             signedIn: false,
-            events:[],
+            events: [],
             eventAdded: false,
 
             //TODO set to authenticated user id if logged in
@@ -61,7 +63,7 @@ class ViewPage extends Component {
         });
     }
 
-    handleCloseModal(){
+    handleCloseModal() {
         this.setState({
             showModal: false
         });
@@ -80,6 +82,8 @@ class ViewPage extends Component {
             meetingID: meetingID,
             days: days,
             minStart: info.minStart,
+            tableRow: info.tableRow,
+            tableCol: info.tableCol,
             showTimeSlotTable: twoDTable,
             daytype: info.daytype,
             name: info.name,
@@ -154,12 +158,12 @@ class ViewPage extends Component {
     }
 
     //returns only the events that matter
-    importantEvents(events){
+    importantEvents(events) {
         var importantEvents = [];
         //console.log("unfiltered events" + events);
         console.log("Meeting Filtering")
         events.forEach(element => {
-            if(element.status != "cancelled" && this.validDay(element.start.dateTime)){
+            if(element.status != "cancelled" ){//&& this.validDay(element.start.dateTime)){
                 console.log("added Event:" + element.summary + " to list of calander events")
                 importantEvents.push(element);
             }
@@ -167,7 +171,7 @@ class ViewPage extends Component {
                 if(element.status == "cancelled"){
                     console.log("ignored " + element.summary + ":cancelled");
                 }
-                else{
+                else {
                     console.log("ignored " + element.summary + ":invalid time");
                 }
 
@@ -179,46 +183,98 @@ class ViewPage extends Component {
     validDay(time){
         // console.log("Start" + Date.parse(this.state.days[0])); how to get javascript date into unixt time
         var dayOfEvent = new Date(Date.parse(time)); //Date.parse converts to unix time (1600000000 thing), new Date converts to javascript time
-        for(var i = 0; i < this.state.days.length;i++){ //checks if event is say day as any day in calander
-            if(DateUtils.isSameDay(this.state.days[i],dayOfEvent)){ return true};
+        for (var i = 0; i < this.state.days.length; i++) { //checks if event is say day as any day in calander
+            if (DateUtils.isSameDay(this.state.days[i], dayOfEvent)) { return true };
         }
         return false;
     }
 
-    
-    handleCalenderClick(name){
+
+    handleCalenderClick(name) {
         if (name === 'sign-in') {
             ApiCalendar.handleSignoutClick();
-            this.setState({signedIn:false})
-            if(!ApiCalendar.sign){
+            this.setState({ signedIn: false })
+            console.log(ApiCalendar.sign);
+            if (!ApiCalendar.sign) {
                 ApiCalendar.handleAuthClick();
             }
-          if (ApiCalendar.sign && !this.state.signedIn){
-            //ApiCalendar.listUpcomingEvents(5).then(({ result }) => {   //gets 5 upcoming events //unsure what upcoming is defined at
-            var min = (new Date(this.state.days[0].setHours(0))).setMinutes(0);
-            min = (new Date(min)).toISOString();
+            console.log(ApiCalendar.sign);
+            if (ApiCalendar.sign && !this.state.signedIn) {
+                let allEvents = [];
+                //const startHour = 
+                for (let i = 0; i < this.state.days.length; i++) {
+                    // gets events for each day
+                    const day = this.state.days[i];
+                    var min = (new Date(day.setHours(0))).setMinutes(0);
+                    min = (new Date(min)).toISOString();
 
-            var max = (new Date(this.state.days[this.state.days.length-1].setHours(23))).setMinutes(59);
-            max = (new Date(max)).toISOString();
-            console.log(min);
-            console.log(max);
+                    var max = (new Date(day.setHours(23))).setMinutes(59);
+                    max = (new Date(max)).toISOString();
 
-            ApiCalendar.listEvents({timeMax:max, timeMin:min}).then(({ result }) => { //gets all event in calander
-                //console.log(result.items)
-                //return(
-                this.setState({events:this.importantEvents(result.items)})
-            })
-            this.setState({signedIn:true})
-            console.log("successfully signed in");
-          }
+                    console.log("min and max:");
+                    console.log(min);
+                    console.log(max);
+
+                    ApiCalendar.listEvents({ timeMax: max, timeMin: min }).then(({ result }) => { //gets all event in calander
+
+                        if (true){
+                            //Check if times are valid
+                            let oldEvents = this.state.events;
+                            oldEvents.push(...this.importantEvents(result.items));
+                            this.setState({ events: oldEvents });
+                        }
+
+                        allEvents.push(...result.items);
+                    })
+                    this.setState({ signedIn: true })
+                    console.log("successfully signed in");
+                }
+                console.log(allEvents);
+                console.log(this.state.events);
+
+
+            }
         }
         // } else if (name === 'sign-out') {
         //   ApiCalendar.handleSignoutClick();
         // }
-      }
+    }
 
-    getResponses(mode,groupList){
-        if(mode == "G"){
+    /*
+    handleCalenderClick(name){
+      if (name === 'sign-in') {
+          ApiCalendar.handleSignoutClick();
+          this.setState({signedIn:false})
+          if(!ApiCalendar.sign){
+              ApiCalendar.handleAuthClick();
+          }
+        if (ApiCalendar.sign && !this.state.signedIn){
+          //ApiCalendar.listUpcomingEvents(5).then(({ result }) => {   //gets 5 upcoming events //unsure what upcoming is defined at
+          var min = (new Date(this.state.days[0].setHours(0))).setMinutes(0);
+          min = (new Date(min)).toISOString();
+
+          var max = (new Date(this.state.days[this.state.days.length-1].setHours(23))).setMinutes(59);
+          max = (new Date(max)).toISOString();
+          console.log(min);
+          console.log(max);
+
+          ApiCalendar.listEvents({timeMax:max, timeMin:min}).then(({ result }) => { //gets all event in calander
+              //console.log(result.items)
+              //return(
+              this.setState({events:this.importantEvents(result.items)})
+          })
+          this.setState({signedIn:true})
+          console.log("successfully signed in");
+        }
+      }
+      // } else if (name === 'sign-out') {
+      //   ApiCalendar.handleSignoutClick();
+      // }
+    }
+    */
+
+    getResponses(mode, groupList) {
+        if (mode == "G") {
             return groupList
         }
         else {
@@ -328,42 +384,42 @@ class ViewPage extends Component {
         );
     }
 
-    GetEvents(){
-        if (this.state.signedIn){
-            return(
-            this.state.events.map((x) => {
-                return (
-                    <div>{x.summary}</div>
-                )
-            })
+    GetEvents() {
+        if (this.state.signedIn) {
+            return (
+                this.state.events.map((x) => {
+                    return (
+                        <div>{x.summary}</div>
+                    )
+                })
             )
             //ApiCalendar.listEvents().then(({ result }) => {       //gets all events in calander
             // ApiCalendar.listUpcomingEvents(5).then(({ result }) => {   //gets 5 upcoming events //unsure what upcoming is defined at
             //     //console.log(result.items)
             //     //return(
             //     this.setState({events:result.items})
-                    //result.items.map((x) => {
+            //result.items.map((x) => {
 
-                        //console.log(x.summary)
-                        // return(
-                        // <>
-                        //     <div>
-                        //     {x.summary} 
-                        //     </div>
-                        //     <div>
-                        //         {x.start} 
-                        //         {x.end}
-                        //     </div>
-                        // </>
-                        // )
-                        //this.setState({events:this.state.events.push(x.summary)})
-                   // })
-                //);
+            //console.log(x.summary)
+            // return(
+            // <>
+            //     <div>
+            //     {x.summary} 
+            //     </div>
+            //     <div>
+            //         {x.start} 
+            //         {x.end}
+            //     </div>
+            // </>
+            // )
+            //this.setState({events:this.state.events.push(x.summary)})
+            // })
+            //);
             //});
         }
     }
 
-    addEvents(){
+    addEvents() {
         this.state.events.forEach()
         //table.rows[3].cells[2].innerHTML = "testEvent";
     }
@@ -373,71 +429,90 @@ class ViewPage extends Component {
         return(Math.floor((timeInMins - this.state.minStart)/15) +1) //should accound for negative rows
     }
 
-    getCol(time){
+    getCol(time) {
         var dayOfEvent = new Date(Date.parse(time));
-        for(var i = 0; i < this.state.days.length;i++){ //checks if event is say day as any day in calander
-            if(DateUtils.isSameDay(this.state.days[i],dayOfEvent)){ return i+1};
+        for (var i = 0; i < this.state.days.length; i++) { //checks if event is say day as any day in calander
+            if (DateUtils.isSameDay(this.state.days[i], dayOfEvent)) { return i + 1 };
         }
     }
 
-    getLocation(e){
+    getLocation(e) {
         console.log(e.summary);
-        var startTime  = new Date(Date.parse(e.start.dateTime));
+        var startTime = new Date(Date.parse(e.start.dateTime));
         console.log(startTime);
         var endTime = new Date(Date.parse(e.end.dateTime));
         var startRow = this.getRowfromTime(startTime);
         var endRow = this.getRowfromTime(endTime);
         var col = this.getCol(startTime)
-        return [startRow,endRow,col]
+        return [startRow, endRow, col]
     }
 
-    getRowfromTime(time){
-        var timeInMins = time.getHours() *60 + time.getMinutes();
-        return(Math.floor((timeInMins - this.state.minStart)/15) +1)
+    getRowfromTime(time) {
+        var timeInMins = time.getHours() * 60 + time.getMinutes();
+        return (Math.floor((timeInMins - this.state.minStart) / 15) + 1)
     }
 
-    getCol(time){
+    getCol(time) {
         var dayOfEvent = new Date(Date.parse(time));
-        for(var i = 0; i < this.state.days.length;i++){ //checks if event is say day as any day in calander
-            if(DateUtils.isSameDay(this.state.days[i],dayOfEvent)){ return i+1};
+        for (var i = 0; i < this.state.days.length; i++) { //checks if event is say day as any day in calander
+            if (DateUtils.isSameDay(this.state.days[i], dayOfEvent)) { return i + 1 };
         }
     }
 
-    getLocation(e){
-        var startTime  = new Date(Date.parse(e.start.dateTime));
+    getLocation(e) {
+        var startTime = new Date(Date.parse(e.start.dateTime));
         var endTime = new Date(Date.parse(e.end.dateTime));
         var startRow = this.getRowfromTime(startTime);
         var endRow = this.getRowfromTime(endTime);
         var col = this.getCol(startTime)
-        return [startRow,endRow,col]
+        return [startRow, endRow, col]
     }
 
-    addEvent(event){
-        var location;
+    safetext(text) {
+        this.innerText = this.textContent = text;
+        return this.innerHTML.replace(/^\s+|\s+$/g, '');
+    }
+
+    addEvent() {
         var border = "2px solid #0000FF";
-        if(this.inputTable != null){
+        if (this.inputTable != null) {
             //console.log("table" + table)
             //this.setState({eventAdded:true})
             var table = document.getElementById("userInputTable");
-            console.log("table" + table)
-            if(table != null){
+            console.log("table Events" + table)
+            if (table != null) {
                 //console.log("Filtered Events" + this.state.events);
                 this.state.events.forEach((e) => {
-                    location = this.getLocation(e);
+                    console.log(e)
+                    const location = this.getLocation(e);
+                    console.log(location)
                     var cols;
-                    if(table.rows[location[0]] != null){
-                        (table.rows[location[0]].cells[0].classList.contains("timeslotHourTitleCell")? cols = location[2] :cols = location[2] - 1);
+                    if (table.rows[location[0]] != null) {
+                        (table.rows[location[0]].cells[0].classList.contains("timeslotHourTitleCell") ? cols = location[2] : cols = location[2] - 1);
 
-                        table.rows[location[0]].cells[cols].innerHTML = e.summary; 
-                        table.rows[location[0]].cells[cols].style.fontSize = "8px";
-                        table.rows[location[0]].cells[cols].style.borderTop = border; 
-                        for(var i = location[0];i<=location[1];i++){
-                            (table.rows[i].cells[0].classList.contains("timeslotHourTitleCell")? cols = location[2] :cols = location[2] - 1)
-                            table.rows[i].cells[cols].style.borderLeft = border;
-                            table.rows[i].cells[cols].style.borderRight = border;
+                        //const unsafe = ['/','^','\','+','|','\','{$}','/']
+                        //const text = e.summary.replace(unsafe, '');
+                        const text = e.summary.replace(/^\s+|\s+$/g, '');
+                        console.log("text: " + text);
+                        console.log(table.rows[location[0]].cells[cols]);
+
+                        if (table.rows[location[0]].cells[cols] != null) {
+                            table.rows[location[0]].cells[cols].innerHTML = text;
+                            table.rows[location[0]].cells[cols].style.fontSize = "8px";
+                            table.rows[location[0]].cells[cols].style.borderTop = border;
+                            for (var i = location[0]; i <= location[1]; i++) {
+                                if(table.rows[i] == null){
+                                    location[1] = i-1;
+                                    break;
+                                }
+                                (table.rows[i].cells[0].classList.contains("timeslotHourTitleCell") ? cols = location[2] : cols = location[2] - 1)
+                                table.rows[i].cells[cols].style.borderLeft = border;
+                                table.rows[i].cells[cols].style.borderRight = border;
+                            }
+
+                            table.rows[location[1]].cells[cols].style.borderBottom = border;
+                            // console.log(table.rows[17])
                         }
-                        table.rows[location[1]].cells[cols].style.borderBottom = border; 
-                       // console.log(table.rows[17])
                     }
                 })
             }
@@ -446,36 +521,33 @@ class ViewPage extends Component {
         //table.rows[3].cells[2].innerHTML = "testEvent";
     }
 
-    GoogleCalendarInput(){
-
-
-        if(this.state.signedIn){
-            return(
+    GoogleCalendarInput() {
+        if (this.state.signedIn) {
+            return (
                 <>
-                   <div className="flex-child">
-                        <TimeSlotTable ref = {this.inputTable} 
-                        isInputTable = {true}
-                        type={this.state.daytype} 
-                        dates={this.state.days}
-                        showTimeSlot={this.state.showTimeSlotTable}
-                        minStartTime={this.state.minStart}
-                        handleUpdateDB={this.handleUpdateDB}
-                        showPreferredButton= {true}
-                        events = {this.state.events}
-                        tableID = "userInputTable"
+                    <div className="flex-child">
+                        <TimeSlotTable ref={this.inputTable}
+                            isInputTable={true}
+                            type={this.state.daytype}
+                            dates={this.state.days}
+                            showTimeSlot={this.state.showTimeSlotTable}
+                            minStartTime={this.state.minStart}
+                            handleUpdateDB={this.handleUpdateDB}
+                            showPreferredButton={true}
+                            events={this.state.events}
+                            tableID="userInputTable"
                         />
-                </div>
+                    </div>
                 </>
-
             );
         }
-        else{
+        else {
             return (
                 <p>
                     <button
-                    onClick={(e) => this.handleCalenderClick('sign-in')}
-                >
-                    sign-in
+                        onClick={(e) => this.handleCalenderClick('sign-in')}
+                    >
+                        sign-in
                 </button>
                 </p>
             );
@@ -493,7 +565,7 @@ class ViewPage extends Component {
                     minStartTime={this.state.minStart}
                     handleUpdateDB={this.handleUpdateDB}
                     showPreferredButton={true}
-                    events = {[]}
+                    events={[]}
                     tableID="userInputTable"
                 />
             </div>
@@ -509,13 +581,14 @@ class ViewPage extends Component {
                         <br />
                         <br />
 
-                        <button id="get-google-calendar-button" onClick={() => {
-                            this.setState({
-                                inputChoice: this.inputOptions.GOOGLE_CALENDAR
-                            });
-                        }}>
-                            Get availabilites from Google Calendar
-                        </button>
+                        {this.state.daytype === 0 &&
+                            <button id="get-google-calendar-button" onClick={() => {
+                                this.setState({
+                                    inputChoice: this.inputOptions.GOOGLE_CALENDAR
+                                });
+                            }}>
+                                Get availabilites from Google Calendar
+                        </button>}
 
                         <br />
                         <br />
@@ -604,9 +677,11 @@ class ViewPage extends Component {
                                 showTimeSlot={this.state.showTimeSlotTable}
                                 minStartTime={this.state.minStart}
                                 showPreferredButton={true}
-                                events = {[]}
+                                events={[]}
                                 tableID="meetingTable"
                                 colorMap={outputColorMap(this.state.responses, null, false)}
+                                tableRow={this.state.tableRow}
+                                tableCol={this.state.tableCol}
                             />
 
                             {/*TODO make it work with groups too*/}

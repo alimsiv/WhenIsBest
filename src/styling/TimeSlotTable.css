@@ -92,3 +92,9 @@ th {
     background-color: #f3f3f3;
 }
 */
+
+.gradient-box{
+    width: 400px;
+    height: 30px;
+    background: linear-gradient(to right, #ff0000 0%, #00ff00 100%);
+}

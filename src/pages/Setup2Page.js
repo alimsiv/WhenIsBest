@@ -212,11 +212,11 @@ class Setup2Page extends Component {
         return (
             <Popup open={this.state.showPop} closeOnDocumentClick onClose={() => this.handlePopup("autopopup", false)} >
                 < div style={{ backgroundColor: "lightblue" }}>
-                    if you select groups, when someone fills out their avaiblity, they will be asked to select a group.<br />
+                    If you select groups, when someone fills out their avaiblity, they will be asked to select a group.<br />
                     Later, you can proitize by group, or set requirements on numbers of people from each group.<br />
-                    This is recommend if you have a large number of people filling out your form<br /><br />
+                    This is recommended if you have a large number of people filling out your form.<br /><br />
 
-                    if you select people, you will be able to set the priority of each individaul person<br />
+                    If you select people, you will be able to set the priority of each individual person.<br />
                     <button onClick={() => this.handlePopup("popup", false)}>close </button>
                 </div>
             </Popup>

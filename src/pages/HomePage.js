@@ -18,6 +18,7 @@ class HomePage extends Component{
     this.pollDBandGo = this.pollDBandGo.bind(this);
     this.createMeeting = this.createMeeting.bind(this);
     this.viewMeetings = this.viewMeetings.bind(this);
+    this.accessMeeting = this.accessMeeting.bind(this);
 
     this.state = {
         code: "",
@@ -34,8 +35,8 @@ class HomePage extends Component{
     history.push({pathname: "/profile"});
   }
 
-  accessMeeting() {
-    history.push({pathname: "/"});
+  accessMeeting(e) {
+    history.push({pathname: "/view/" + this.state.code});
   }
 
   handleCodeChange(e){
@@ -124,10 +125,10 @@ class HomePage extends Component{
                                     <Form>
                                         <Form.Group id="access-meeting">
                                             <Form.Label>Enter Code</Form.Label>
-                                            <Form.Control type="text"/>
+                                            <Form.Control type="text" onChange={this.handleCodeChange}/>
                                         </Form.Group>
 
-                                        <Button className="w-100" type="submit" onClick={() => this.accessMeeting()}>
+                                        <Button className="w-100" type="submit" onClick={this.accessMeeting}>
                                             Access Meeting
                                         </Button>
                                     </Form>
