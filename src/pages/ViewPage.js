@@ -629,23 +629,20 @@ class ViewPage extends Component {
                         {this.InputOptions()}
                         {this.addEvent()}
                         <div className="flex-child">
-                            <h4>{(this.state.priorityType === "G" ? "Groups" : "Responses")}</h4>
-                            <br/>
-                            {this.GroupOrPeopleResponses()}
-                        </div>
 
-                        <div className="flex-child">
-                            <TimeSlotTable ref = {this.responsesTable}
-                                           isInputTable = {false}
-                                           type={this.state.daytype} 
-                                           dates={this.state.days}
-                                           showTimeSlot={this.state.showTimeSlotTable}
-                                           minStartTime={this.state.minStart}
-                                           colorMap={outputColorMap(this.state.responses, null, false)}
-                                           
-                                           />
-                                           {/*colorMap={outputColorMap(this.state.responses, null, false)}*/}
-                                           {/*TODO make it work with groups too*/}
+                            <TimeSlotTable ref={this.responsesTable}
+                                isInputTable={false}
+                                type={this.state.daytype}
+                                dates={this.state.days}
+                                showTimeSlot={this.state.showTimeSlotTable}
+                                minStartTime={this.state.minStart}
+                                showPreferredButton={true}
+                                events = {[]}
+                                tableID="meetingTable"
+                                colorMap={outputColorMap(this.state.responses, null, false)}
+                            />
+
+                            {/*TODO make it work with groups too*/}
                         </div>
                     </div>
                     <br />

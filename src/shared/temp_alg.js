@@ -96,7 +96,8 @@ function createColorMap(avail) {
     // avail is the availability matrix
     let max = math.max(avail);
     let min = math.min(avail);
-    return math.dotMultiply(math.subtract(avail, min) / (max - min), 255);
+    const temp = avail.map(function(x) {return (x-min)/(max-min)*255;})
+    return temp._data
 }
 
 function matSum(mat) {
