@@ -199,7 +199,15 @@ class ViewPage extends Component {
             }
           if (ApiCalendar.sign && !this.state.signedIn){
             //ApiCalendar.listUpcomingEvents(5).then(({ result }) => {   //gets 5 upcoming events //unsure what upcoming is defined at
-            ApiCalendar.listEvents().then(({ result }) => { //gets all event in calander
+            var min = (new Date(this.state.days[0].setHours(0))).setMinutes(0);
+            min = (new Date(min)).toISOString();
+
+            var max = (new Date(this.state.days[this.state.days.length-1].setHours(23))).setMinutes(59);
+            max = (new Date(max)).toISOString();
+            console.log(min);
+            console.log(max);
+
+            ApiCalendar.listEvents({timeMax:max, timeMin:min}).then(({ result }) => { //gets all event in calander
                 //console.log(result.items)
                 //return(
                 this.setState({events:this.importantEvents(result.items)})
