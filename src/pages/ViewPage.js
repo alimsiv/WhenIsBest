@@ -199,7 +199,7 @@ class ViewPage extends Component {
         for (let i = 0; i < result.items.length; i++) {
             const currentItem = result.items[i];
 
-            //takes out all-day events
+            //takes out cancelled and all-day events
             console.log(currentItem);
             if (currentItem.status !== "cancelled" && currentItem.start.dateTime != null) {
 
@@ -238,6 +238,10 @@ class ViewPage extends Component {
             }
             console.log(ApiCalendar.sign);
             if (ApiCalendar.sign && !this.state.signedIn) {
+                if (this.inputTable.current != null) {
+                    console.log(this.inputTable);
+                    this.inputTable.current.SetResponseOnes();
+                }
 
                 for (let i = 0; i < this.state.days.length; i++) {
                     // gets events for each day
@@ -467,11 +471,6 @@ class ViewPage extends Component {
         return [startRow, endRow, col]
     }
 
-    safetext(text) {
-        this.innerText = this.textContent = text;
-        return this.innerHTML.replace(/^\s+|\s+$/g, '');
-    }
-
     addEvent() {
         var border = "2px solid #0000FF";
         if (this.inputTable != null) {
@@ -482,20 +481,15 @@ class ViewPage extends Component {
             if (table != null) {
                 //console.log("Filtered Events" + this.state.events);
                 this.state.events.forEach((e) => {
-                    console.log(e)
+                    //console.log(e)
                     const location = this.getLocation(e);
-                    console.log(location)
+                    //console.log(location)
                     var cols;
                     if (table.rows[location[0]] != null) {
                         (table.rows[location[0]].cells[0].classList.contains("timeslotHourTitleCell") ? cols = location[2] : cols = location[2] - 1);
 
-                        //const unsafe = ['/','^','\','+','|','\','{$}','/']
-                        //const text = e.summary.replace(unsafe, '');
-                        const text = e.summary.replace(/^\s+|\s+$/g, '');
-                        console.log("text: " + text);
-
                         if (table.rows[location[0]].cells[cols] != null) {
-                            table.rows[location[0]].cells[cols].innerHTML = text;
+                            table.rows[location[0]].cells[cols].innerHTML = e.summary;
                             table.rows[location[0]].cells[cols].style.fontSize = "8px";
                             table.rows[location[0]].cells[cols].style.borderTop = border;
                             for (var i = location[0]; i <= location[1]; i++) {
@@ -506,6 +500,7 @@ class ViewPage extends Component {
                                 (table.rows[i].cells[0].classList.contains("timeslotHourTitleCell") ? cols = location[2] : cols = location[2] - 1)
                                 table.rows[i].cells[cols].style.borderLeft = border;
                                 table.rows[i].cells[cols].style.borderRight = border;
+                                table.rows[i].cells[cols].style.backgroundColor = "#ffffff";
                             }
 
                             table.rows[location[1]].cells[cols].style.borderBottom = border;
@@ -534,6 +529,7 @@ class ViewPage extends Component {
                             showPreferredButton={true}
                             events={this.state.events}
                             tableID="userInputTable"
+                            setAllToOnes={true}
                         />
                     </div>
                 </>
