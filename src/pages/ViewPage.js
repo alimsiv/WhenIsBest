@@ -164,12 +164,12 @@ class ViewPage extends Component {
         //console.log("unfiltered events" + events);
         console.log("Meeting Filtering")
         events.forEach(element => {
-            if(element.status != "cancelled" ){//&& this.validDay(element.start.dateTime)){
+            if (element.status != "cancelled") {//&& this.validDay(element.start.dateTime)){
                 console.log("added Event:" + element.summary + " to list of calander events")
                 importantEvents.push(element);
             }
-            else{
-                if(element.status == "cancelled"){
+            else {
+                if (element.status == "cancelled") {
                     console.log("ignored " + element.summary + ":cancelled");
                 }
                 else {
@@ -181,7 +181,7 @@ class ViewPage extends Component {
         return importantEvents;
     }
 
-    validDay(time){
+    validDay(time) {
         // console.log("Start" + Date.parse(this.state.days[0])); how to get javascript date into unixt time
         var dayOfEvent = new Date(Date.parse(time)); //Date.parse converts to unix time (1600000000 thing), new Date converts to javascript time
         for (var i = 0; i < this.state.days.length; i++) { //checks if event is say day as any day in calander
@@ -190,6 +190,43 @@ class ViewPage extends Component {
         return false;
     }
 
+    addEventsToState(day, result) {
+        console.log("Day: " + day);
+
+        const oldEvents = this.state.events;
+        const allItems = [];
+
+        for (let i = 0; i < result.items.length; i++) {
+            const currentItem = result.items[i];
+
+            //takes out all-day events
+            console.log(currentItem);
+            if (currentItem.status !== "cancelled" && currentItem.start.dateTime != null) {
+
+                //fixes recurring events
+                if (currentItem.recurrence != null) {
+                    //If it is a recurring event, sets start and end times
+                    const currentStartDate = new Date(Date.parse(currentItem.start.dateTime));
+                    const currentEndDate = new Date(Date.parse(currentItem.end.dateTime));
+                    const currentDate = new Date(Date.parse(day));
+                    console.log("current item: ");
+                    console.log(currentItem);
+                    console.log("current times: \n" + currentStartDate + "\n" + currentEndDate);
+                    const tempStart = (new Date(currentDate.setHours(currentStartDate.getHours()))).setMinutes(currentStartDate.getMinutes());
+                    const tempEnd = (new Date(currentDate.setHours(currentEndDate.getHours()))).setMinutes(currentEndDate.getMinutes());
+                    currentItem.start.dateTime = (new Date(tempStart)).toISOString();
+                    currentItem.end.dateTime = (new Date(tempEnd)).toISOString();
+                }
+                console.log(currentItem);
+
+                allItems.push(currentItem);
+            }
+        }
+        //Check if times are valid
+        oldEvents.push(...this.importantEvents(allItems));
+
+        this.setState({ events: oldEvents });
+    }
 
     handleCalenderClick(name) {
         if (name === 'sign-in') {
@@ -201,8 +238,7 @@ class ViewPage extends Component {
             }
             console.log(ApiCalendar.sign);
             if (ApiCalendar.sign && !this.state.signedIn) {
-                let allEvents = [];
-                //const startHour = 
+
                 for (let i = 0; i < this.state.days.length; i++) {
                     // gets events for each day
                     const day = this.state.days[i];
@@ -212,48 +248,18 @@ class ViewPage extends Component {
                     var max = (new Date(day.setHours(23))).setMinutes(59);
                     max = (new Date(max)).toISOString();
 
-                    console.log("min and max:");
-                    console.log(min);
-                    console.log(max);
-
-
                     ApiCalendar.listEvents({ timeMax: max, timeMin: min }).then(({ result }) => { //gets all event in calander
-                        const oldEvents = this.state.events;
-                        const allItems = [];
-
-                        for (let i = 0; i < result.items.length; i++){
-                            const currentItem = result.items[i];
-                            if (currentItem.recurrence != null){
-                                const currentStartDate =  new Date(Date.parse(currentItem.start.dateTime));
-                                const currentEndDate =  new Date(Date.parse(currentItem.end.dateTime));
-                                const currentDate =  new Date(Date.parse(day));
-                                const tempStart = (new Date(currentDate.setHours(currentStartDate.getHours()))).setMinutes(currentStartDate.getMinutes());
-                                const tempEnd = (new Date(currentDate.setHours(currentEndDate.getHours()))).setMinutes(currentEndDate.getMinutes());
-                                currentItem.start.dateTime = (new Date(tempStart)).toISOString();
-                                currentItem.end.dateTime = (new Date(tempEnd)).toISOString();
-                            }
-                            console.log(currentItem);
-
-                            //Check if times are valid
-                            allItems.push(currentItem);
-                        }
-                        oldEvents.push(...this.importantEvents(allItems));
-                        this.setState({ events: oldEvents });
-
-                        allEvents.push(...result.items);
+                        this.addEventsToState(day, result);
                     })
+
                     this.setState({ signedIn: true })
                     console.log("successfully signed in");
                 }
-                console.log(allEvents);
                 console.log(this.state.events);
 
 
             }
         }
-        // } else if (name === 'sign-out') {
-        //   ApiCalendar.handleSignoutClick();
-        // }
     }
 
     /*
@@ -440,29 +446,6 @@ class ViewPage extends Component {
         //table.rows[3].cells[2].innerHTML = "testEvent";
     }
 
-    getRowfromTime(time){
-        var timeInMins = time.getHours() *60 + time.getMinutes();
-        return(Math.floor((timeInMins - this.state.minStart)/15) +1) //should accound for negative rows
-    }
-
-    getCol(time) {
-        var dayOfEvent = new Date(Date.parse(time));
-        for (var i = 0; i < this.state.days.length; i++) { //checks if event is say day as any day in calander
-            if (DateUtils.isSameDay(this.state.days[i], dayOfEvent)) { return i + 1 };
-        }
-    }
-
-    getLocation(e) {
-        console.log(e.summary);
-        var startTime = new Date(Date.parse(e.start.dateTime));
-        console.log(startTime);
-        var endTime = new Date(Date.parse(e.end.dateTime));
-        var startRow = this.getRowfromTime(startTime);
-        var endRow = this.getRowfromTime(endTime);
-        var col = this.getCol(startTime)
-        return [startRow, endRow, col]
-    }
-
     getRowfromTime(time) {
         var timeInMins = time.getHours() * 60 + time.getMinutes();
         return (Math.floor((timeInMins - this.state.minStart) / 15) + 1)
@@ -479,7 +462,7 @@ class ViewPage extends Component {
         var startTime = new Date(Date.parse(e.start.dateTime));
         var endTime = new Date(Date.parse(e.end.dateTime));
         var startRow = this.getRowfromTime(startTime);
-        var endRow = this.getRowfromTime(endTime);
+        var endRow = this.getRowfromTime(endTime) - 1;
         var col = this.getCol(startTime)
         return [startRow, endRow, col]
     }
@@ -510,15 +493,14 @@ class ViewPage extends Component {
                         //const text = e.summary.replace(unsafe, '');
                         const text = e.summary.replace(/^\s+|\s+$/g, '');
                         console.log("text: " + text);
-                        console.log(table.rows[location[0]].cells[cols]);
 
                         if (table.rows[location[0]].cells[cols] != null) {
                             table.rows[location[0]].cells[cols].innerHTML = text;
                             table.rows[location[0]].cells[cols].style.fontSize = "8px";
                             table.rows[location[0]].cells[cols].style.borderTop = border;
                             for (var i = location[0]; i <= location[1]; i++) {
-                                if(table.rows[i] == null){
-                                    location[1] = i-1;
+                                if (table.rows[i] == null) {
+                                    location[1] = i - 1;
                                     break;
                                 }
                                 (table.rows[i].cells[0].classList.contains("timeslotHourTitleCell") ? cols = location[2] : cols = location[2] - 1)
@@ -567,6 +549,7 @@ class ViewPage extends Component {
                 </button>
                 </p>
             );
+
         }
     }
 
