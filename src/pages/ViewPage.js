@@ -9,8 +9,6 @@ import '../styling/styles.css';
 import { outputColorMap } from '../shared/temp_alg';
 import ApiCalendar from 'react-google-calendar-api';
 import { DateUtils } from 'react-day-picker';
-import { ContactSupportTwoTone } from '@material-ui/icons';
-
 
 class ViewPage extends Component {
     inputOptions = {
@@ -321,7 +319,6 @@ class ViewPage extends Component {
                     <input className="responses-range" type="range" id={id + "_range"} min="1" max="5" step="1" onChange={(e) => this.handleUpdatePriority(name, id, e.target.value)} />
                 </td>}
                 {/*TODO: cap max allowed */}
-                {/*TODO: add handle method */}
                 {this.state.priorityType === "G" && this.state.showAdvancedSettings && <td>
                     <input className="responses-required" type="number" min="0" id={name + "_required"} onChange={(e) => this.handleUpdateMinRequired(name, e.target.value)} />
                 </td>}
@@ -500,6 +497,7 @@ class ViewPage extends Component {
                                 (table.rows[i].cells[0].classList.contains("timeslotHourTitleCell") ? cols = location[2] : cols = location[2] - 1)
                                 table.rows[i].cells[cols].style.borderLeft = border;
                                 table.rows[i].cells[cols].style.borderRight = border;
+                                //TODO: make it only change to white at the beginning
                                 table.rows[i].cells[cols].style.backgroundColor = "#ffffff";
                             }
 
@@ -688,7 +686,6 @@ class ViewPage extends Component {
                     <br />
                     <br />
                     <br />
-                    {/*TODO: and userGroup==="" */}
                     <Modal show={this.state.showModal && (this.state.inputChoice !== this.inputOptions.OPTIONS)} hide={this.handleCloseModal}>
                         <Modal.Header closeButton>
                             <Modal.Title>Please select your group</Modal.Title>
