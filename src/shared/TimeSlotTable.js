@@ -90,24 +90,22 @@ class TimeSlotTable extends Component {
     }
 
     getRBG(scale) {
-
         //For red to green gradient
         let r = 255;
         let g = 255;
         let b = 0;
-        if (scale < 127) {
+        if (scale < 127.5) {
             g = scale * 2;
         }
         else {
-            r = 255 - (scale - 127) * 2;
+            r = 255 - (scale - 127.5) * 2;
         }
+        console.log(scale + ": " + r + "" + g + "" + b);
         r = Math.round(r).toString(16).padStart(2, '0');
         g = Math.round(g).toString(16).padStart(2, '0');
         b = Math.round(b).toString(16).padStart(2, '0');
 
         return "#" + r + "" + g + "" + b;
-
-
 
         /* for white to green gradient
         let rb = Math.round(scale).toString(16).padStart(2,'0');
@@ -158,16 +156,13 @@ class TimeSlotTable extends Component {
         let row = (timestamp - this.props.minStartTime) / 15;
         const index = (row * this.props.tableCol) + dayCount;
 
-        const colorM = this.props.colorMap;
         const colorInt = this.props.colorMap[index];
-        if (colorInt != null) {
-
-            const colorHex = colorInt.toString(16);
-            const colorPad = String(colorHex).padStart(2, '0');
-            //return colorHex;
+        return (colorInt == null) ? "#ff0000" : this.getRBG(colorInt);
+        if (colorInt == null) {
+            return "#ff0000";
+        }
+        else {
             return this.getRBG(colorInt);
-            return "#ffff" + colorPad;
-            return "#000000";
         }
     }
 
@@ -385,6 +380,7 @@ class TimeSlotTable extends Component {
 
     render() {
         console.log(this.props.tableID + "created")
+        console.table(this.props.colorMap)
         return (
             <div className="TimeSlotTable">
                 {this.props.showPreferredButton && this.PreferredButton()}

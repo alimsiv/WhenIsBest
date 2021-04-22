@@ -72,6 +72,10 @@ th {
     background-color: #282c34;
 }
 
+.timeslotClickableHour, .timeslotClickableHalfHour, .timeslotClickable{
+    width: 100px;
+}
+
 .timeslotHourTitleCell {
     vertical-align:top;
     width:70px;
