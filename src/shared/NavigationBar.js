@@ -20,7 +20,6 @@ const NavigationBar = () => {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="container-fluid">
                         <Nav.Link href="/setup1">Create Meeting</Nav.Link>
-                        <Nav.Link href="/">Add Availability</Nav.Link>
                         { currentUser && <Nav.Link href="/profile">Profile</Nav.Link> }
                         <Nav className = "ml-auto">
                             { !currentUser && <Nav.Link href="/signup">Sign Up</Nav.Link> }

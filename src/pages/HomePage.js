@@ -3,11 +3,12 @@ import NavigationBar from '../shared/NavigationBar'
 import database from '../database/database'
 import logo from "../logo.svg";
 import wig from '../WIG.png'
-import yeah_boi from '../yeah_boi.png'
 import history from './../history'
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { InfoRounded } from '@material-ui/icons';
+import { Alert, Button, Card, Container, Form } from 'react-bootstrap'
+import { Link, useHistory } from 'react-router-dom'
 
 class HomePage extends Component{
 
@@ -16,8 +17,8 @@ class HomePage extends Component{
     this.handleCodeChange = this.handleCodeChange.bind(this);
     this.pollDBandGo = this.pollDBandGo.bind(this);
     this.createMeeting = this.createMeeting.bind(this);
-    this.createAccount = this.createAccount.bind(this);
-    this.loginFunciton = this.loginFunction.bind(this);
+    this.viewMeetings = this.viewMeetings.bind(this);
+    this.accessMeeting = this.accessMeeting.bind(this);
 
     this.state = {
         code: "",
@@ -29,8 +30,13 @@ class HomePage extends Component{
     history.push({pathname: "/setup1"});
   }
 
-  createAccount() {
-    history.push({pathname: "/signup"});
+  viewMeetings() {
+    // :TODO need error code for when someone is not logged in since it cant redirect to profile
+    history.push({pathname: "/profile"});
+  }
+
+  accessMeeting(e) {
+    history.push({pathname: "/view/" + this.state.code});
   }
 
   handleCodeChange(e){
@@ -41,7 +47,7 @@ class HomePage extends Component{
     }
     // if the meeting is valid go to view page, else error
     // go to the valid view page
-    
+
   }
 
   fixTable(oneDtable,cols){
@@ -62,7 +68,7 @@ class HomePage extends Component{
   }
 
   pollDBandGo(){
-    
+
     if(this.state.code != ""){
     //checks for the meeting code first, if found goes to view page
       const db = firebase.firestore();
@@ -73,7 +79,7 @@ class HomePage extends Component{
                 pathname: "/view/" + this.state.code,
                 state: {
                 }
-              }); 
+              });
             }
             else {
                     // doc.data() will be undefined in this case
@@ -87,74 +93,77 @@ class HomePage extends Component{
     }
     else{
       console.log("no meeting code entered")
-    }       
-  }
-   
-
-  loginFunction() {
-    // need to make sure that the username and password are valid
-    history.push({
-      pathname: "/account",
-      state: {
-        username: document.getElementById("username").value,
-        password: document.getElementById("password").value,
-      }
-    });
+    }
   }
 
     render() {
       return (
           <div className="HomePage">
-            <div style={{"display": "block", "width": "100%", "background-color": "pink"}}>
-              <br/>
-              <h1 style={{"display": "inline-block", "border-bottom": "3px solid black"}}>When is Best</h1>
-              <h3>Ali, Alex, Cathy, Connor, Tommy</h3>
-              <br/>
-            </div>
-            <br/>
             <div className="flex">
-              <div className="flex-child" style={{"float": "left"}}>
-                <img src={yeah_boi} width="500" height="420"/>
+
+              <div className="flex-child" width="40%" height="40%" style={{"float": "left"}}>
+                <img src={logo} width="400" height="400"/>
+                <p>"WhenIsBest allows for the creation of groups and the ability
+                to weigh the importance of attendance <br/> for both individuals and groups.
+                Additionally, WhenIsBest allows individuals to indicate general availability <br/>
+                versus preferred availability. The app then embeds a prioritization feature
+                into its algorithm that considers the weighted values of individuals and groups
+                and each individual’s preferences when calculating the most ideal meeting time.
+                Meeting time options are visualized in a comprehensive yet easily filterable
+                heat map that allows for the identification of the best time."
+                </p>
               </div>
-              <div className="flex-child" style={{'border': "solid", "border-width": "thin", "border-radius": "5px", "background-color": "peachpuff", "width": "40%", "float": "right"}}>
-                <br/>
-                <h2 style={{"color": "blue"}}>Access a Meeting</h2>
-                <div style={{"padding-bottom": "20px", "padding-top": "5px", "padding-right": "20px", "padding-left": "20px"}}>
-                  <form>
-                    <fieldset style={{'border': "solid", "border-width": "thin", "display": "block"}}>
-                      <legend id="login" style={{"width": "auto", "margin-bottom": "0px", "font-size": "20px", "font-weight": "bold"}}>Login</legend>
-                      <label for="username">Username: </label>
-                      <input type="text" id="username" name="username"/><br/>
-                      <label for="password">Password: </label>
-                      <input type="text" id="password" name="password"/><br/>
-                      <a href="" onClick={() => this.loginFunction() }>See your dashboard</a>
-                    </fieldset>
-                  </form>
-                </div>
-                <div style={{"padding-bottom": "20px", "padding-top": "10px", "padding-right": "10px", "padding-left": "10px"}}>
-                  <form>
-                    <fieldset style={{'border': "solid", "border-width": "thin", "display": "block"}}>
-                      <legend id="wologin" style={{"width": "auto", "margin-bottom": "0px", "font-size": "20px", "font-weight": "bold"}}>Without logging in</legend>
-                      <label for="code-input">Code: </label>
-                      <input id="code-input" name="code-input" type="text" placeholder="e.g. Zsjf63m28sdn"
-                          value={this.state.code}
-                          onChange={e => this.handleCodeChange(e)}
-                      /><br/>
-                      <button id="codeEnter" type = "button" onClick={() => this.pollDBandGo()}>Enter your availability</button>
-                      {/* <label for="abcs"></label>
-                      {<a className="mr10" href="" name="abcs"
-                          onClick={() => this.pollDBandGo()}>Enter your availability</a>}
-                      <br/> */}
-                    </fieldset>
-                  </form>
-                  <br/>
-                  <div className="flex">
-                    <button id="create-meeting-wo-button" onClick={() => this.createMeeting()} style={{"text-align": "center", "font-size": "16px", "color": "blue", "padding": "10px 24px", "border-radius": "8px"}}>Create a new meeting</button>
-                    <button id="create-account" onClick={() => this.createAccount()} style={{"text-align": "center", "font-size": "16px", "color": "blue", "padding": "10px 24px", "border-radius": "8px"}}>Create Account</button>
-                  </div>
-                </div>
-              </div>
+              <>
+                <Container className="d-flex align-tems-center justify-content-center" style={{ minHeight: "100vh" }}>
+                    <div className="w-100" style={{ maxWidth: "400px" }}>
+                        <Card>
+                            <Card.Body>
+                                <h2 className="text-center mb-4">Welcome to WhenIsBest</h2>
+
+                                <Card>
+                                  <Card.Body>
+                                    <Form>
+                                        <Form.Group id="access-meeting">
+                                            <Form.Label>Enter Code</Form.Label>
+                                            <Form.Control type="text" onChange={this.handleCodeChange}/>
+                                        </Form.Group>
+
+                                        <Button className="w-100" type="submit" onClick={this.accessMeeting}>
+                                            Access Meeting
+                                        </Button>
+                                    </Form>
+                                  </Card.Body>
+                                </Card>
+                                <br/>
+                                <Card>
+                                  <Card.Body>
+                                    <Form>
+                                      <Form.Group id="your-meetings">
+                                          <Form.Label>Your Meetings</Form.Label>
+                                      </Form.Group>
+                                      <Form.Group id="your-meetings">
+                                        <Button id="create-meeting" style={{"margin-right": "5px"}} onClick={() => this.createMeeting()}>
+                                          Create a Meeting
+                                        </Button>
+                                        <Button id="view-meetings" onClick={() => this.viewMeetings()}>
+                                          View My Meetings
+                                        </Button>
+                                      </Form.Group>
+                                    </Form>
+                                  </Card.Body>
+                                </Card>
+
+                            </Card.Body>
+                        </Card>
+                        <div className="w-100 text-center mt-2">
+                            Don't have an account? <Link to="/signup">Sign Up</Link>
+                        </div>
+                    </div>
+                </Container>
+              </>
+
             </div>
+
           </div>
       );
   }

@@ -1,6 +1,7 @@
 import '../styling/TimeSlotTable.css';
 import { Component } from "react";
 import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { hexToRgb, rgbToHex } from '@material-ui/core';
 
 
 /** Creates the TimeSlotTable
@@ -11,7 +12,10 @@ import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 */
 
 class TimeSlotTable extends Component {
-    response = this.initialResponseMatrix();
+    availColor = "#84D6E7";
+    perColor = "#1493e7";
+    unselColor = "#ffffff";
+    response = [];
 
     constructor(props) {
         super(props);
@@ -20,6 +24,8 @@ class TimeSlotTable extends Component {
         this.handleMulti = this.handleMulti.bind(this);
         this.maybeMulti = this.maybeMulti.bind(this);
         this.handleAvailabilityType = this.handleAvailabilityType.bind(this);
+
+        this.response = (this.props.setAllToOnes === true) ? this.initialResponseMatrixOnes() :this.initialResponseMatrix;
 
         this.state = {
             multiSelect: false,
@@ -30,6 +36,15 @@ class TimeSlotTable extends Component {
 
     GetResponse() {
         return this.response;
+    }
+
+    initialResponseMatrixOnes() {
+        const newResponse = new Array(this.props.showTimeSlot.length);
+        const width = this.props.showTimeSlot[0].length;
+        for (let i = 0; i < newResponse.length; i++) {
+            newResponse[i] = new Array(width).fill(1);
+        }
+        return newResponse;
     }
 
     handleMulti(isOn, id) {
@@ -74,6 +89,56 @@ class TimeSlotTable extends Component {
         return response;
     }
 
+    getRBG(scale) {
+        //For red to green gradient
+        let r = 255;
+        let g = 255;
+        let b = 0;
+        if (scale < 127.5) {
+            g = scale * 2;
+        }
+        else {
+            r = 255 - (scale - 127.5) * 2;
+        }
+        r = Math.round(r).toString(16).padStart(2, '0');
+        g = Math.round(g).toString(16).padStart(2, '0');
+        b = Math.round(b).toString(16).padStart(2, '0');
+
+        return "#" + r + "" + g + "" + b;
+
+        /* for white to green gradient
+        let rb = Math.round(scale).toString(16).padStart(2,'0');
+
+        const rgb = "#" + rb + "ff" + rb;
+
+        return "#" + rb + "ff" + rb;
+        */
+
+        /*For white to red to green gradient
+        let r = 255;
+        let g = 255;
+        let b = 255;
+        if (scale < 85){
+            g = 255 - scale*3;
+            b = 255 - scale*3;
+        }
+        else if (scale < 170){
+            g = (scale-85)*3;
+            b = 0;
+        }
+        else {
+            r = 255 - (scale-170)*3;
+            b = 0;
+        }
+        r = Math.round(r).toString(16).padStart(2,'0');
+        g = Math.round(g).toString(16).padStart(2,'0');
+        b = Math.round(b).toString(16).padStart(2,'0');
+
+        return "#" + r + "" + g + "" + b;*/
+
+
+    }
+
     // Returns matrix location from cell id
     getMatrixLocation(id) {
         const parsedID = id.split(':'); //example: timeslot:0:540
@@ -81,24 +146,60 @@ class TimeSlotTable extends Component {
         return [row, parsedID[1]];
     }
 
+    // Returns location from 2D array
+    getArrayLocation(dayCount, timestamp) {
+        //        const parsedID = id.split(':'); //example: timeslot:0:540
+        //        const row = (parsedID[2] - this.props.minStartTime) / 15;
+        //        return [row, parsedID[1]];
+
+        let row = (timestamp - this.props.minStartTime) / 15;
+        const index = (row * this.props.tableCol) + dayCount;
+
+        const colorInt = this.props.colorMap[index];
+        return (colorInt == null) ? "#ff0000" : this.getRBG(colorInt);
+        if (colorInt == null) {
+            return "#ff0000";
+        }
+        else {
+            return this.getRBG(colorInt);
+        }
+    }
+
+
 
     handleTimeSlotClicked(id) {
-        var availColor = "#84D6E7";
-        var perColor = "#14D6E7";
-        var unselColor = "#ffffff"
         console.log("Clicked: " + id);
         const location = this.getMatrixLocation(id);
         if (this.response[location[0]][location[1]] === 0) {
+            //Timeslot is not selected
             this.response[location[0]][location[1]] = (this.state.availabilityType == "A" ? 1 : 2);
-            document.getElementById(id).style.backgroundColor = (this.state.availabilityType == "A" ? availColor : perColor);
+            document.getElementById(id).style.backgroundColor = (this.state.availabilityType == "A" ? this.availColor : this.perColor);
         }
         else if (this.response[location[0]][location[1]] === 1) {
+            //Timeslot is selected as available
             this.response[location[0]][location[1]] = (this.state.availabilityType == "A" ? 0 : 2);
-            document.getElementById(id).style.backgroundColor = (this.state.availabilityType == "A" ? unselColor : perColor);
+            document.getElementById(id).style.backgroundColor = (this.state.availabilityType == "A" ? this.unselColor : this.perColor);
         }
         else {
+            //Timeslot is selected as preferred
             this.response[location[0]][location[1]] = (this.state.availabilityType == "A" ? 1 : 0);
-            document.getElementById(id).style.backgroundColor = (this.state.availabilityType == "A" ? availColor : unselColor);
+            document.getElementById(id).style.backgroundColor = (this.state.availabilityType == "A" ? this.availColor : this.unselColor);
+        }
+    }
+
+    getColor(id){
+        const location = this.getMatrixLocation(id);
+        if (this.response[location[0]][location[1]] === 0) {
+            //Timeslot is not selected
+            return this.unselColor;
+        }
+        else if (this.response[location[0]][location[1]] === 1) {
+            //Timeslot is selected as available
+            return this.availColor;
+        }
+        else {
+            //Timeslot is selected as preferred
+            return this.perColor;
         }
     }
 
@@ -201,6 +302,7 @@ class TimeSlotTable extends Component {
                                 onMouseDown={() => { this.handleMulti(true, keyName); this.handleTimeSlotClicked(keyName) }}
                                 onMouseUp={() => { this.handleMulti(false, keyName) }}
                                 onMouseEnter={() => { this.maybeMulti(keyName) }}
+                                style={{ backgroundColor: this.getColor(keyName) }}
                             />
                         }
                         else {
@@ -209,6 +311,7 @@ class TimeSlotTable extends Component {
                                 key={keyName}
                                 id={keyName}
                                 className={rowClassName}
+                                style={{ backgroundColor: this.getArrayLocation(dayCount, timestamp) }}
                             />
                         }
                     } else {
@@ -235,7 +338,6 @@ class TimeSlotTable extends Component {
             rows.push(this.TimeSlotRow(timestamp, this.props.showTimeSlot[i]));
             timestamp += 15; //Add 15 minutes for the next row
         }
-
         return (
             <tbody>
                 {rows}
@@ -247,8 +349,16 @@ class TimeSlotTable extends Component {
         if (this.state.availabilityType != newType) {
             this.setState({ availabilityType: newType });
         }
-        if (!this.props.isInputTable){
+        if (!this.props.isInputTable) {
             //TODO: Update heatmap algorithm to only show preferred timeslots
+        }
+    }
+
+    addEvent(event) {
+        var table = document.getElementById("userInputTable");
+        console.log("table" + table)
+        if (table != null) {
+            table.rows[3].cells[2].innerHTML = "testEvent";
         }
     }
 
@@ -268,11 +378,11 @@ class TimeSlotTable extends Component {
 
 
     render() {
-
+        console.log(this.props.tableID + "created")
         return (
             <div className="TimeSlotTable">
                 {this.props.showPreferredButton && this.PreferredButton()}
-                <table className="styled-table" onMouseLeave={() => { this.handleMulti(false) }}>
+                <table className="styled-table" id={this.props.tableID} onMouseLeave={() => { this.handleMulti(false) }}>
                     <thead>
                         <tr>
                             <th />
@@ -283,6 +393,7 @@ class TimeSlotTable extends Component {
                     {this.TimeSlotCreateRows()}
                 </table>
                 <br />
+                
             </div>
 
         );

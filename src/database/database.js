@@ -53,7 +53,7 @@ export async function getResponses(code) {
     const responsesCollection = await responsesRef(code).get();
     if (responsesCollection != null) {
 
-        responsesCollection.forEach((doc) => responses.push({ ...doc.data(), id: doc.id, priority: 3 }));
+        responsesCollection.forEach((doc) => responses.push({ ...doc.data(), id: doc.id, priority: 3, show: true }));
     }
     console.log(responses);
     return responses;
