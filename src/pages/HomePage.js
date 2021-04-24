@@ -1,11 +1,14 @@
 import { Component } from 'react'
+import NavigationBar from '../shared/NavigationBar'
+import database from '../database/database'
 import logo from "../logo.svg";
+import wig from '../WIG.png'
 import history from './../history'
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import { Button, Card, Container, Form } from 'react-bootstrap'
-import { Link, } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
+import { InfoRounded } from '@material-ui/icons';
+import { Alert, Button, Card, Container, Form } from 'react-bootstrap'
+import { Link, useHistory } from 'react-router-dom'
 
 class HomePage extends Component{
 
@@ -152,9 +155,9 @@ class HomePage extends Component{
 
                             </Card.Body>
                         </Card>
-                          <div className="w-100 text-center mt-2">
+                        <div className="w-100 text-center mt-2">
                             Don't have an account? <Link to="/signup">Sign Up</Link>
-                          </div>
+                        </div>
                     </div>
                 </Container>
               </>

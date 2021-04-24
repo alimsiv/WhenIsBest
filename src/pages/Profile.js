@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
+import React, { Component, useState } from 'react'
 import { Card, Button, Alert, Container } from 'react-bootstrap'
 import { useAuth, handleLogout } from '../contexts/AuthContext'
-import { useMeeting } from '../contexts/MeetingContext'
 import { Link } from 'react-router-dom'
+import { useMeeting } from '../contexts/MeetingContext'
 
-export default function Profiles() {
-    const [error, setError] = useState("");
-    const { currentUser, logout } = useAuth();
-    const { meetings } = useMeeting();
+export default function Profile() {
+    const [error, setError] = useState("")
+    const { currentUser, logout } = useAuth()
+    const { meetings } = useMeeting()
 
     return (
         <>
@@ -27,7 +27,6 @@ export default function Profiles() {
                         <Card.Body>
                             <h2 className="text-center mb-4">Upcoming Meetings</h2>
                             {error && <Alert variant="danger">{error}</Alert>}
-                            { meetings }
                         </Card.Body>
                     </Card>
                     <div className="w-100 text-center mt-2">

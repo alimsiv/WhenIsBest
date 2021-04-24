@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import { BrowserRouter, Switch, Route, Router } from "react-router-dom";
 
-import HomePage from './pages/HomePage';
-import Setup1Page from './pages/Setup1Page';
-import Setup2Page from './pages/Setup2Page';
-import ViewPage from './pages/ViewPage';
+import HomePage from './pages/HomePage'
+import Setup1Page from './pages/Setup1Page'
+import Setup2Page from './pages/Setup2Page'
+import ViewPage from './pages/ViewPage'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
-import Confirmation from './pages/Confirmation';
+import Confirmation from './pages/Confirmation'
 import AccountPage from './pages/AccountPage'
-import history from './history';
+import history from './history'
 import PrivateRoute from './PrivateRoutes'
 import ForgotPassword from './pages/ForgotPassword'
 import UpdateProfile from './pages/UpdateProfile'
