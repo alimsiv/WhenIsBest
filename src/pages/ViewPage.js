@@ -125,16 +125,6 @@ class ViewPage extends Component {
         this.setState({
             responses: responses
         });
-
-        console.log(name + "'s priority is: " + priority);
-        for (let i = 0; i < math.size(this.state.responses); i++){
-            if(this.state.responses[i].name == name){
-                this.state.responses[i].priority = priority;
-            }
-        }
-        this.setState({
-            responses: this.state.responses
-        });
     }
 
     handleUpdateMinRequired(group, minRequired) {
@@ -341,14 +331,14 @@ class ViewPage extends Component {
         }
     }
 
-    ResponseRow(name, id, priority) {
+    ResponseRow(name, id, priority, show) {
         console.log("responses")
         console.log(this.state.responses)
         return (
             <tr className="responses-row">
                 {this.state.showAdvancedSettings && <td>
                     <Form.Group controlId={id + '_checkbox'} className="responses-checkbox">
-                        <Form.Check type="checkbox" onChange={(e) => this.handleUpdateCheckBox(name, id, e.target.value)} />
+                        <Form.Check type="checkbox" checked={show} onChange={(e) => this.handleUpdateCheckBox(name, id, e.target.checked)} />
                     </Form.Group>
                 </td>}
                 <td className="responses-name">{name}</td>
@@ -374,11 +364,11 @@ class ViewPage extends Component {
                     </div>
                 );
             }
-            responses = this.state.responses.map((response) => this.ResponseRow(response.name, response.id, response.priority));
+            responses = this.state.responses.map((response) => this.ResponseRow(response.name, response.id, response.priority, response.show));
         }
         else {
             console.log("Group Responses");
-            responses = this.state.groupList.map((group) => this.ResponseRow(group, group, group.priority));
+            responses = this.state.groupList.map((group) => this.ResponseRow(group, group, group.priority, group.show));
         }
         return (
             <>
