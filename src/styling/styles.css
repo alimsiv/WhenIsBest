@@ -49,3 +49,13 @@ input[type="time"] {
     border-radius: 10px;
     outline: none;
 }
+
+.left {
+    width: 50%;
+    text-align: left;
+}
+
+.right {
+    width: 50%;
+    text-align: right;
+}

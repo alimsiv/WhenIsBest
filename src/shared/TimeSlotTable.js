@@ -100,7 +100,6 @@ class TimeSlotTable extends Component {
         else {
             r = 255 - (scale - 127.5) * 2;
         }
-        console.log(scale + ": " + r + "" + g + "" + b);
         r = Math.round(r).toString(16).padStart(2, '0');
         g = Math.round(g).toString(16).padStart(2, '0');
         b = Math.round(b).toString(16).padStart(2, '0');
@@ -380,7 +379,6 @@ class TimeSlotTable extends Component {
 
     render() {
         console.log(this.props.tableID + "created")
-        console.table(this.props.colorMap)
         return (
             <div className="TimeSlotTable">
                 {this.props.showPreferredButton && this.PreferredButton()}
@@ -395,7 +393,7 @@ class TimeSlotTable extends Component {
                     {this.TimeSlotCreateRows()}
                 </table>
                 <br />
-                {!this.props.isInputTable && <div className="gradient-box"></div>}
+                
             </div>
 
         );

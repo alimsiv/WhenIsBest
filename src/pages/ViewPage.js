@@ -113,6 +113,19 @@ class ViewPage extends Component {
 
     handleUpdatePriority(name, id, priority) {
         //TODO: update priority of name
+        const responses = this.state.responses;
+
+        const isCorrectResponse = (element) => element.id === id;
+
+        const indx = responses.findIndex(isCorrectResponse);
+        console.log(indx);
+
+        responses[indx].priority = priority;
+
+        this.setState({
+            responses: responses
+        });
+
         console.log(name + "'s priority is: " + priority);
         for (let i = 0; i < math.size(this.state.responses); i++){
             if(this.state.responses[i].name == name){
@@ -328,7 +341,9 @@ class ViewPage extends Component {
         }
     }
 
-    ResponseRow(name, id) {
+    ResponseRow(name, id, priority) {
+        console.log("responses")
+        console.log(this.state.responses)
         return (
             <tr className="responses-row">
                 {this.state.showAdvancedSettings && <td>
@@ -338,7 +353,7 @@ class ViewPage extends Component {
                 </td>}
                 <td className="responses-name">{name}</td>
                 {this.state.showAdvancedSettings && <td>
-                    <input className="responses-range" type="range" id={id + "_range"} min="1" max="5" step="1" onChange={(e) => this.handleUpdatePriority(name, id, e.target.value)} />
+                    <input className="responses-range" type="range" id={id + "_range"} min="1" max="5" step="1" value={priority} onChange={(e) => this.handleUpdatePriority(name, id, e.target.value)} />
                 </td>}
                 {/*TODO: cap max allowed */}
                 {this.state.priorityType === "G" && this.state.showAdvancedSettings && <td>
@@ -359,11 +374,11 @@ class ViewPage extends Component {
                     </div>
                 );
             }
-            responses = this.state.responses.map((response) => this.ResponseRow(response.name, response.id));
+            responses = this.state.responses.map((response) => this.ResponseRow(response.name, response.id, response.priority));
         }
         else {
             console.log("Group Responses");
-            responses = this.state.groupList.map((group) => this.ResponseRow(group, group));
+            responses = this.state.groupList.map((group) => this.ResponseRow(group, group, group.priority));
         }
         return (
             <>
@@ -372,8 +387,8 @@ class ViewPage extends Component {
                         <td />
                         <td />
                         <td className="flex">
-                            <h7>low</h7>
-                            <h7>high</h7>
+                            <div className="left">low</div>
+                            <div className="right">high</div>
                         </td>
                     </tr>}
                     {responses}
@@ -698,6 +713,16 @@ class ViewPage extends Component {
                                 tableRow={this.state.tableRow}
                                 tableCol={this.state.tableCol}
                             />
+                            <div className="gradient-box"></div>
+                            <div className="flex">
+                                <div className="left">
+                                    0 people available
+                                </div>
+                                {/*TODO: get max available */}
+                                <div className="right">
+                                    {this.state.responses.length + " people available"}
+                                </div>
+                            </div>
 
                             {/*TODO make it work with groups too*/}
                         </div>
