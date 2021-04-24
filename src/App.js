@@ -6,6 +6,7 @@ import Setup2Page from './pages/Setup2Page'
 import ViewPage from './pages/ViewPage'
 import history from './history';
 import { AuthProvider } from './contexts/AuthContext'
+import { MeetingProvider } from './contexts/MeetingContext'
 import logo from './logo.svg';
 import NavigationBar from './shared/NavigationBar'
 import Routes from './Routes';
@@ -17,8 +18,10 @@ class App extends Component{
     return (
         <div className="App">
             <AuthProvider>
-              <NavigationBar />
-              <Routes />
+              <MeetingProvider>
+                <NavigationBar />
+                <Routes />
+              </MeetingProvider>
             </AuthProvider>
         </div>
     );
