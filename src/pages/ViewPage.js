@@ -9,6 +9,7 @@ import '../styling/styles.css';
 import { outputColorMap } from '../shared/temp_alg';
 import ApiCalendar from 'react-google-calendar-api';
 import { DateUtils } from 'react-day-picker';
+const math = require('mathjs')
 
 class ViewPage extends Component {
     inputOptions = {
@@ -113,16 +114,37 @@ class ViewPage extends Component {
     handleUpdatePriority(name, id, priority) {
         //TODO: update priority of name
         console.log(name + "'s priority is: " + priority);
+        for (let i = 0; i < math.size(this.state.responses); i++){
+            if(this.state.responses[i].name == name){
+                this.state.responses[i].priority = priority;
+            }
+        }
+        this.setState({
+            responses: this.state.responses
+        });
     }
 
     handleUpdateMinRequired(group, minRequired) {
         //TODO: update min required of group
         console.log(group + " requires at least: " + minRequired);
+        for (const g in this.state.groupList){
+            if (g.name == group){
+                this.state.groupList[g].req = minRequired;
+            }
+        }
     }
 
     handleUpdateCheckBox(name, id, status) {
         //TODO: update checkbox of name
         console.log(name + " has been selected: " + status);
+        for (let i = 0; i < math.size(this.state.responses); i++){
+            if (this.state.responses[i].name == name){
+                this.state.responses[i].show = status;
+            }
+        }
+        this.setState({
+            responses: this.state.responses
+        });
     }
 
     handleUpdateDB(response) {
