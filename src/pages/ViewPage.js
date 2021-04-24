@@ -112,28 +112,16 @@ class ViewPage extends Component {
     }
 
     handleUpdatePriority(name, id, priority) {
-        //TODO: update priority of name
+        //TODO: update priority of group
         const responses = this.state.responses;
 
         const isCorrectResponse = (element) => element.id === id;
 
         const indx = responses.findIndex(isCorrectResponse);
-        console.log(indx);
-
         responses[indx].priority = priority;
 
         this.setState({
             responses: responses
-        });
-
-        console.log(name + "'s priority is: " + priority);
-        for (let i = 0; i < math.size(this.state.responses); i++){
-            if(this.state.responses[i].name == name){
-                this.state.responses[i].priority = priority;
-            }
-        }
-        this.setState({
-            responses: this.state.responses
         });
     }
 
@@ -147,17 +135,22 @@ class ViewPage extends Component {
         }
     }
 
-    handleUpdateCheckBox(name, id, status) {
+    handleUpdateCheckBox(name, id, show) {
         //TODO: update checkbox of name
-        console.log(name + " has been selected: " + status);
-        for (let i = 0; i < math.size(this.state.responses); i++){
-            if (this.state.responses[i].name == name){
-                this.state.responses[i].show = status;
-            }
-        }
+        const responses = this.state.responses;
+
+        const isCorrectResponse = (element) => element.id === id;
+
+        const indx = responses.findIndex(isCorrectResponse);
+        responses[indx].show = !show;
+
         this.setState({
-            responses: this.state.responses
+            responses: responses
         });
+
+        console.log(name + " has been selected: " + show);
+        console.log(responses[indx].show);
+        
     }
 
     handleUpdateDB(response) {
@@ -341,14 +334,14 @@ class ViewPage extends Component {
         }
     }
 
-    ResponseRow(name, id, priority) {
+    ResponseRow(name, id, show, priority) {
         console.log("responses")
         console.log(this.state.responses)
         return (
             <tr className="responses-row">
                 {this.state.showAdvancedSettings && <td>
                     <Form.Group controlId={id + '_checkbox'} className="responses-checkbox">
-                        <Form.Check type="checkbox" onChange={(e) => this.handleUpdateCheckBox(name, id, e.target.value)} />
+                        <Form.Check type="checkbox" checked={show} onChange={(e) => this.handleUpdateCheckBox(name, id, show)} />
                     </Form.Group>
                 </td>}
                 <td className="responses-name">{name}</td>
@@ -374,11 +367,12 @@ class ViewPage extends Component {
                     </div>
                 );
             }
-            responses = this.state.responses.map((response) => this.ResponseRow(response.name, response.id, response.priority));
+            responses = this.state.responses.map((response) => this.ResponseRow(response.name, response.id, response.show, response.priority));
         }
         else {
             console.log("Group Responses");
-            responses = this.state.groupList.map((group) => this.ResponseRow(group, group, group.priority));
+            //TODO: possibly gonna error out
+            responses = this.state.groupList.map((group) => this.ResponseRow(group, group, group.show, group.priority));
         }
         return (
             <>
