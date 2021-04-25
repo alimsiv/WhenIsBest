@@ -297,15 +297,28 @@ class TimeSlotTable extends Component {
                         // otherwise mark as unavailable slot and do not attach any event handlers
                         if (this.props.isInputTable) {
                             // If this table should accept user input
-                            return <td
-                                key={keyName}
-                                id={keyName}
-                                className={rowClassName}
-                                onMouseDown={() => { this.handleMulti(true, keyName); this.handleTimeSlotClicked(keyName) }}
-                                onMouseUp={() => { this.handleMulti(false, keyName) }}
-                                onMouseEnter={() => { this.maybeMulti(keyName) }}
-                                style={{ backgroundColor: this.getColor(keyName) }}
-                            />
+                            if (this.props.isSetUp) {
+                                //on set up page, no colors
+                                return <td
+                                    key={keyName}
+                                    id={keyName}
+                                    className={rowClassName}
+                                    onMouseDown={() => { this.handleMulti(true, keyName); this.handleTimeSlotClicked(keyName) }}
+                                    onMouseUp={() => { this.handleMulti(false, keyName) }}
+                                    onMouseEnter={() => { this.maybeMulti(keyName) }}
+                                />
+                            }
+                            else {
+                                return <td
+                                    key={keyName}
+                                    id={keyName}
+                                    className={rowClassName}
+                                    onMouseDown={() => { this.handleMulti(true, keyName); this.handleTimeSlotClicked(keyName) }}
+                                    onMouseUp={() => { this.handleMulti(false, keyName) }}
+                                    onMouseEnter={() => { this.maybeMulti(keyName) }}
+                                    style={{ backgroundColor: this.getColor(keyName) }}
+                                />
+                            }
                         }
                         else {
                             // If this table is used for the heatmap display
