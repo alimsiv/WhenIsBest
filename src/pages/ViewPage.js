@@ -52,6 +52,8 @@ class ViewPage extends Component {
             signedIn: false,
             events: [],
             eventAdded: false,
+            groups: [],
+            req: false,
 
             //TODO set to authenticated user id if logged in
         }
@@ -93,6 +95,8 @@ class ViewPage extends Component {
             groupList: info.groupList,
             responses: responseList,
             showModal: modal,
+            groups: null,
+            req: false,
         });
     }
 
@@ -113,14 +117,21 @@ class ViewPage extends Component {
     }
 
     handleUpdatePriority(name, id, priority) {
-        //TODO: update priority of group
+        //TODO: update priority of name
         const responses = this.state.responses;
-
-        const isCorrectResponse = (element) => element.id === id;
-
-        const indx = responses.findIndex(isCorrectResponse);
-        responses[indx].priority = priority;
-
+        if (this.state.priorityType == "P") {
+            const isCorrectResponse = (element) => element.id === id;
+            const indx = responses.findIndex(isCorrectResponse);
+            console.log(indx);
+            responses[indx].priority = priority;
+        }
+        else{
+            for (let i = 0; i < math.size(responses); i++){
+                if (responses[i].group == id){
+                    responses[i].priority = priority;
+                }
+            }
+        }
         this.setState({
             responses: responses
         });
@@ -128,33 +139,44 @@ class ViewPage extends Component {
 
     handleUpdateMinRequired(group, minRequired) {
         //TODO: update min required of group
+        this.state.req = false
+        if (minRequired > 0)
+            this.state.req = true
+        if (this.state.groups = null)
+            this.state.groups = convertToGroups(this.state.responses, this.state.groupList)
         console.log(group + " requires at least: " + minRequired);
-        for (let i = 0; i < math.size(this.state.responses); i++){
-            if (this.state.responses[i].group == group){
-                this.state.responses[i].req = minRequired;
+        for (let i = 0; i < math.size(this.state.groups); i++){
+            if (this.state.groups[i].name == group)
+                this.state.groups[i].req = minRequired;
+            if (this.state.groups[i].req > 0)
+                this.state.req = true
+        }
+        this.setState({
+            groups: this.state.groups,
+            req: this.state.req
+        });
+    }
+
+    handleUpdateCheckBox(name, id, status) {
+        //TODO: update checkbox of name
+        console.log(name + " has been selected: " + status);
+        if (this.state.priorityType == "P") {
+            for (let i = 0; i < math.size(this.state.responses); i++) {
+                if (this.state.responses[i].name == name) {
+                    this.state.responses[i].show = status;
+                }
+            }
+        }
+        else{
+            for (let i = 0; i < math.size(this.state.responses); i++) {
+                if (this.state.responses[i].group == id) {
+                    this.state.responses[i].show = status;
+                }
             }
         }
         this.setState({
             responses: this.state.responses
         });
-    }
-
-    handleUpdateCheckBox(name, id, show) {
-        //TODO: update checkbox of name
-        const responses = this.state.responses;
-
-        const isCorrectResponse = (element) => element.id === id;
-
-        const indx = responses.findIndex(isCorrectResponse);
-        responses[indx].show = !show;
-
-        this.setState({
-            responses: responses
-        });
-
-        console.log(name + " has been selected: " + show);
-        console.log(responses[indx].show);
-        
     }
 
     handleUpdateDB(response) {
@@ -706,7 +728,7 @@ class ViewPage extends Component {
                                 showPreferredButton={true}
                                 events={[]}
                                 tableID="meetingTable"
-                                colorMap={outputColorMap(this.state.responses, null, false)}
+                                colorMap={outputColorMap(this.state.responses, this.state.groupList, this.state.req)}
                                 tableRow={this.state.tableRow}
                                 tableCol={this.state.tableCol}
                             />
