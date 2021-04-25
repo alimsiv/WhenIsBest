@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
-import { Card, Button, Alert, Container } from 'react-bootstrap'
+import React, { useState, useAsync } from 'react'
+import { Card, Button, Alert, Container, Nav } from 'react-bootstrap'
 import { useAuth, handleLogout } from '../contexts/AuthContext'
-import { useMeeting } from '../contexts/MeetingContext'
 import { Link } from 'react-router-dom'
+import { useDocument, useCollectionData } from 'react-firebase-hooks/firestore'
+import { firestore } from '../apis/firebase'
+import firebase from 'firebase/app';
+import { getMeetingInfo } from '../database/database'
 
-export default function Profiles() {
+export default function Profile() {
     const [error, setError] = useState("");
     const { currentUser, logout } = useAuth();
 
@@ -19,9 +22,6 @@ export default function Profiles() {
         if (value != null) {
             const meetingsList = value.data().meetings;
             for (let i = 0; i < meetingsList.length; i++) {
-                //const { execute, status, value, error } = useAsync(getMeetingInfo(meetingsList[i]), false);
-                //const meetingData = await getMeetingInfo(meetingsList[i]);
-                //console.log(meetingData);
 
                 meetings.push(
                     <Nav.Link href={"/view/" + meetingsList[i].toString()}>{meetingsList[i].toString()}</Nav.Link>
@@ -34,6 +34,7 @@ export default function Profiles() {
                 <p>
                     {error && <strong>Error: {JSON.stringify(error)}</strong>}
                     {loading && <span>Document: Loading...</span>}
+                    
                     {meetings &&
                     <Nav className="flex-column">
                         {meetings}
@@ -64,7 +65,8 @@ export default function Profiles() {
                         <Card.Body>
                             <h2 className="text-center mb-4">Upcoming Meetings</h2>
                             {error && <Alert variant="danger">{error}</Alert>}
-                            { meetings }
+                            <FirestoreDocument />
+
                         </Card.Body>
                     </Card>
                     <div className="w-100 text-center mt-2">
