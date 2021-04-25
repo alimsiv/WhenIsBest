@@ -1,10 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { MeetingArray } from '../database/database'
 import firebase from 'firebase/app';
 import { useAuth } from '../contexts/AuthContext'
-import { auth, firestore } from '../apis/firebase'
-import { useDocument, useCollectionData } from 'react-firebase-hooks/firestore'
-import { Card, Button, Alert, Container, Nav } from 'react-bootstrap'
+import { useDocument } from 'react-firebase-hooks/firestore'
+import { Nav } from 'react-bootstrap'
 
 const MeetingContext = React.createContext()
 
@@ -35,7 +33,6 @@ export function MeetingProvider({ children }) {
                 });
             }
         }
-        console.log(meetings)
         return (
             <div>
                 {meetings && <Nav className="flex-column">{ meetings }</Nav>}
@@ -44,9 +41,11 @@ export function MeetingProvider({ children }) {
     };
 
     useEffect(() => {
+        console.log('render')
         setMeetings(getMeetings())
-        if(meetings == null || meetings.length !== 0)
+        if(typeof meetings !== 'undefined')
             setLoading(false)
+            console.log(meetings)
     }, [value])
 
     const info = {
