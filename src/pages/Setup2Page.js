@@ -254,6 +254,7 @@ class Setup2Page extends Component {
                     isInputTable={true}
                     events={[]}
                     tableID="meetingInputTable"
+                    isSetUp={true}
                 />
             </>
         );
