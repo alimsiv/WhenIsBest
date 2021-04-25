@@ -8,13 +8,16 @@ const math = require('mathjs')
 
 export function outputColorMap(people = null, groups = null, reqs = false, pref = false) {
     // get availability map
+    console.log('Calculating Heat Map')
     let avail = updateAvailability(people, groups, reqs, pref);
+    console.log('Creating map')
     return createColorMap(avail)
 }
 
 function updateAvailability(people = null, groups = null, reqs = false, pref = false) {
     let pg, reqMap, numPeople, i
     if (reqs) {
+        console.log('Heatmap with groups')
         pg = groups;
         if (pref){
             for (i = 0; i < math.size(pg); i++)
@@ -27,6 +30,7 @@ function updateAvailability(people = null, groups = null, reqs = false, pref = f
         reqMap = getReqMap(pg);
         numPeople = getTotalNumPeople(pg);
     } else {
+        console.log('Heatmap with people')
         pg = people;
         if (pref){
             for (i = 0; i < math.size(pg); i++)
@@ -96,7 +100,7 @@ function createColorMap(avail) {
     let max = math.max(avail);
     let min = math.min(avail);
     const temp = avail.map(function(x) {return (x-min)/(max-min)*255;})
-    return temp._data
+    return temp
 }
 
 
@@ -119,7 +123,7 @@ function getTotalNumPeople(groups) {
     return num;
 }
 
-function convertToGroups(people, GroupList) {
+export function convertToGroups(people, GroupList) {
     let groupDict = initializeGroups(GroupList)
     let groups = [];
     for (let i = 0; i < people.length; i++) {

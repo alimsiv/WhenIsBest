@@ -7,6 +7,7 @@ import TimeSlotTable from "../shared/TimeSlotTable";
 import { getMeetingInfo, fixTable, fixDays, getResponses, addResponseToDB, updateResponseInDB } from "../database/database";
 import '../styling/styles.css';
 import { outputColorMap } from '../shared/temp_alg';
+import { convertToGroups } from '../shared/temp_alg';
 import ApiCalendar from 'react-google-calendar-api';
 import { DateUtils } from 'react-day-picker';
 const math = require('mathjs')
@@ -142,17 +143,14 @@ class ViewPage extends Component {
 
     handleUpdateCheckBox(name, id, status) {
         //TODO: update checkbox of name
-        const responses = this.state.responses;
-
-        const isCorrectResponse = (element) => element.id === id;
-
-        const indx = responses.findIndex(isCorrectResponse);
-        console.log(indx);
-
-        responses[indx].show = status;
-
+        console.log(name + " has been selected: " + status);
+        for (let i = 0; i < math.size(this.state.responses); i++){
+            if (this.state.responses[i].name == name){
+                this.state.responses[i].show = status;
+            }
+        }
         this.setState({
-            responses: responses
+            responses: this.state.responses
         });
     }
 
@@ -330,7 +328,7 @@ class ViewPage extends Component {
 
     getResponses(mode, groupList) {
         if (mode == "G") {
-            return groupList
+            return convertToGroups(this.state.responses, groupList)
         }
         else {
             return this.state.responses
