@@ -10,11 +10,14 @@ export function outputColorMap(people = null, groupList = null, reqs = false, pr
     // get availability map
     console.log('Calculating Heat Map')
     let groups = null
+    let avail = null
     if(reqs)
         groups = convertToGroups(people,groupList);
-    let avail = updateAvailability(people, groups, reqs, pref);
-    console.log('Creating map')
-    return createColorMap(avail)
+    if(people.length > 0) {
+        avail = updateAvailability(people, groups, reqs, pref);
+        console.log('Creating map')
+        return createColorMap(avail)
+    }
 }
 
 function updateAvailability(people = null, groups = null, reqs = false, pref = false) {
