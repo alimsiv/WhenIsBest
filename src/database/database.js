@@ -1,12 +1,12 @@
 import firebase from 'firebase/app';
 import { useAuth } from '../contexts/AuthContext'
 import { auth, firestore } from '../apis/firebase'
-
+import { useDocument, useCollectionData } from 'react-firebase-hooks/firestore'
+import { Card, Button, Alert, Container, Nav } from 'react-bootstrap'
 
 //import firebase from '../apis/firebase';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 
 //const auth = firebase.auth();
@@ -41,6 +41,7 @@ export async function getMeetingInfo(code) {
         console.log("No such document!");
     }
 }
+
 
 /***
  * Returns a list of people responses for a given meeting
@@ -128,3 +129,68 @@ function FirebaseListen() {
  */
 
 // value={availability} onChange={(e) =! setAvailability(e.target.value)}
+
+export const FirestoreDocument = () => {
+    const { currentUser } = useAuth();
+    let meetings = [];
+    const [value, loading, error] = useDocument(
+        firebase.firestore().doc(`users/${currentUser.uid}`),
+        {
+            snapshotListenOptions: { includeMetadataChanges: true },
+        }
+    );
+    if (value != null) {
+        const meetingsList = value.data().meetings;
+        for (let i = 0; i < meetingsList.length; i++) {
+            //const { execute, status, value, error } = useAsync(getMeetingInfo(meetingsList[i]), false);
+            //const meetingData = await getMeetingInfo(meetingsList[i]);
+            //console.log(meetingData);
+            meetings.push(
+                <Nav.Link key={meetingsList[i]} href={"/view/" + meetingsList[i].toString()}>{meetingsList[i].toString()}</Nav.Link>
+            );
+        }
+    }
+    return (
+        <div>
+            {error && <strong>Error: {JSON.stringify(error)}</strong>}
+            {loading && <span>Document: Loading...</span>}
+            {meetings && <Nav className="flex-column">{meetings}</Nav>}
+        </div>
+    );
+};
+
+/*
+export async function MeetingArray() {
+    const { currentUser } = useAuth();
+    let meetings = [];
+    if (currentUser == null) {
+        return null;
+    }
+    const [value, loading, error] = useDocument(
+        firebase.firestore().doc(`users/${currentUser.uid}`),
+        {
+            snapshotListenOptions: { includeMetadataChanges: true },
+        }
+    );
+    if (value != null) {
+        const meetingsList = value.data().meetings;
+        for (let i = 0; i < meetingsList.length; i++) {
+            await firebase.firestore().collection('meetings').doc(meetingsList[i].toString()).get().then((doc) => {
+                if (doc.exists) {
+                    meetings.push(
+                        <Nav.Link key={meetingsList[i]} href={"/view/" + meetingsList[i].toString()}>{doc.data().name}</Nav.Link>)
+                }
+            });
+        }
+    }
+    console.log(meetings)
+    return (
+        <div>
+            {error && <strong>Error: {JSON.stringify(error)}</strong>}
+            {loading && <span>Document: Loading...</span>}
+            {meetings && <Nav className="flex-column">{meetings}</Nav>}
+        </div>
+    );
+
+};
+*/

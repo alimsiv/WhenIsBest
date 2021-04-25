@@ -22,9 +22,6 @@ export default function Profile() {
         if (value != null) {
             const meetingsList = value.data().meetings;
             for (let i = 0; i < meetingsList.length; i++) {
-                //const { execute, status, value, error } = useAsync(getMeetingInfo(meetingsList[i]), false);
-                //const meetingData = await getMeetingInfo(meetingsList[i]);
-                //console.log(meetingData);
 
                 meetings.push(
                     <Nav.Link href={"/view/" + meetingsList[i].toString()}>{meetingsList[i].toString()}</Nav.Link>
@@ -37,7 +34,7 @@ export default function Profile() {
                 <p>
                     {error && <strong>Error: {JSON.stringify(error)}</strong>}
                     {loading && <span>Document: Loading...</span>}
-
+                    
                     {meetings &&
                     <Nav className="flex-column">
                         {meetings}
