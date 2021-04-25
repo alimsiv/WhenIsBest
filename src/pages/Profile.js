@@ -7,7 +7,44 @@ import { Link } from 'react-router-dom'
 export default function Profiles() {
     const [error, setError] = useState("");
     const { currentUser, logout } = useAuth();
-    const { meetings } = useMeeting();
+
+    const FirestoreDocument = () => {
+        let meetings = [];
+        const [value, loading, error] = useDocument(
+            firebase.firestore().doc(`users/${currentUser.uid}`),
+            {
+                snapshotListenOptions: { includeMetadataChanges: true },
+            }
+        );
+        if (value != null) {
+            const meetingsList = value.data().meetings;
+            for (let i = 0; i < meetingsList.length; i++) {
+                //const { execute, status, value, error } = useAsync(getMeetingInfo(meetingsList[i]), false);
+                //const meetingData = await getMeetingInfo(meetingsList[i]);
+                //console.log(meetingData);
+
+                meetings.push(
+                    <Nav.Link href={"/view/" + meetingsList[i].toString()}>{meetingsList[i].toString()}</Nav.Link>
+                    );
+            }
+            console.log(meetings);
+        }
+        return (
+            <div>
+                <p>
+                    {error && <strong>Error: {JSON.stringify(error)}</strong>}
+                    {loading && <span>Document: Loading...</span>}
+                    {meetings &&
+                    <Nav className="flex-column">
+                        {meetings}
+                    </Nav>}
+                    
+                </p>
+            </div>
+        );
+    };
+
+    
 
     return (
         <>

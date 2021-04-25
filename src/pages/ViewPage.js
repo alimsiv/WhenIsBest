@@ -334,14 +334,14 @@ class ViewPage extends Component {
         }
     }
 
-    ResponseRow(name, id, show, priority) {
+    ResponseRow(name, id, priority, show) {
         console.log("responses")
         console.log(this.state.responses)
         return (
             <tr className="responses-row">
                 {this.state.showAdvancedSettings && <td>
                     <Form.Group controlId={id + '_checkbox'} className="responses-checkbox">
-                        <Form.Check type="checkbox" checked={show} onChange={(e) => this.handleUpdateCheckBox(name, id, show)} />
+                        <Form.Check type="checkbox" checked={show} onChange={(e) => this.handleUpdateCheckBox(name, id, e.target.checked)} />
                     </Form.Group>
                 </td>}
                 <td className="responses-name">{name}</td>
@@ -367,12 +367,11 @@ class ViewPage extends Component {
                     </div>
                 );
             }
-            responses = this.state.responses.map((response) => this.ResponseRow(response.name, response.id, response.show, response.priority));
+            responses = this.state.responses.map((response) => this.ResponseRow(response.name, response.id, response.priority, response.show));
         }
         else {
             console.log("Group Responses");
-            //TODO: possibly gonna error out
-            responses = this.state.groupList.map((group) => this.ResponseRow(group, group, group.show, group.priority));
+            responses = this.state.groupList.map((group) => this.ResponseRow(group, group, group.priority, group.show));
         }
         return (
             <>
