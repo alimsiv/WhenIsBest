@@ -125,9 +125,9 @@ class ViewPage extends Component {
             console.log(indx);
             responses[indx].priority = priority;
         }
-        else{
-            for (let i = 0; i < math.size(responses); i++){
-                if (responses[i].group == id){
+        else {
+            for (let i = 0; i < math.size(responses); i++) {
+                if (responses[i].group == id) {
                     responses[i].priority = priority;
                 }
             }
@@ -145,7 +145,7 @@ class ViewPage extends Component {
         if (this.state.groups = null)
             this.state.groups = convertToGroups(this.state.responses, this.state.groupList)
         console.log(group + " requires at least: " + minRequired);
-        for (let i = 0; i < math.size(this.state.groups); i++){
+        for (let i = 0; i < math.size(this.state.groups); i++) {
             if (this.state.groups[i].name == group)
                 this.state.groups[i].req = minRequired;
             if (this.state.groups[i].req > 0)
@@ -167,7 +167,7 @@ class ViewPage extends Component {
                 }
             }
         }
-        else{
+        else {
             for (let i = 0; i < math.size(this.state.responses); i++) {
                 if (this.state.responses[i].group == id) {
                     this.state.responses[i].show = status;
@@ -531,6 +531,7 @@ class ViewPage extends Component {
             //this.setState({eventAdded:true})
             var table = document.getElementById("userInputTable");
             console.log("table Events" + table)
+            console.log(table)
             if (table != null) {
                 //console.log("Filtered Events" + this.state.events);
                 this.state.events.forEach((e) => {
@@ -554,11 +555,10 @@ class ViewPage extends Component {
                                 table.rows[i].cells[cols].style.borderLeft = border;
                                 table.rows[i].cells[cols].style.borderRight = border;
                                 //TODO: make it only change to white at the beginning
-                                table.rows[i].cells[cols].style.backgroundColor = "#ffffff";
+                                const id = table.rows[i].cells[cols].id;
+                                this.inputTable.current.UpdateEventAt(id);
                             }
-
                             table.rows[location[1]].cells[cols].style.borderBottom = border;
-                            // console.log(table.rows[17])
                         }
                     }
                 })
