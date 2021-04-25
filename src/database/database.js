@@ -154,14 +154,18 @@ export const FirestoreDocument = () => {
         <div>
             {error && <strong>Error: {JSON.stringify(error)}</strong>}
             {loading && <span>Document: Loading...</span>}
-            {meetings && <Nav className="flex-column">{ meetings }</Nav>}
+            {meetings && <Nav className="flex-column">{meetings}</Nav>}
         </div>
     );
 };
 
+/*
 export async function MeetingArray() {
     const { currentUser } = useAuth();
     let meetings = [];
+    if (currentUser == null) {
+        return null;
+    }
     const [value, loading, error] = useDocument(
         firebase.firestore().doc(`users/${currentUser.uid}`),
         {
@@ -172,7 +176,7 @@ export async function MeetingArray() {
         const meetingsList = value.data().meetings;
         for (let i = 0; i < meetingsList.length; i++) {
             await firebase.firestore().collection('meetings').doc(meetingsList[i].toString()).get().then((doc) => {
-                if(doc.exists) {
+                if (doc.exists) {
                     meetings.push(
                         <Nav.Link key={meetingsList[i]} href={"/view/" + meetingsList[i].toString()}>{doc.data().name}</Nav.Link>)
                 }
@@ -184,7 +188,9 @@ export async function MeetingArray() {
         <div>
             {error && <strong>Error: {JSON.stringify(error)}</strong>}
             {loading && <span>Document: Loading...</span>}
-            {meetings && <Nav className="flex-column">{ meetings }</Nav>}
+            {meetings && <Nav className="flex-column">{meetings}</Nav>}
         </div>
     );
+
 };
+*/

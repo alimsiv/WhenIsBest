@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { MeetingArray } from '../database/database'
+//import { MeetingArray } from '../database/database'
 
 const MeetingContext = React.createContext()
 
@@ -12,7 +12,8 @@ export function MeetingProvider({ children }) {
     const [loading, setLoading] = useState(true)
     
     function getMeetings() {
-        return MeetingArray()
+        return null
+        //return MeetingArray()
     }
 
     useEffect(() => {
