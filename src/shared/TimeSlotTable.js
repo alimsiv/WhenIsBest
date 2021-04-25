@@ -158,7 +158,7 @@ class TimeSlotTable extends Component {
         //        return [row, parsedID[1]];
 
         let row = (timestamp - this.props.minStartTime) / 15;
-        const index = (row * this.props.tableCol) + dayCount;
+        const index = (row * this.props.tableCol) + dayCount - 1;
         console.log(JSON.stringify(this.props.colorMap))
         if (this.props.colorMap == null)
             return "#ffffff"
