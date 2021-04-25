@@ -25,7 +25,11 @@ class TimeSlotTable extends Component {
         this.maybeMulti = this.maybeMulti.bind(this);
         this.handleAvailabilityType = this.handleAvailabilityType.bind(this);
 
-        this.response = (this.props.setAllToOnes === true) ? this.initialResponseMatrixOnes() :this.initialResponseMatrix;
+        //this.response = (this.props.setAllToOnes === true) ? this.initialResponseMatrixOnes() : this.initialResponseMatrix;
+        this.response = this.initialResponseMatrix();
+        if (this.props.setAllToOnes){
+            this.response = this.initialResponseMatrixOnes();
+        }
 
         this.state = {
             multiSelect: false,
@@ -36,6 +40,15 @@ class TimeSlotTable extends Component {
 
     GetResponse() {
         return this.response;
+    }
+
+    initialResponseMatrix() {
+        const response = new Array(this.props.showTimeSlot.length);
+        const width = this.props.showTimeSlot[0].length;
+        for (let i = 0; i < response.length; i++) {
+            response[i] = new Array(width).fill(0);
+        }
+        return response;
     }
 
     initialResponseMatrixOnes() {
@@ -50,6 +63,7 @@ class TimeSlotTable extends Component {
     handleMulti(isOn, id) {
         if (this.state.multiSelect !== isOn) {
             this.setState({ multiSelect: isOn });
+            console.log(this.response)
             if (isOn) {
                 var location = this.getMatrixLocation(id);
                 if (this.response[location[0]][location[1]] === 0) {
@@ -78,15 +92,6 @@ class TimeSlotTable extends Component {
             if (current != this.state.multiType && !(this.state.availabilityType == "A" ? (current == 2 && this.state.multiType == 0) : (current == 1 && this.state.multiType == 0))) //decides if the current spot should change
                 this.handleTimeSlotClicked(id);
         }
-    }
-
-    initialResponseMatrix() {
-        const response = new Array(this.props.showTimeSlot.length);
-        const width = this.props.showTimeSlot[0].length;
-        for (let i = 0; i < response.length; i++) {
-            response[i] = new Array(width).fill(0);
-        }
-        return response;
     }
 
     getRBG(scale) {
