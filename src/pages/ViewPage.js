@@ -130,23 +130,29 @@ class ViewPage extends Component {
     handleUpdateMinRequired(group, minRequired) {
         //TODO: update min required of group
         console.log(group + " requires at least: " + minRequired);
-        for (const g in this.state.groupList){
-            if (g.name == group){
-                this.state.groupList[g].req = minRequired;
-            }
-        }
-    }
-
-    handleUpdateCheckBox(name, id, status) {
-        //TODO: update checkbox of name
-        console.log(name + " has been selected: " + status);
         for (let i = 0; i < math.size(this.state.responses); i++){
-            if (this.state.responses[i].name == name){
-                this.state.responses[i].show = status;
+            if (this.state.responses[i].group == group){
+                this.state.responses[i].req = minRequired;
             }
         }
         this.setState({
             responses: this.state.responses
+        });
+    }
+
+    handleUpdateCheckBox(name, id, status) {
+        //TODO: update checkbox of name
+        const responses = this.state.responses;
+
+        const isCorrectResponse = (element) => element.id === id;
+
+        const indx = responses.findIndex(isCorrectResponse);
+        console.log(indx);
+
+        responses[indx].show = status;
+
+        this.setState({
+            responses: responses
         });
     }
 
