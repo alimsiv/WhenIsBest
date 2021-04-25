@@ -1,7 +1,4 @@
 const math = require('mathjs')
-const arrlength = 108;
-
-//const dimensions = [ arr.length, arr[0].length ];
 
 // notation for creating person
 // var person = {Name: "John", priority:3, avail_map: avail, group = '', pref_map: pref, availability: avail, show: True};
@@ -11,13 +8,16 @@ const arrlength = 108;
 
 export function outputColorMap(people = null, groups = null, reqs = false, pref = false) {
     // get availability map
+    console.log('Calculating Heat Map')
     let avail = updateAvailability(people, groups, reqs, pref);
+    console.log('Creating map')
     return createColorMap(avail)
 }
 
 function updateAvailability(people = null, groups = null, reqs = false, pref = false) {
     let pg, reqMap, numPeople, i
     if (reqs) {
+        console.log('Heatmap with groups')
         pg = groups;
         if (pref){
             for (i = 0; i < math.size(pg); i++)
@@ -30,6 +30,7 @@ function updateAvailability(people = null, groups = null, reqs = false, pref = f
         reqMap = getReqMap(pg);
         numPeople = getTotalNumPeople(pg);
     } else {
+        console.log('Heatmap with people')
         pg = people;
         if (pref){
             for (i = 0; i < math.size(pg); i++)
@@ -48,7 +49,7 @@ function updateAvailability(people = null, groups = null, reqs = false, pref = f
 
 
 function getReqMap(groups) {
-    let reqMap = math.ones(arrlength)
+    let reqMap = math.ones(math.size(groups[0].avail_map))
     for (let i = 0; i < math.size(groups); i++) {
         if (groups[i].show)
             reqMap = math.dotMultiply(reqMap, groups[i].avail_map >= groups[i].req);
@@ -61,7 +62,7 @@ function updateAvail(pg, reqMap, numPeople, reqs = false) {
     // Called when someone changes or adds availability
     // returns updated availability map
     // for person/groups w/o reqs
-    let updated = math.zeros(arrlength);
+    let updated = math.zeros(math.size(pg[0].avail_map));
     const weights = getWeights(numPeople);
     for (let i = 0; i < pg.length; i++) {
         let weightedMap = math.multiply(weights[pg[i].priority - 1], pg[i].avail_map)
@@ -76,7 +77,7 @@ function updateAvail(pg, reqMap, numPeople, reqs = false) {
 function getPriority5Map(people) {
     // avail is availability matrix
     // num is the number of priority 5 people
-    let p5Map = math.ones(arrlength)
+    let p5Map = math.ones(math.size(people[0].avail_map))
     for (let i = 0; i < people.length; i++) {
         if (people[i].priority == 5 && people[i].show)
             p5Map = math.dotMultiply(p5Map, people[i].avail_map)
@@ -99,14 +100,14 @@ function createColorMap(avail) {
     let max = math.max(avail);
     let min = math.min(avail);
     const temp = avail.map(function(x) {return (x-min)/(max-min)*255;})
-    return temp._data
+    return temp
 }
 
 
 function getGroupMap(people) {
     // Get availability map for each group
     // Only need when more people are added to a group
-    let map = math.zeros(arrlength)
+    let map = math.zeros(math.size(people[0].avail_map))
     for (let i = 0; i < people.length; i++) {
         if(people[i].show)
             map = map + people[i].avail_map;
@@ -122,7 +123,7 @@ function getTotalNumPeople(groups) {
     return num;
 }
 
-function convertToGroups(people, GroupList) {
+export function convertToGroups(people, GroupList) {
     let groupDict = initializeGroups(GroupList)
     let groups = [];
     for (let i = 0; i < people.length; i++) {
@@ -145,14 +146,4 @@ function initializeGroups(GroupList) {
     return groupDict;
 }
 
-function getPrefMap(avail_map) {
-    let i
-    let prefMap =  avail_map
-    for (i = 0; i < arrlength; i++){
-            if (prefMap[i] == 2)
-                prefMap[i] = 1
-            else
-                prefMap[i] = 0
-        }
-    }
 

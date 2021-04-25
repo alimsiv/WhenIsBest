@@ -7,6 +7,7 @@ import TimeSlotTable from "../shared/TimeSlotTable";
 import { getMeetingInfo, fixTable, fixDays, getResponses, addResponseToDB, updateResponseInDB } from "../database/database";
 import '../styling/styles.css';
 import { outputColorMap } from '../shared/temp_alg';
+import { convertToGroups } from '../shared/temp_alg';
 import ApiCalendar from 'react-google-calendar-api';
 import { DateUtils } from 'react-day-picker';
 const math = require('mathjs')
@@ -128,11 +129,14 @@ class ViewPage extends Component {
     handleUpdateMinRequired(group, minRequired) {
         //TODO: update min required of group
         console.log(group + " requires at least: " + minRequired);
-        for (const g in this.state.groupList){
-            if (g.name == group){
-                this.state.groupList[g].req = minRequired;
+        for (let i = 0; i < math.size(this.state.responses); i++){
+            if (this.state.responses[i].group == group){
+                this.state.responses[i].req = minRequired;
             }
         }
+        this.setState({
+            responses: this.state.responses
+        });
     }
 
     handleUpdateCheckBox(name, id, show) {
@@ -327,7 +331,7 @@ class ViewPage extends Component {
 
     getResponses(mode, groupList) {
         if (mode == "G") {
-            return groupList
+            return convertToGroups(this.state.responses, groupList)
         }
         else {
             return this.state.responses
