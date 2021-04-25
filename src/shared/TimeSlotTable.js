@@ -42,6 +42,13 @@ class TimeSlotTable extends Component {
         return this.response;
     }
 
+    UpdateEventAt(id) {
+        const location = this.getMatrixLocation(id);
+        this.response[location[0]][location[1]] = 0;
+        document.getElementById(id).style.backgroundColor = this.unselColor;
+        
+    }
+
     initialResponseMatrix() {
         const response = new Array(this.props.showTimeSlot.length);
         const width = this.props.showTimeSlot[0].length;
