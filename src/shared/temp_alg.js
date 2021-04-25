@@ -68,7 +68,7 @@ function updateAvail(pg, reqMap, numPeople, reqs = false) {
     // Called when someone changes or adds availability
     // returns updated availability map
     // for person/groups w/o reqs
-    let updated = math.zeros(math.size(pg[1].avail_map));
+    let updated = math.zeros(math.size(reqMap));
     const weights = getWeights(numPeople);
     let weightedMap = null
     for (let i = 0; i < pg.length; i++) {
