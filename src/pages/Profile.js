@@ -2,7 +2,6 @@ import React, { Component, useState } from 'react'
 import { Card, Button, Alert, Container } from 'react-bootstrap'
 import { useAuth, handleLogout } from '../contexts/AuthContext'
 import { Link } from 'react-router-dom'
-import { useMeeting } from '../contexts/MeetingContext'
 import firebase from 'firebase/app';
 import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
 import { Nav } from 'react-bootstrap'
@@ -55,32 +54,6 @@ export default function Profile() {
         );
       };
 
-    /**
-    const Test = () => {
-        let meetings = []
-        let meetingLinks = []
-        firebase.firestore().collection('user').doc(`${currentUser.uid}`).onSnapshot((doc) => {
-            if(doc.exists) {
-                meetings = doc.data().meetings
-                console.log(meetings)
-                for (let i = 0; i < meetings.length; i++) {
-                    firebase.firestore().collection('meetings').doc(meetings[i].toString()).onSnapshot((doc) => {
-                        if(doc.exists) {
-                            meetingLinks.push(
-                                <Nav.Link key={meetings[i]} href={"/view/" + meetings[i].toString()}>{doc.data().name}</Nav.Link>)
-                        }
-                    });
-                }
-            }
-        });
-        console.log(meetingLinks)
-        return (
-            <div>
-                {meetingLinks && <Nav className="flex-column">{ meetingLinks }</Nav>}
-            </div>
-        );
-    };
-    */
             
     return (
         <>
