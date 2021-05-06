@@ -28,6 +28,7 @@ class ViewPage extends Component {
         this.handleUserGroup = this.handleUserGroup.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
         this.inputTable = React.createRef();
+        this.repsonsesTable = React.createRef();
         this.handleCalenderClick = this.handleCalenderClick.bind(this);
 
         this.state = {
@@ -666,6 +667,34 @@ class ViewPage extends Component {
 
     }
 
+    preferredOnly(responceList){
+        console.log("responceList Start")
+        for(var i = 0; i < responceList.length;i++){
+            responceList[i].availability = (this.convertToPreferredOnly(responceList[i].availability))
+            //responceList[i].avail_map = (this.convertToPreferredOnly(responceList[i].avail_map))
+            //console.log(responceList[i]);
+        }
+        console.log("responceList End")
+        return responceList;
+    }
+
+    convertToPreferredOnly(availability){
+        var oldavailability = [...availability];
+        var noPreferred = true;
+        console.log(availability);
+        for(var i = 0; i < availability.length; i++){
+            console.log("randome" + availability[i])
+            if(availability[i] == 1){
+                availability[i] = 0;
+            }
+            else if(noPreferred && availability[i] ==2 ) noPreferred = false;
+        }
+        if (noPreferred){
+            return oldavailability;
+        }
+        else return availability;
+    }
+
     Responses() {
         return (
             <div className="flex-child">
@@ -719,7 +748,7 @@ class ViewPage extends Component {
                         {this.addEvent()}
                         <div className="flex-child">
 
-                            <TimeSlotTable ref={this.responsesTable}
+                            <TimeSlotTable ref={this.repsonsesTable}
                                 isInputTable={false}
                                 type={this.state.daytype}
                                 dates={this.state.days}
@@ -729,17 +758,21 @@ class ViewPage extends Component {
                                 events={[]}
                                 tableID="meetingTable"
                                 colorMap={outputColorMap(this.state.responses, this.state.groupList, this.state.req)}
+                                preferredColorMap={outputColorMap(this.preferredOnly(this.state.responses), this.state.groupList, this.state.req)}
                                 tableRow={this.state.tableRow}
                                 tableCol={this.state.tableCol}
                             />
                             <div className="gradient-box"></div>
                             <div className="flex">
                                 <div className="left">
-                                    0 people available
+                                    {//(this.responcesTable.getCurrentButton() == "A" ?  "0 people available" :  "0 people preferred")}
+                                                 }
+                                0 people availble
                                 </div>
                                 {/*TODO: get max available */}
                                 <div className="right">
-                                    {this.state.responses.length + " people available"}
+                                    {this.state.responses.length + "people available"}{ //(this.responcesTable.getCurrentButton() == "A" ?  "people available" :  "people preferred")}
+                                                                                        }
                                 </div>
                             </div>
 
