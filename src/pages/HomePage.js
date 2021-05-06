@@ -125,7 +125,7 @@ class HomePage extends Component{
                                             <Form.Control type="text" onChange={this.handleCodeChange}/>
                                         </Form.Group>
 
-                                        <Button className="w-100" type="submit" onClick={this.accessMeeting}>
+                                        <Button className="w-100" type="button" onClick={this.pollDBandGo}>
                                             Access Meeting
                                         </Button>
                                     </Form>
