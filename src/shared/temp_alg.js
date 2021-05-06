@@ -75,7 +75,10 @@ function updateAvail(pg, reqMap, numPeople, reqs = false) {
         if (pg[i].avail_map != null) {
             let weight = weights[pg[i].priority - 1];
             weightedMap = pg[i].avail_map
-            weightedMap = weightedMap.map(function(x) {return x * weight;})
+            weightedMap = weightedMap.map(function(x) {
+                var y;
+                y = (x == 2 ? 1: x);
+                return y * weight;})
             if (pg[i].show)
                 updated = math.add(updated, weightedMap);
         }

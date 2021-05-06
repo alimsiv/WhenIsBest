@@ -667,32 +667,54 @@ class ViewPage extends Component {
 
     }
 
+    duplicateResponces(responceList){
+        var newResponces = [];
+        console.log(responceList)
+        for(var i = 0; i < responceList.length; i++){
+            var curResponce = responceList[i];
+            // newResponces.push({
+            //     availability:   [...curResponce.availability],
+            //     group:      curResponce.group,
+            //     id:     curResponce.id,
+            //     name:curResponce.name,
+            //     priority:curResponce.priority,
+            //     show:curResponce.show
+            // })
+            console.log(curResponce);
+            newResponces.push(JSON.parse(JSON.stringify(curResponce)))
+        }
+        return newResponces;
+    }
+
     preferredOnly(responceList){
-        console.log("responceList Start")
+        //console.log("responceList Start")
+        var perfferedResponceList = this.duplicateResponces(responceList);
+        console.log(perfferedResponceList);
         for(var i = 0; i < responceList.length;i++){
-            responceList[i].availability = (this.convertToPreferredOnly(responceList[i].availability))
+            perfferedResponceList[i].availability = (this.convertToPreferredOnly(perfferedResponceList[i].availability))
             //responceList[i].avail_map = (this.convertToPreferredOnly(responceList[i].avail_map))
             //console.log(responceList[i]);
         }
-        console.log("responceList End")
-        return responceList;
+        //console.log("responceList End")
+        return perfferedResponceList;
     }
 
     convertToPreferredOnly(availability){
         var oldavailability = [...availability];
+        var newavailability = [...availability];
         var noPreferred = true;
         console.log(availability);
         for(var i = 0; i < availability.length; i++){
-            console.log("randome" + availability[i])
-            if(availability[i] == 1){
-                availability[i] = 0;
+            //console.log("randome" + availability[i])
+            if(newavailability[i] == 1){
+                newavailability[i] = 0;
             }
-            else if(noPreferred && availability[i] ==2 ) noPreferred = false;
+            else if(noPreferred && newavailability[i] ==2 ) noPreferred = false;
         }
         if (noPreferred){
             return oldavailability;
         }
-        else return availability;
+        else return newavailability;
     }
 
     Responses() {
