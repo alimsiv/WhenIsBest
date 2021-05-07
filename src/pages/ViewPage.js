@@ -54,6 +54,8 @@ class ViewPage extends Component {
             eventAdded: false,
             groups: [],
             req: false,
+            reload: false,
+            overall_checked: true,
 
             //TODO set to authenticated user id if logged in
         }
@@ -176,6 +178,25 @@ class ViewPage extends Component {
         }
         this.setState({
             responses: this.state.responses
+        });
+    }
+
+    handleOverallCheckBox(status) {
+        //TODO: update checkbox of name
+        console.log("Overall has been selected: " + status);
+        if (this.state.priorityType == "P") {
+            for (let i = 0; i < math.size(this.state.responses); i++) {
+                this.state.responses[i].show = status;
+            }
+        }
+        else {
+            for (let i = 0; i < math.size(this.state.responses); i++) {
+                this.state.responses[i].show = status;
+            }
+        }
+        this.setState({
+            responses: this.state.responses,
+            overall_checked: status
         });
     }
 
@@ -393,6 +414,7 @@ class ViewPage extends Component {
                     </div>
                 );
             }
+
             responses = this.state.responses.map((response) => this.ResponseRow(response.name, response.id, response.priority, response.show));
         }
         else {
@@ -403,7 +425,11 @@ class ViewPage extends Component {
             <>
                 <table className="responses_table">
                     {this.state.showAdvancedSettings && <tr>
-                        <td />
+                        <td>
+                            <Form.Group controlId={'overall_checkbox'} className="responses-checkbox">
+                                <Form.Check type="checkbox" checked={this.state.overall_checked} onChange={(e) => this.handleOverallCheckBox(e.target.checked)} />
+                            </Form.Group>
+                        </td>
                         <td />
                         <td className="flex">
                             <div className="left">low</div>
@@ -437,15 +463,6 @@ class ViewPage extends Component {
 
                                 this.handleUpdateDB(availability)
                                 alert("Your responses has been submitted. Reload to see the updated heatmap.");
-                                return (
-                                    <Toast>
-                                        <Toast.Header>
-                                            <img src="holder.js/20x20?text=%20" className="rounded mr-2" alt="" />
-                                            <strong className="mr-auto">Your availability has been added.</strong>
-                                            <small>Thank you!</small>
-                                        </Toast.Header>
-                                        <Toast.Body>Hello, world! This is a toast message.</Toast.Body>
-                                    </Toast>);
                             }
                         }
                         else {
@@ -753,7 +770,7 @@ class ViewPage extends Component {
                     <br />
                     <br />
                     <Modal show={this.state.showModal && (this.state.inputChoice !== this.inputOptions.OPTIONS)} hide={this.handleCloseModal}>
-                        <Modal.Header closeButton>
+                        <Modal.Header>
                             <Modal.Title>Please select your group</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
