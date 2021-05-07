@@ -101,6 +101,10 @@ class TimeSlotTable extends Component {
         }
     }
 
+    getCurrentButton(){
+        return this.state.availabilityType;
+    }
+
     getRBG(scale) {
         //For red to green gradient
         let r = 255;
@@ -166,10 +170,12 @@ class TimeSlotTable extends Component {
 
         let row = (timestamp - this.props.minStartTime) / 15;
         const index = (row * this.props.tableCol) + dayCount - 1;
-        console.log(JSON.stringify(this.props.colorMap))
-        if (this.props.colorMap == null)
+        var currentColorMap;
+        currentColorMap = (this.state.availabilityType == "A" ? this.props.colorMap : this.props.preferredColorMap)
+        console.log(JSON.stringify(currentColorMap))
+        if (currentColorMap == null)
             return "#ffffff"
-        const colorInt = this.props.colorMap[index];
+        const colorInt = currentColorMap[index];
         return (colorInt == null) ? "#ff0000" : this.getRBG(colorInt);
         if (colorInt == null) {
             return "#ff0000";
@@ -420,7 +426,8 @@ class TimeSlotTable extends Component {
                     {this.TimeSlotCreateRows()}
                 </table>
                 <br />
-                
+                {//this.props.tableID == "meetingTable" ? "Note, if people that did not enter preferred times, all available times for them were used " : ""
+                }
             </div>
 
         );

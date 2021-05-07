@@ -28,6 +28,7 @@ class ViewPage extends Component {
         this.handleUserGroup = this.handleUserGroup.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
         this.inputTable = React.createRef();
+        this.repsonsesTable = React.createRef();
         this.handleCalenderClick = this.handleCalenderClick.bind(this);
 
         this.state = {
@@ -683,6 +684,56 @@ class ViewPage extends Component {
 
     }
 
+    duplicateResponces(responceList){
+        var newResponces = [];
+        console.log(responceList)
+        for(var i = 0; i < responceList.length; i++){
+            var curResponce = responceList[i];
+            // newResponces.push({
+            //     availability:   [...curResponce.availability],
+            //     group:      curResponce.group,
+            //     id:     curResponce.id,
+            //     name:curResponce.name,
+            //     priority:curResponce.priority,
+            //     show:curResponce.show
+            // })
+            console.log(curResponce);
+            newResponces.push(JSON.parse(JSON.stringify(curResponce)))
+        }
+        return newResponces;
+    }
+
+    preferredOnly(responceList){
+        //console.log("responceList Start")
+        var perfferedResponceList = this.duplicateResponces(responceList);
+        console.log(perfferedResponceList);
+        for(var i = 0; i < responceList.length;i++){
+            perfferedResponceList[i].availability = (this.convertToPreferredOnly(perfferedResponceList[i].availability))
+            //responceList[i].avail_map = (this.convertToPreferredOnly(responceList[i].avail_map))
+            //console.log(responceList[i]);
+        }
+        //console.log("responceList End")
+        return perfferedResponceList;
+    }
+
+    convertToPreferredOnly(availability){
+        var oldavailability = [...availability];
+        var newavailability = [...availability];
+        var noPreferred = true;
+        console.log(availability);
+        for(var i = 0; i < availability.length; i++){
+            //console.log("randome" + availability[i])
+            if(newavailability[i] == 1){
+                newavailability[i] = 0;
+            }
+            else if(noPreferred && newavailability[i] ==2 ) noPreferred = false;
+        }
+        if (noPreferred){
+            return oldavailability;
+        }
+        else return newavailability;
+    }
+
     Responses() {
         return (
             <div className="flex-child">
@@ -736,7 +787,7 @@ class ViewPage extends Component {
                         {this.addEvent()}
                         <div className="flex-child">
 
-                            <TimeSlotTable ref={this.responsesTable}
+                            <TimeSlotTable ref={this.repsonsesTable}
                                 isInputTable={false}
                                 type={this.state.daytype}
                                 dates={this.state.days}
@@ -746,17 +797,21 @@ class ViewPage extends Component {
                                 events={[]}
                                 tableID="meetingTable"
                                 colorMap={outputColorMap(this.state.responses, this.state.groupList, this.state.req)}
+                                preferredColorMap={outputColorMap(this.preferredOnly(this.state.responses), this.state.groupList, this.state.req)}
                                 tableRow={this.state.tableRow}
                                 tableCol={this.state.tableCol}
                             />
                             <div className="gradient-box"></div>
                             <div className="flex">
                                 <div className="left">
-                                    0 people available
+                                    {//(this.responcesTable.getCurrentButton() == "A" ?  "0 people available" :  "0 people preferred")}
+                                                 }
+                                0 people availble
                                 </div>
                                 {/*TODO: get max available */}
                                 <div className="right">
-                                    {this.state.responses.length + " people available"}
+                                    {this.state.responses.length + "people available"}{ //(this.responcesTable.getCurrentButton() == "A" ?  "people available" :  "people preferred")}
+                                                                                        }
                                 </div>
                             </div>
 
