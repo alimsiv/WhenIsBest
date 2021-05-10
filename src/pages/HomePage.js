@@ -28,9 +28,6 @@ class HomePage extends Component{
     this.user = this.context
   }
 
-    signUpIfNotLoggedIn() {
-      const currentUser = true;
-
   viewMeetings() {
     console.log(this.user.currentUser)
     if(this.user.currentUser) {
