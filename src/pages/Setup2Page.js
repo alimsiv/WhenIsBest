@@ -1,10 +1,11 @@
-import React, { Component } from 'react'
+import React, { Component, Container } from 'react'
 import history from './../history'
 import TimeSlotTable from "../shared/TimeSlotTable";
 import { IconButton } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
 import Popup from 'reactjs-popup';
 import { addMeetingToUser } from '../database/database';
+import { Button } from 'react-bootstrap'
 
 //import app from "../apis/firebase"
 
@@ -83,12 +84,13 @@ class Setup2Page extends Component {
                                 value={x}
                                 onChange={e => this.handleGroupListChange(e, i)}
                             />
-                            {this.state.groupList.length > 2 && <button
+                            {this.state.groupList.length > 2 && <Button
+                                style={{"marginTop": "5px"}, {"marginLeft": "5px"}}
                                 className="mr10"
-                                onClick={() => this.handleGroupListRemove(i)}>Remove</button>}
+                                onClick={() => this.handleGroupListRemove(i)}>Remove</Button>}
                         </div>
                         <div>
-                            {this.state.groupList.length - 1 === i && <button onClick={() => this.handleAddGroup()}>Add</button>}
+                            {this.state.groupList.length - 1 === i && <Button style={{"marginTop": "5px"}} onClick={() => this.handleAddGroup()}>Add</Button>}
                         </div>
                     </>
                 )
@@ -217,7 +219,7 @@ class Setup2Page extends Component {
                     This is recommended if you have a large number of people filling out your form.<br /><br />
 
                     If you select people, you will be able to set the priority of each individual person.<br />
-                    <button onClick={() => this.handlePopup("popup", false)}>close </button>
+                    <Button onClick={() => this.handlePopup("popup", false)}>close </Button>
                 </div>
             </Popup>
         )
@@ -276,94 +278,97 @@ class Setup2Page extends Component {
                     {this.groups()}
                     {this.pop()}
                 </div>
-                <button onClick={() => { history.goBack() }}>Back</button>
-                {
-                    //need to make sure feilds are selected
-                }
-                <button onClick={() => {
-                    var timeStuff = this.startAndEndStuff();
-                    var minStart = timeStuff[1];
-                    var allGood = true;
-                    var days;
-                    if (state.type) {
-                        days = this.daysofweekMode();
-                    }
-                    else {
-                        days = this.calanderMode();
-                    }
-
-                    var table = this.currentTable.current.GetResponse();
-                    //console.log(table.length);
-                    var notEmpty = false;
-                    //converts timeslotTable to boolean table so can be used for showTimeslot when pulling from db
-                    for (var i = 0; i < table.length; i++) {
-                        for (var j = 0; j < table[0].length; j++) {
-                            if (table[i][j] == 1) {
-                                table[i][j] = 1;
-                                notEmpty = true;
-                            }
-                            else {
-                                table[i][j] = 0;
-                            }
+                
+                    <Button style={{"marginRight": "5px"}} onClick={() => { history.goBack() }}>Back</Button>
+                        {
+                            //need to make sure feilds are selected
                         }
-                    }
-                    if (notEmpty) {
-
-                        console.log("no changes nessesary");
-
-                    }
-                    else {
-                        //change all values to yes
-                        console.log("changed all values to true")
-
-                        //initialize table with all elements set to true
-                        table = Array.from({ length: table.length }, () =>
-                            Array.from({ length: table[0].length }, () => 1)
-                        );
-                        //table = temp;
-                    }
-                    //is in group mode
-                    var modifiedGroupList = [];
-                    if (this.state.mode == "G") {
-                        allGood = false;
-
-                        var count = 0;
-                        for (var i = 0; i < this.state.groupList.length; i++) {
-                            if (this.state.groupList[i] != "") {
-                                count++;
-                                console.log(this.state.groupList[i]);
-                                modifiedGroupList.push(this.state.groupList[i]);//push to DB
-                            }
-                            else {
-                                //
-                            }
-                        }
-                        if (count >= 2 && this.uniqueNames(modifiedGroupList)) {
-                            allGood = true;
+                    <Button onClick={() => {
+                        var timeStuff = this.startAndEndStuff();
+                        var minStart = timeStuff[1];
+                        var allGood = true;
+                        var days;
+                        if (state.type) {
+                            days = this.daysofweekMode();
                         }
                         else {
-                            alert("You must have at least two groups all with unique names to use group mode")
+                            days = this.calanderMode();
                         }
-                    }
-                    //push to DB
-                    var mID = this.addtoDB(days, minStart, table, state.type, modifiedGroupList);
-                    addMeetingToUser(mID, this.state.userID);
 
-
-                    //console.log(days);
-                    //console.table(table);
-                    if (allGood) {
-                        history.push({
-                            pathname: '/confirmation',
-                            //pass things through state
-                            state: {
-                                meetingID: mID,
+                        var table = this.currentTable.current.GetResponse();
+                        //console.log(table.length);
+                        var notEmpty = false;
+                        //converts timeslotTable to boolean table so can be used for showTimeslot when pulling from db
+                        for (var i = 0; i < table.length; i++) {
+                            for (var j = 0; j < table[0].length; j++) {
+                                if (table[i][j] == 1) {
+                                    table[i][j] = 1;
+                                    notEmpty = true;
+                                }
+                                else {
+                                    table[i][j] = 0;
+                                }
                             }
-                        })
-                    }
-                }}>Submit
-                                                                </button>
+                        }
+                        if (notEmpty) {
+
+                            console.log("no changes nessesary");
+
+                        }
+                        else {
+                            //change all values to yes
+                            console.log("changed all values to true")
+
+                            //initialize table with all elements set to true
+                            table = Array.from({ length: table.length }, () =>
+                                Array.from({ length: table[0].length }, () => 1)
+                            );
+                            //table = temp;
+                        }
+                        //is in group mode
+                        var modifiedGroupList = [];
+                        if (this.state.mode == "G") {
+                            allGood = false;
+
+                            var count = 0;
+                            for (var i = 0; i < this.state.groupList.length; i++) {
+                                if (this.state.groupList[i] != "") {
+                                    count++;
+                                    console.log(this.state.groupList[i]);
+                                    modifiedGroupList.push(this.state.groupList[i]);//push to DB
+                                }
+                                else {
+                                    //
+                                }
+                            }
+                            if (count >= 2 && this.uniqueNames(modifiedGroupList)) {
+                                allGood = true;
+                            }
+                            else {
+                                alert("You must have at least two groups all with unique names to use group mode")
+                            }
+                        }
+                        //push to DB
+                        var mID = this.addtoDB(days, minStart, table, state.type, modifiedGroupList);
+                        addMeetingToUser(mID, this.state.userID);
+
+
+                        //console.log(days);
+                        //console.table(table);
+                        if (allGood) {
+                            history.push({
+                                pathname: '/confirmation',
+                                //pass things through state
+                                state: {
+                                    meetingID: mID,
+                                }
+                            })
+                        }
+                        }}>Submit
+                    </Button>
+                
             </div>
+                    
         );
     }
 }
