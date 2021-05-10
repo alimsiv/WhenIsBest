@@ -33,7 +33,6 @@ class HomePage extends Component{
   }
 
   viewMeetings() {
-    // :TODO need error code for when someone is not logged in since it cant redirect to profile
     console.log(this.user.currentUser)
     if(this.user.currentUser) {
       history.push({pathname: "/profile"});
@@ -162,6 +161,9 @@ class HomePage extends Component{
                                 </Card>
                             </Card.Body>
                         </Card>
+                        <div className="w-100 text-center mt-2">
+                            Don't have an account? <Link to="/signup">Sign Up</Link>
+                        </div>
                     </div>
                 </Container>
               </>
