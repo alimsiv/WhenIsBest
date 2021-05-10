@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import logo from "../logo.svg";
+import example from "../example.png"
 import history from './../history'
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -28,10 +28,6 @@ class HomePage extends Component{
     this.user = this.context
   }
 
-  createMeeting() {
-    history.push({pathname: "/setup1"});
-  }
-
   viewMeetings() {
     console.log(this.user.currentUser)
     if(this.user.currentUser) {
@@ -42,77 +38,86 @@ class HomePage extends Component{
     }
   }
 
-  accessMeeting(e) {
-    history.push({pathname: "/view/" + this.state.code});
-  }
-
-  handleCodeChange(e){
-    const {value} = e.target;
-    //const ls = this.state.code;
-    if(this.state.code != value){
-        this.setState({code: value});
-    }
-    // if the meeting is valid go to view page, else error
-    // go to the valid view page
-
-  }
-
-  fixTable(oneDtable,cols){
-    var twoDTable = [];
-    var row;
-    while(oneDtable.length > 0){
-      row = oneDtable.splice(0,cols);
-      twoDTable.push(row);
+    createMeeting() {
+      history.push({pathname: "/setup1"});
     }
 
-    return twoDTable;
-  }
+    viewMeetings() {
+      history.push({pathname: "/profile"});
+    }
 
-  fixDays(days){
-    var fixed = [];
-    days.forEach(day => fixed.push(new Date(day.seconds * 1000)));
-    return fixed;
-  }
+    accessMeeting(e) {
+      history.push({pathname: "/view/" + this.state.code});
+    }
 
-  pollDBandGo(){
+    handleCodeChange(e){
+      const {value} = e.target;
+      //const ls = this.state.code;
+      if(this.state.code != value){
+          this.setState({code: value});
+      }
+      // if the meeting is valid go to view page, else error
+      // go to the valid view page
 
-    if(this.state.code != ""){
-    //checks for the meeting code first, if found goes to view page
-      const db = firebase.firestore();
-      const docRef = db.collection("meetings").doc(this.state.code);
-      const doc = docRef.get().then((doc) => {
-            if (doc.exists) {
-              history.push({
-                pathname: "/view/" + this.state.code,
-                state: {
-                }
-              });
-            }
-            else {
-                    // doc.data() will be undefined in this case
-                    alert("meeting code not found");
-                    console.log("No such document!");
-                    }
-                }).catch((error) => {
-                    console.log("Error getting document:", error);
+    }
+
+    fixTable(oneDtable,cols){
+      var twoDTable = [];
+      var row;
+      while(oneDtable.length > 0){
+        row = oneDtable.splice(0,cols);
+        twoDTable.push(row);
+      }
+
+      return twoDTable;
+    }
+
+    fixDays(days){
+      var fixed = [];
+      days.forEach(day => fixed.push(new Date(day.seconds * 1000)));
+      return fixed;
+    }
+
+    pollDBandGo(){
+
+      if(this.state.code != ""){
+      //checks for the meeting code first, if found goes to view page
+        const db = firebase.firestore();
+        const docRef = db.collection("meetings").doc(this.state.code);
+        const doc = docRef.get().then((doc) => {
+              if (doc.exists) {
+                history.push({
+                  pathname: "/view/" + this.state.code,
+                  state: {
+                  }
                 });
-                //console.log("bttom")
+              }
+              else {
+                      // doc.data() will be undefined in this case
+                      alert("meeting code not found");
+                      console.log("No such document!");
+                      }
+                  }).catch((error) => {
+                      console.log("Error getting document:", error);
+                  });
+                  //console.log("bttom")
+      }
+      else{
+        console.log("no meeting code entered")
+      }
     }
-    else{
-      console.log("no meeting code entered")
-    }
-  }
 
     render() {
+
       return (
           <div className="HomePage">
-            <div className="flex">
+            <div className="flex" style={{"background": "linear-gradient(to bottom, #ffffff 0%, #0099ff 100%)"}}>
 
-              <div className="flex-child" width="40%" height="40%" style={{"float": "left"}}>
-                <img src={logo} width="400" height="400"/>
+              <div className="flex-child" style={{"float": "left", "margin-left": "85px"}}>
+                <img src={example} style={{"border": "5px solid", "margin-left": "10px", "margin-top": "50px", "margin-right": "10px", "margin-bottom": "10px"}}/>
                 <p>"WhenIsBest allows for the creation of groups and the ability
-                to weigh the importance of attendance <br/> for both individuals and groups.
-                Additionally, WhenIsBest allows individuals to indicate general availability <br/>
+                to weigh the importance of attendance for both individuals and groups.
+                Additionally, WhenIsBest allows individuals to indicate general availability
                 versus preferred availability. The app then embeds a prioritization feature
                 into its algorithm that considers the weighted values of individuals and groups
                 and each individual’s preferences when calculating the most ideal meeting time.
@@ -121,9 +126,9 @@ class HomePage extends Component{
                 </p>
               </div>
               <>
-                <Container className="d-flex align-tems-center justify-content-center" style={{ minHeight: "100vh" }}>
+                <Container className="d-flex align-tems-center justify-content-center" style={{minHeight: "100vh", "margin-right": "75px", "margin-top": "50px" }}>
                     <div className="w-100" style={{ maxWidth: "400px" }}>
-                        <Card>
+                        <Card style={{"border": "1px solid"}}>
                             <Card.Body>
                                 <h2 className="text-center mb-4">Welcome to WhenIsBest</h2>
 
