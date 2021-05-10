@@ -53,33 +53,6 @@ export default function Profile() {
         );
       };
 
-    /**
-    const Test = () => {
-        let meetings = []
-        let meetingLinks = []
-        firebase.firestore().collection('user').doc(`${currentUser.uid}`).onSnapshot((doc) => {
-            if(doc.exists) {
-                meetings = doc.data().meetings
-                console.log(meetings)
-                for (let i = 0; i < meetings.length; i++) {
-                    firebase.firestore().collection('meetings').doc(meetings[i].toString()).onSnapshot((doc) => {
-                        if(doc.exists) {
-                            meetingLinks.push(
-                                <Nav.Link key={meetings[i]} href={"/view/" + meetings[i].toString()}>{doc.data().name}</Nav.Link>)
-                        }
-                    });
-                }
-            }
-        });
-        console.log(meetingLinks)
-        return (
-            <div>
-                {meetingLinks && <Nav className="flex-column">{ meetingLinks }</Nav>}
-            </div>
-        );
-    };
-    */
-
     return (
         <>
             <Container className="d-flex align-tems-center justify-content-center" style={{ minHeight: "100vh" }}>

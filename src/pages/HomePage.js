@@ -5,7 +5,7 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { Button, Card, Container, Form } from 'react-bootstrap'
 import { Link, } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
+import { AuthContext } from '../contexts/AuthContext'
 
 class HomePage extends Component{
 
@@ -20,8 +20,13 @@ class HomePage extends Component{
     this.state = {
         code: "",
     }
+  }
 
-}
+  static contextType = AuthContext
+
+  componentDidMount() {
+    this.user = this.context
+  }
 
   createMeeting() {
     history.push({pathname: "/setup1"});
@@ -29,7 +34,13 @@ class HomePage extends Component{
 
   viewMeetings() {
     // :TODO need error code for when someone is not logged in since it cant redirect to profile
-    history.push({pathname: "/profile"});
+    console.log(this.user.currentUser)
+    if(this.user.currentUser) {
+      history.push({pathname: "/profile"});
+    }
+    else {
+      history.push({pathname: "/login"});
+    }
   }
 
   accessMeeting(e) {
@@ -139,7 +150,7 @@ class HomePage extends Component{
                                           <Form.Label>Your Meetings</Form.Label>
                                       </Form.Group>
                                       <Form.Group id="your-meetings">
-                                        <Button id="create-meeting" style={{"margin-right": "5px"}} onClick={() => this.createMeeting()}>
+                                        <Button id="create-meeting" style={{"marginRight": "5px"}} onClick={() => this.createMeeting()}>
                                           Create a Meeting
                                         </Button>
                                         <Button id="view-meetings" onClick={() => this.viewMeetings()}>
@@ -149,12 +160,8 @@ class HomePage extends Component{
                                     </Form>
                                   </Card.Body>
                                 </Card>
-
                             </Card.Body>
                         </Card>
-                          <div className="w-100 text-center mt-2">
-                            Don't have an account? <Link to="/signup">Sign Up</Link>
-                          </div>
                     </div>
                 </Container>
               </>
