@@ -1,6 +1,7 @@
 import { Component } from 'react'
 import example from "../example.png"
 import history from './../history'
+import screen from '../screen.png'
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { Button, Card, Container, Form } from 'react-bootstrap'
@@ -115,7 +116,7 @@ class HomePage extends Component{
 
               <div className="flex-child" style={{"float": "left", "margin-left": "85px"}}>
                 <h3 style={{ "margin-top": "25px"}}>Don't find a good time. Find a best time.</h3>
-                <img src={example} style={{"border": "5px solid", "margin-left": "10px", "margin-top": "25px", "margin-right": "10px", "margin-bottom": "10px"}}/>
+                <img src={screen} width="800" height="450" style={{"border": "5px solid", "margin-left": "10px", "margin-top": "25px", "margin-right": "10px", "margin-bottom": "10px"}}/>
               </div>
               <>
                 <Container className="d-flex align-tems-center justify-content-center" style={{minHeight: "100vh", "margin-right": "75px", "margin-top": "50px" }}>
