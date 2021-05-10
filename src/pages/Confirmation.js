@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import history from './../history'
+import { Button } from 'react-bootstrap'
 
 class Confirmation extends Component{
 
@@ -24,16 +25,16 @@ render() {
                         <br/>
                         <br/>
                         <p>Press continue to fill out the form for yourself, or exit to go back home.</p>
-                        <button onClick={() => {
+                        <Button style={{"marginRight": "5px"}} onClick={() => {
                             history.push({ 
                                 pathname: '/'})
-                        }}>Home</button>
-                        <button onClick={() => {
+                        }}>Home</Button>
+                        <Button onClick={() => {
                             history.push({ 
                                     pathname: '/view/' + tableInfo.meetingID,
                                     //pass things through state
                                     })}}>Continue
-                                    </button>
+                                    </Button>
                     </div>
                     
 

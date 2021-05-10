@@ -1,6 +1,5 @@
 import { Component, Text, View } from 'react'
-import { Button } from '@material-ui/core';
-import { Dropdown, Nav, Navbar } from 'react-bootstrap'
+import { Button, Dropdown, Nav, Navbar } from 'react-bootstrap'
 import NavigationBar from '../shared/NavigationBar'
 import TimezoneDropdown from "../shared/TimezoneDropdown";
 import TimeSlotTable from "../shared/TimeSlotTable";
@@ -108,7 +107,7 @@ class Setup1Page extends Component {
                     <input id="event-name-input" type="text" className="form-control" placeholder="Event Name" onSubmit />
                 </form>
 
-                <button id="create-event-button" onClick={() => {
+                <Button id="create-event-button" onClick={() => {
                     var cango = false;
                     var name = document.getElementById("event-name-input").value;
                     if (name == "") {
@@ -150,7 +149,7 @@ class Setup1Page extends Component {
                             }
                         })
                     }
-                }}>Continue</button>
+                }}>Continue</Button>
             </div>
         );
     }
@@ -286,7 +285,7 @@ class Setup1Page extends Component {
         return (
             <div className="flex-child">
                 <Dropdown>
-                    <Dropdown.Toggle variant="success" className="dropdown">
+                    <Dropdown.Toggle variant="primary" className="dropdown">
                         {this.dateTypes[this.state.dateType]}
                     </Dropdown.Toggle>
 
@@ -313,7 +312,7 @@ class Setup1Page extends Component {
         return (
             <div className="flex-child">
                 <Dropdown>
-                    <Dropdown.Toggle variant="success" class="dropdown">
+                    <Dropdown.Toggle variant="primary" class="dropdown">
                         Time Range
                     </Dropdown.Toggle>
 

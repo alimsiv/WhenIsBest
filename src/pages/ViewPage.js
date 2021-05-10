@@ -449,7 +449,7 @@ class ViewPage extends Component {
                 <form>
                     <input id="user-name-input" type="text" className="form-control" placeholder="Your Name" onChange={this.handleNameChange} />
                 </form>
-                <button id="update-availability-button" onClick={() => {
+                <Button id="update-availability-button" onClick={() => {
                     if (this.inputTable != null) {
                         const availability = this.inputTable.current.GetResponse();
                         if (availability != null) {
@@ -475,7 +475,7 @@ class ViewPage extends Component {
                     }
                 }}>
                     Add Availability
-                        </button >
+                        </Button >
             </div >
 
         );
@@ -610,11 +610,11 @@ class ViewPage extends Component {
         else {
             return (
                 <p>
-                    <button
+                    <Button
                         onClick={(e) => this.handleCalenderClick('sign-in')}
                     >
                         sign-in
-                </button>
+                </Button>
                 </p>
             );
 
@@ -649,25 +649,25 @@ class ViewPage extends Component {
                         <br />
 
                         {this.state.daytype === 0 &&
-                            <button id="get-google-calendar-button" onClick={() => {
+                            <Button id="get-google-calendar-button" onClick={() => {
                                 this.setState({
                                     inputChoice: this.inputOptions.GOOGLE_CALENDAR
                                 });
                             }}>
                                 Get availabilites from Google Calendar
-                        </button>}
+                        </Button>}
 
                         <br />
                         <br />
                         <br />
 
-                        <button id="get-input-table-button" onClick={() => {
+                        <Button id="get-input-table-button" onClick={() => {
                             this.setState({
                                 inputChoice: this.inputOptions.MANUAL
                             });
                         }}>
                             Input availabilities manually
-                        </button>
+                        </Button>
 
                     </div>
                 );
@@ -742,13 +742,13 @@ class ViewPage extends Component {
                         <h4>{(this.state.priorityType === "G" ? "Group Responses" : "Responses")}</h4>
                     </div>
                     <div className="flex-child">
-                        <button id="advanced-settings-button" onClick={() => {
+                        <Button id="advanced-settings-button" onClick={() => {
                             this.setState({
                                 showAdvancedSettings: !this.state.showAdvancedSettings
                             });
                         }}>
                             {this.state.showAdvancedSettings ? "Hide advanced settings" : "Show advanced settings"}
-                        </button>
+                        </Button>
                     </div>
                 </div>
                 <br />
