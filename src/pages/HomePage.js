@@ -147,10 +147,10 @@ class HomePage extends Component{
                                           <Form.Label>Your Meetings</Form.Label>
                                       </Form.Group>
                                       <Form.Group id="your-meetings">
-                                        <Button id="create-meeting" onClick={() => this.createMeeting()}>
+                                        <Button id="create-meeting" style={{"marginRight": "2px"}} onClick={() => this.createMeeting()}>
                                           Create a Meeting
                                         </Button>
-                                        <Button id="view-meetings" style={{"marginTop": "5px"}} onClick={() => this.viewMeetings()}>
+                                        <Button id="view-meetings" style={{"marginTop": "2px"}} onClick={() => this.viewMeetings()}>
                                           View My Meetings
                                         </Button>
                                       </Form.Group>
